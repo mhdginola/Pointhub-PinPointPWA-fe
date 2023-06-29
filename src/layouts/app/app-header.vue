@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useUserStore } from '@/stores/auth'
 import BaseDropdown from '@/components/base-dropdown.vue'
 import ComponentNotification from './component-notification.vue'
 import ComponentToggleSidebar from './component-toggle-sidebar.vue'
@@ -20,6 +21,8 @@ function toggleDarkMode() {
 }
 
 const isOpen = ref(false)
+
+const user = useUserStore()
 </script>
 
 <template>
@@ -30,17 +33,22 @@ const isOpen = ref(false)
       <div class="w-full flex items-center justify-between">
         <!-- Left: Sidebar Toggle Button -->
         <div class="flex">
-          <component :is="ComponentToggleSidebar" class="pr-4" />
+          <!-- <component :is="ComponentToggleSidebar" class="pr-4 lg:hidden" /> -->
           <h1 class="text-base font-extrabold lg:text-lg">
             PAPP <span class="font-normal">STARTER</span>
           </h1>
         </div>
 
         <!-- Right: Header Buttons -->
-        <div class="flex items-center space-x-2">
-          <component :is="ComponentNotification" />
+        <div class="flex flex-row items-center space-x-2">
+          <span v-text="user.role" class="uppercase"></span>
+          <span>|</span>
+          <button class="p-2 rounded-lg uppercase bg-slate-300/20" @click="user.switchRole()">
+            switch role
+          </button>
+          <!-- <component :is="ComponentNotification" /> -->
 
-          <component :is="BaseDropdown">
+          <!-- <component :is="BaseDropdown">
             <template #trigger>
               <div
                 class="relative flex space-x-2 lg:min-w-50 max-w-75 items-center w-full cursor-pointer rounded-lg py-2 pl-3 text-left focus-visible:border-indigo-500 sm:text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-orange-300"
@@ -80,7 +88,7 @@ const isOpen = ref(false)
                 <span>Logout</span>
               </div>
             </div>
-          </component>
+          </component> -->
         </div>
       </div>
     </div>
@@ -89,10 +97,10 @@ const isOpen = ref(false)
 
 <style scoped>
 nav.header {
-  @apply fixed top-0 flex w-full h-60px z-20 px-4 bg-white dark:bg-slate-900 shadow;
+  @apply sticky top-0 flex w-full h-60px z-20 px-4 bg-white dark:bg-slate-900 shadow;
 }
 
 .is-sidebar-open nav.header {
-  @apply lg:w-[calc(100%-(var(--sidebar-shortcut-width)+var(--sidebar-panel-width)))] lg:ml-[calc(var(--sidebar-shortcut-width)+var(--sidebar-panel-width))] duration-200;
+  @apply lg:w-[calc(100%-(var(--sidebar-panel-width)))] lg:ml-[calc(var(--sidebar-panel-width))] duration-200;
 }
 </style>

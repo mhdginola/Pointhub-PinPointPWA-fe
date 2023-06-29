@@ -1,2 +1,6 @@
 @import './base.css';
 @import './components.css';
+
+* {
+  user-select: none !important;
+}

@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { useSidebarStore } from '@/stores/sidebar'
 import { useSidebarMenuStore } from '@/stores/sidebar-menu'
+import { watchEffect } from 'vue'
+import { useRoute } from 'vue-router'
 
 const sidebarMenuStore = useSidebarMenuStore()
 const sidebarStore = useSidebarStore()
+const route = useRoute()
+const isActiveRoutes = (name: string) => {
+  return route.name == name
+}
 </script>
 
 <template>
@@ -25,10 +31,11 @@ const sidebarStore = useSidebarStore()
           :to="shortcut.path as string"
           class="sidebar-shortcut-link"
           :class="{
-            'bg-slate-300/20': sidebarMenuStore.$state.activeShortcutIndex === index
+            'bg-slate-300': isActiveRoutes(shortcut.name)
           }"
         >
           <i :class="`block text-2xl ${shortcut.icon}`"></i>
+          <span class="lg:block hidden text-2xl" v-text="shortcut.name"></span>
         </router-link>
       </div>
       <div class="my-2">
@@ -46,11 +53,11 @@ const sidebarStore = useSidebarStore()
 }
 
 .sidebar-shortcut {
-  @apply fixed w-[var(--sidebar-shortcut-width)] h-full z-40 -translate-x-full opacity-100 bg-slate-700;
+  @apply fixed lg:w-[var(--sidebar-shortcut-width-lg)] w-[var(--sidebar-shortcut-width)] h-full z-40 -translate-x-full opacity-100 bg-slate-700 lg:bg-transparent;
 }
 
 .sidebar-shortcut-container {
-  @apply flex h-full w-full flex-col items-center border-r bg-slate-800 border-slate-700;
+  @apply flex h-full w-full flex-col items-center lg:items-start lg:px-5 border-r bg-slate-800 border-slate-700  lg:bg-transparent;
 }
 
 .sidebar-shortcut-body {
@@ -62,7 +69,7 @@ const sidebarStore = useSidebarStore()
 }
 
 .sidebar-shortcut-link {
-  @apply flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25;
+  @apply flex h-11 w-11 lg:w-full lg:justify-start lg:gap-2 lg:px-2 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25;
 }
 
 .sidebar-shortcut-link.router-link-active {

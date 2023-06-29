@@ -25,6 +25,9 @@ import Cleave from 'cleave.js'
 import { plugin as VueTippy } from 'vue-tippy'
 import 'tippy.js/dist/tippy.css'
 
+// maps
+// import VueGoogleMaps from '@fawmi/vue-google-maps'
+
 const app = createApp(MainApp)
 app.directive('cleave', {
   mounted: (el, binding) => {
@@ -32,9 +35,10 @@ app.directive('cleave', {
   }
 })
 app.use(VueTippy)
-app.use(router)
 app.use(hljsVuePlugin)
 app.use(Notifications)
 app.use(createPinia())
+app.use(router)
+// app.use(VueGoogleMaps)
 
 app.mount('#app')
