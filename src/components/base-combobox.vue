@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="fixed top-16 w-72">
     <Combobox v-model="selected">
       <div class="relative mt-1">
@@ -100,4 +100,4 @@ let filteredPeople = computed(() =>
           .includes(query.value.toLowerCase().replace(/\s+/g, ''))
       )
 )
-</script>
+</script> -->

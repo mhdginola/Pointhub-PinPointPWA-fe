@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppSidebarShortcut from './app-sidebar-shortcut.vue'
-import AppSidebarPanel from './app-sidebar-panel.vue'
+// import AppSidebarPanel from './app-sidebar-panel.vue'
 import { useSidebarStore } from '@/stores/sidebar'
 import { useSidebarMenuStore } from '@/stores/sidebar-menu'
 import { useRoute } from 'vue-router'
