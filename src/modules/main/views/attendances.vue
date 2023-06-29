@@ -9,6 +9,7 @@ import { MapboxMap, MapboxMarker } from 'vue-mapbox-ts'
 import { useScreenBreakpointStore } from '@/stores/screen-breakpoint'
 import { usePhotoStore } from '@/stores/get-photo'
 import { useAttendanceStore, type attendanceState } from '@/stores/attendance'
+import { useRouter } from 'vue-router'
 const MapBoxToken = import.meta.env.VITE_MAPBOX_TOKEN
 const MapBoxAPI = import.meta.env.VITE_MAPBOX_API
 const GetMapBoxLocationName = async () => {
@@ -27,6 +28,7 @@ const GetMapBoxLocationName = async () => {
   }
 }
 
+const router = useRouter()
 const breakPoint = useScreenBreakpointStore()
 const photoStore = usePhotoStore()
 const locationStore = useGetLocationStore()
@@ -188,10 +190,15 @@ const SubmitAttendance = async () => {
   openModal({
     show: true,
     title: 'Success',
-    content: `Create tag location Success`,
+    content: `Create Attendance Success`,
     size: breakPoint.$state.screenBreakpoint == '2xl' ? 'xl' : 'md',
     className: 'modal-add-attendance-success'
   })
+  setTimeout(() => {
+    router.push({
+      name: 'dashboard'
+    })
+  }, 500)
 }
 </script>
 

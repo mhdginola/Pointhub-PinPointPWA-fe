@@ -117,7 +117,7 @@ const applyFilterUser = () => {
             <!-- photo -->
             <span class="font-bold lg:text-4xl text-2xl mb-3">Photo</span>
             <div class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center">
-              <img :src="item.photo" />
+              <img :src="item.photo" class="h-75% rounded-5" />
             </div>
           </div>
         </div>
