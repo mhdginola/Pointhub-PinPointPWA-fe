@@ -22,7 +22,7 @@ describe('GpsAccessComponent', () => {
         successCallback(position)
       }
     }
-    global.navigator.geolocation = mockGeolocation
+    // global.navigator.geolocation = mockGeolocation
 
     // Mount the component
     const wrapper = shallowMount(GpsAccessComponent)
@@ -49,7 +49,7 @@ describe('GpsAccessComponent', () => {
         errorCallback(error)
       }
     }
-    global.navigator.geolocation = mockGeolocation
+    // global.navigator.geolocation = mockGeolocation
 
     // Mount the component
     const wrapper = shallowMount(GpsAccessComponent)

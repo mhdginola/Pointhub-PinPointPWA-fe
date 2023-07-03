@@ -16,7 +16,7 @@ describe('ComponentWithPhoto', () => {
     const originalGetUserMedia = navigator.mediaDevices.getUserMedia
 
     // Assign the mock getUserMedia function
-    navigator.mediaDevices.getUserMedia = mockGetUserMedia
+    // navigator.mediaDevices.getUserMedia = mockGetUserMedia
 
     // Trigger the "Take Photo" button click event
     await wrapper.find('.take-photo-button').trigger('click')
