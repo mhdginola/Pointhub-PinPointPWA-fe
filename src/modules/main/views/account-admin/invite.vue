@@ -58,6 +58,12 @@ const inviteUser = () => {
   } else {
     errorModel.email = ''
   }
+  if (!tempRole.value?.label) {
+    errorModel.role = 'This field is required'
+    return
+  } else {
+    errorModel.role = ''
+  }
   account.inviteUser({
     email: inviteModel.email,
     name: inviteModel.name,
@@ -69,7 +75,7 @@ const inviteUser = () => {
     title: 'Success',
     content: 'Invite Success',
     size: 'md',
-    className: 'modal-invite-user-success'
+    className: inviteModel.id == 0 ? 'modal-invite-user-success' : 'modal-invite-user-edit-success'
   })
   inviteModel.show = false
 }
@@ -235,8 +241,8 @@ const openModal = (model: modalInterface) => {
               v-model="tempRole"
               border="full"
               class="select-item-role"
-              :error="errorModel.role"
             />
+            <small class="text-danger" v-if="errorModel.role">{{ errorModel.role }}</small>
 
             <button class="btn btn-primary btn-block mt-3" type="submit">
               {{ inviteModel.id == 0 ? 'Save' : 'Update' }}

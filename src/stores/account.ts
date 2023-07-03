@@ -68,24 +68,22 @@ export const useAccountStore = defineStore('account-user', {
     },
     mockUser() {
       this.users.splice(0)
-      this.users.push(
-        {
-          name: 'Hafiz',
-          role: 'user',
-          email: 'hafiz@gmail.com',
-          id: new Date().valueOf()
-        },
-        {
-          name: 'Arif Muhammad',
-          role: 'admin',
-          email: 'arif@gmail.com',
-          id: new Date().valueOf()
-        }
-      )
+      this.users.push({
+        name: 'Hafiz',
+        role: 'user',
+        email: 'hafiz@gmail.com',
+        id: new Date().valueOf()
+      })
+      this.users.push({
+        name: 'Arif Muhammad',
+        role: 'admin',
+        email: 'arif@gmail.com',
+        id: new Date().valueOf() + 2
+      })
     },
     inviteUser(user: user) {
       if (user.id == 0) {
-        this.users.push(user)
+        this.users.push({ ...user, id: new Date().valueOf() })
       } else {
         let index = this.users.indexOf(this.users.find((x) => x.id == user.id) as user)
         if (index != -1) {
