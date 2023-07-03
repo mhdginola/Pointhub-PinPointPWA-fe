@@ -46,6 +46,12 @@ const user = useUserStore()
           <button class="p-2 rounded-lg uppercase bg-slate-300/20" @click="user.switchRole()">
             switch role
           </button>
+          <button
+            class="p-2 rounded-lg flex justify-center hover:bg-slate-300/20"
+            @click="user.signOut()"
+          >
+            <i class="i-fad-arrow-right-from-bracket text-2xl text-white"></i>
+          </button>
           <!-- <component :is="ComponentNotification" /> -->
 
           <!-- <component :is="BaseDropdown">

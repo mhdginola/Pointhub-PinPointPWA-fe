@@ -102,16 +102,7 @@ export const useAccountStore = defineStore('account-user', {
     },
     mockGroup() {
       this.groups.splice(0)
-      this.groups.push(
-        ...[
-          'Cabang Jakarta',
-          'Cabang Bandung',
-          'Cabang Jogja',
-          'Cabang Malang',
-          'Cabang Bali',
-          'Cabang Surabaya'
-        ]
-      )
+      this.groups.push(...['Cabang Jakarta'])
     },
     createGroup(name: string, old?: string) {
       if (!old) {

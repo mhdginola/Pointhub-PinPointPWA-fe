@@ -17,18 +17,6 @@ router.beforeEach((to, from) => {
     return {
       name: 'login'
     }
-  } else {
-    if (to.name == 'account') {
-      if (user.role == 'user') {
-        return {
-          path: '/account/invitation'
-        }
-      } else {
-        return {
-          path: '/account/invite'
-        }
-      }
-    }
   }
 })
 export default router

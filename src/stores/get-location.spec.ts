@@ -38,7 +38,7 @@ describe('get Location', () => {
         successCallback(position)
       }
     }
-    // global.navigator.geolocation = mockGeolocation
+    global.navigator.geolocation = mockGeolocation
 
     // Mount the component
     getLocationStore.getLocation()
@@ -57,7 +57,7 @@ describe('get Location', () => {
         errorCallback()
       }
     }
-    // global.navigator.geolocation = mockGeolocation
+    global.navigator.geolocation = mockGeolocation
 
     // Mount the component
     getLocationStore.getLocation()

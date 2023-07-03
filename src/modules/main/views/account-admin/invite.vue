@@ -1,21 +1,13 @@
 <script setup lang="ts">
 import { useAccountStore, type user } from '@/stores/account'
 import baseInput from '@/components/base-input.vue'
-import baseModal from '@/components/base-modal.vue'
+import baseModal, { type SizeType } from '@/components/base-modal.vue'
 import baseSelect from '@/components/base-select.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
-import { TypesEnum, useBaseNotification } from '@/composable/notification'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const account = useAccountStore()
-const { notification } = useBaseNotification()
-interface notifInterface {
-  type: TypesEnum
-  title: string
-  text: string
-}
-const openNotif = (model: notifInterface) => {
-  notification(model.title, model.text, { type: model.type })
-}
 const filterUser = ref('')
 const filteredUser = computed(() => {
   return filterUser.value
@@ -39,6 +31,11 @@ const inviteModel = reactive<inviteType>({
   role: 'user',
   id: 0
 })
+const errorModel = reactive({
+  name: '',
+  email: '',
+  role: ''
+})
 const deleteModel = reactive({
   show: false,
   email: ''
@@ -49,26 +46,42 @@ onMounted(() => {
 })
 
 const inviteUser = () => {
+  if (!inviteModel.name) {
+    errorModel.name = 'This field is required'
+    return
+  } else {
+    errorModel.name = ''
+  }
+  if (!inviteModel.email) {
+    errorModel.email = 'This field is required'
+    return
+  } else {
+    errorModel.email = ''
+  }
   account.inviteUser({
     email: inviteModel.email,
     name: inviteModel.name,
     role: tempRole.value?.label,
     id: inviteModel.id
   })
-  openNotif({
+  openModal({
+    show: true,
     title: 'Success',
-    text: 'Invite Success',
-    type: TypesEnum.Success
+    content: 'Invite Success',
+    size: 'md',
+    className: 'modal-invite-user-success'
   })
   inviteModel.show = false
 }
 
 const deleteInvited = () => {
   account.deleteUser(deleteModel.email)
-  openNotif({
+  openModal({
+    show: true,
     title: 'Success',
-    text: 'Delete Success',
-    type: TypesEnum.Success
+    content: 'Delete Success',
+    size: 'md',
+    className: 'modal-invite-user-edit-success'
   })
   deleteModel.show = false
 }
@@ -79,55 +92,109 @@ const clear = () => {
   inviteModel.name = ''
   inviteModel.role = 'user'
 }
+
+// route as modal
+const openGroups = () => {
+  router.push({
+    name: 'groups'
+  })
+}
+
+interface modalInterface {
+  show: boolean
+  title: string
+  content: string
+  size: SizeType
+  className?: string
+}
+const modalRef = reactive<modalInterface>({
+  show: false,
+  title: '',
+  content: '',
+  size: 'md',
+  className: ''
+})
+const openModal = (model: modalInterface) => {
+  modalRef.show = true
+  modalRef.title = model.title
+  modalRef.content = model.content
+  modalRef.size = model.size
+  modalRef.className = model.className
+}
 </script>
 
 <template>
-  <div class="flex flex-col w-full gap-2 overflow-y-auto">
-    <div class="bg-slate-300/20 p-5 rounded-5 mt-5">
-      <div class="flex lg:flex-row flex-col justify-between items-center gap-2">
-        <component :is="baseInput" v-model="filterUser" label="Search" mode="bordered" />
-        <button
-          class="bg-blue text-center py-2 px-10 text-white capitalize rounded-5 capitalize flex flex-row gap-2 button.invite-user"
-          @click=";[clear(), (inviteModel.show = true)]"
-        >
-          invite user
-          <i class="i-fad-user-plus text-2xl text-white"></i>
-        </button>
-      </div>
-      <table class="w-full mt-5 table-fixed border-secondary border-1">
-        <thead class="bg-blue p-5">
-          <th>#</th>
-          <th>Name</th>
-          <th>Role</th>
-          <th>Action</th>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in filteredUser">
-            <td class="px-2 border-se border-1 p-3">{{ index + 1 }}</td>
-            <td class="px-2 border-se border-1 p-3">{{ item.name }}</td>
-            <td class="px-2 border-se border-1 p-3">{{ item.role }}</td>
-            <td class="px-2 border-se border-1 p-3">
-              <div class="flex flex-row justify-around items-center gap-2">
-                <i
-                  class="i-fad-pencil cursor-pointer"
-                  @click="
-                    ;[
-                      Object.assign(inviteModel, item),
-                      (inviteModel.show = true),
-                      (tempRole.label = item.role ?? '')
-                    ]
-                  "
-                ></i>
-                <i
-                  class="i-fad-circle-xmark cursor-pointer button.remove-user"
-                  @click=";[(deleteModel.show = true), (deleteModel.email = item.email)]"
-                ></i>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="bg-slate-300/20 p-5 rounded-5">
+    <div class="flex flex-row justify-between items-center gap-2 mb-3">
+      <button
+        class="hover:border-1 hover:border-slate-200/20 border-1 border-transparent text-center py-2 px-2 text-white capitalize rounded-5 capitalize flex flex-row gap-2 show-group"
+        @click="openGroups"
+      >
+        KB-Sidoarjo
+        <i class="i-fad-chevron-down text-2xl text-white"></i>
+      </button>
+      <button
+        class="hover:border-1 hover:border-slate-200/20 border-1 border-transparent text-center py-2 px-2 text-white capitalize rounded-5 capitalize flex flex-row gap-2 invite-user"
+        @click=";[clear(), (inviteModel.show = true)]"
+      >
+        invite user
+        <i class="i-fad-user-plus text-2xl text-white"></i>
+      </button>
     </div>
+
+    <component
+      :is="baseInput"
+      v-model="filterUser"
+      label="Member"
+      mode="bordered"
+      placeholder="Search"
+    />
+    <table class="w-full mt-5 table-fixed">
+      <thead class="p-5 text-left border-b-slate border-b-1">
+        <th class="px-2 py-3 text-xl">Name</th>
+        <th class="px-2 py-3 text-xl">Role</th>
+        <th></th>
+      </thead>
+      <tbody>
+        <tr v-for="item in filteredUser">
+          <td class="px-2 py-3 capitalize">
+            <span class="p-3 block flex flex-col">
+              {{ item.name }}
+              <small>{{ item.email }}</small>
+            </span>
+          </td>
+          <td class="px-2 py-3 capitalize">
+            <span class="p-3 block h-full">
+              {{ item.role }}
+            </span>
+          </td>
+          <td class="px-2 py-3">
+            <div class="flex flex-row justify-center items-center gap-2">
+              <button
+                class="flex flex-col justify-center items-center w-22 capitalize px-3 py-1 border-1 border-slate-200/20 rounded edit-user"
+                @click="
+                  ;[
+                    Object.assign(inviteModel, item),
+                    (inviteModel.show = true),
+                    (tempRole.label = item.role ?? '')
+                  ]
+                "
+              >
+                <i class="i-fad-pencil cursor-pointer"></i>
+                <small>edit</small>
+              </button>
+              <button
+                class="flex flex-col justify-center items-center w-22 capitalize px-3 py-1 border-1 border-slate-200/20 rounded remove-user"
+                @click=";[(deleteModel.show = true), (deleteModel.email = item.email)]"
+              >
+                <i class="i-fad-circle-xmark cursor-pointer"></i>
+                <small>remove</small>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <Teleport to="body">
@@ -136,10 +203,9 @@ const clear = () => {
       :is-open="inviteModel.show"
       @on-close="inviteModel.show = false"
       size="lg"
-      class="modal-invite-user"
     >
       <template #content>
-        <div class="max-h-90vh overflow-auto p-4">
+        <div class="max-h-90vh overflow-auto p-4 modal-invite-user">
           <h2 class="py-4 text-2xl font-bold">
             {{ inviteModel.id == 0 ? 'Invite User' : 'Update User' }}
           </h2>
@@ -151,16 +217,16 @@ const clear = () => {
               label="Name"
               class="w-full"
               mode="bordered"
-              required
+              :error="errorModel.name"
             />
             <component
               name="email"
               :is="baseInput"
               v-model="inviteModel.email"
               label="E-Mail"
-              class="w-full select-item-role"
+              class="w-full"
               mode="bordered"
-              required
+              :error="errorModel.email"
             />
             <baseSelect
               name="role"
@@ -168,7 +234,8 @@ const clear = () => {
               :list="[{ label: 'admin' }, { label: 'user' }]"
               v-model="tempRole"
               border="full"
-              required
+              class="select-item-role"
+              :error="errorModel.role"
             />
 
             <button class="btn btn-primary btn-block mt-3" type="submit">
@@ -191,14 +258,33 @@ const clear = () => {
       :is-open="deleteModel.show"
       @on-close="deleteModel.show = false"
       size="lg"
-      class="modal-remove-user"
     >
       <template #content>
-        <div class="max-h-90vh overflow-auto p-4">
+        <div class="max-h-90vh overflow-auto p-4 modal-remove-user">
           <h2 class="py-4 text-2xl font-bold">Delete User ?</h2>
           <button class="btn btn-primary btn-block mt-3 remove-user-confirm" @click="deleteInvited">
             Confirm
           </button>
+        </div>
+      </template>
+    </component>
+
+    <!-- modal notif -->
+    <component
+      :is="baseModal"
+      :is-open="modalRef.show"
+      @on-close="modalRef.show = false"
+      :size="modalRef.size"
+    >
+      <template #content>
+        <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
+          <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
+          <div class="space-y-8">
+            {{ modalRef.content }}
+            <button class="btn btn-primary btn-block mt-3" @click="modalRef.show = false">
+              Close
+            </button>
+          </div>
         </div>
       </template>
     </component>

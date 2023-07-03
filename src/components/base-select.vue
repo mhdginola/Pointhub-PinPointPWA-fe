@@ -9,6 +9,7 @@ interface Props {
   placeholder?: string
   border?: 'full' | 'simple' | 'none'
   list: OptionsInterface[]
+  name?: string
 }
 </script>
 

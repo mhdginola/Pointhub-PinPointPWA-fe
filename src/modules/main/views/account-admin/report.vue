@@ -86,13 +86,11 @@ const modalRef = reactive<modalInterface>({
   className: ''
 })
 const openModal = (model: modalInterface) => {
-  setTimeout(() => {
-    modalRef.show = true
-    modalRef.title = model.title
-    modalRef.content = model.content
-    modalRef.size = model.size
-    modalRef.className = model.className
-  }, 500)
+  modalRef.show = true
+  modalRef.title = model.title
+  modalRef.content = model.content
+  modalRef.size = model.size
+  modalRef.className = model.className
 }
 </script>
 
@@ -123,8 +121,8 @@ const openModal = (model: modalInterface) => {
 
     <div class="bg-slate-300/20 p-5 rounded-5 mt-5">
       <div class="flex justify-end">
-        <button class="btn bg-blue mt-3 modal-export-attendance">
-          <i class="i-fad-download text-2xl" @click="exportReport"></i>
+        <button class="btn bg-blue mt-3 export-attendance" @click="exportReport">
+          <i class="i-fad-download text-2xl"></i>
         </button>
       </div>
       <table class="w-full mt-5 table-fixed border-secondary border-1">
@@ -158,10 +156,9 @@ const openModal = (model: modalInterface) => {
       :is-open="filterDate.show"
       @on-close="filterDate.show = false"
       size="lg"
-      class="modal-filter-date-attendance"
     >
       <template #content>
-        <div class="max-h-90vh overflow-auto p-4">
+        <div class="max-h-90vh overflow-auto p-4 modal-filter-date-attendance">
           <h2 class="py-4 text-2xl font-bold">Report Period</h2>
           <form class="space-y-8 filter-date-attendance" @submit.prevent="applyFilterDate">
             <div class="flex flex-row gap-2">
@@ -198,12 +195,14 @@ const openModal = (model: modalInterface) => {
       :is-open="filterUser.show"
       @on-close="filterUser.show = false"
       size="lg"
-      class="modal-filter-date-attendance"
     >
       <template #content>
-        <div class="max-h-90vh overflow-auto p-4">
+        <div class="max-h-90vh overflow-auto p-4 modal-filter-person-attendance">
           <h2 class="py-4 text-2xl font-bold">List Person</h2>
-          <div class="space-y-8 flex flex-col">
+          <form
+            class="space-y-8 flex flex-col filter-person-attendance"
+            @submit.prevent="applyFilterUser"
+          >
             <component
               :is="baseInput"
               v-model="filterUser.searchUser"
@@ -222,13 +221,12 @@ const openModal = (model: modalInterface) => {
                   class="border-blue mr-1"
                   v-model="filterUser.selectedUser"
                   :value="item"
+                  id="filter-person"
                 />
                 {{ item }}
               </label>
             </div>
-            <button class="btn btn-primary btn-block mt-3" @click.prevent="applyFilterUser">
-              Save
-            </button>
+            <button class="btn btn-primary btn-block mt-3" type="submit">Save</button>
             <button
               class="btn bg-transparent border-1 border-secondary btn-block mt-3"
               type="button"
@@ -236,7 +234,7 @@ const openModal = (model: modalInterface) => {
             >
               Cancel
             </button>
-          </div>
+          </form>
         </div>
       </template>
     </component>
@@ -246,10 +244,9 @@ const openModal = (model: modalInterface) => {
       :is-open="modalRef.show"
       @on-close="modalRef.show = false"
       :size="modalRef.size"
-      :class="modalRef.className"
     >
       <template #content>
-        <div class="max-h-90vh overflow-auto p-4">
+        <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
           <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
           <div class="space-y-8">
             {{ modalRef.content }}

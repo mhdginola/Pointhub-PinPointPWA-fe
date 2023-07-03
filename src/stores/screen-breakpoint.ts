@@ -50,11 +50,11 @@ export const useScreenBreakpointStore = defineStore('screen-breakpoint', {
         return true
       })
 
-      if (this.screenBreakpoint != 'sm' && this.screenBreakpoint != 'md') {
-        sidebarStore.openSidebar()
-      } else {
-        sidebarStore.closeSidebar()
-      }
+      // if (this.screenBreakpoint != 'sm' && this.screenBreakpoint != 'md') {
+      //   sidebarStore.openSidebar()
+      // } else {
+      //   sidebarStore.closeSidebar()
+      // }
     }
   }
 })

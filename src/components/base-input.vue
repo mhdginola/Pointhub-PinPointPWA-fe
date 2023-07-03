@@ -13,6 +13,7 @@ interface Props {
   disabled?: boolean
   helper?: string
   error?: string
+  name?: string
 }
 </script>
 
@@ -90,6 +91,7 @@ onMounted(() => {
             paddingLeft: `${paddingLeft}px`,
             paddingRight: `${paddingRight}px`
           }"
+          :name="props.name"
         />
         <div
           ref="suffixRef"
@@ -108,7 +110,7 @@ onMounted(() => {
         <span class="text-sm text-slate-500">{{ helper }}</span>
       </slot>
       <slot name="error" v-if="error">
-        <span class="text-sm text-danger">{{ error }}</span>
+        <span class="text-sm text-danger error-message">{{ error }}</span>
       </slot>
     </div>
   </div>

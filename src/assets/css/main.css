@@ -4,3 +4,7 @@
 * {
   user-select: none !important;
 }
+
+[v-cloak] {
+  display: none;
+}

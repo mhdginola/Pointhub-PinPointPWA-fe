@@ -4,7 +4,8 @@ import baseInput from '@/components/base-input.vue'
 import BaseModal, { type SizeType } from '@/components/base-modal.vue'
 import { useAttendanceStore } from '@/stores/attendance'
 import { useUserStore } from '@/stores/auth'
-import { computed, reactive } from 'vue'
+import moment from 'moment'
+import { computed, onMounted, reactive } from 'vue'
 
 const attendance = useAttendanceStore()
 const user = useUserStore()
@@ -67,7 +68,7 @@ const applyFilterUser = () => {
     title: 'Applied',
     content: `User Filter Applied`,
     size: 'md',
-    className: 'modal-filter-user-attendance-success'
+    className: 'modal-filter-person-attendance-success'
   })
   filterUser.show = false
 }
@@ -87,7 +88,7 @@ const applyFilterUser = () => {
         </div>
       </button>
       <button
-        class="bg-slate-300/20 rounded-5 h-40 flex flex-1 justify-center items-center"
+        class="bg-slate-300/20 rounded-5 h-40 flex flex-1 justify-center items-center filter-person-attendance"
         id="profile"
         @click="filterUser.show = true"
       >
@@ -117,7 +118,7 @@ const applyFilterUser = () => {
             <!-- photo -->
             <span class="font-bold lg:text-4xl text-2xl mb-3">Photo</span>
             <div class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center">
-              <img :src="item.photo" class="h-75% rounded-5" />
+              <img :src="item.photo" class="rounded-5 w-full h-full" />
             </div>
           </div>
         </div>
@@ -134,7 +135,16 @@ const applyFilterUser = () => {
                 <span class="font-bold lg:text-4xl text-2xl">Tag Location</span>
                 <span class="lg:text-xl text-lg" v-text="item.tagLocation"></span>
               </div>
-              <span class="lg:text-xl text-lg" v-text="item.timestamp"></span>
+              <div class="flex flex-col">
+                <small
+                  class="lg:text-lg text-md"
+                  v-text="moment(item.timestamp).format('DD-MMM-YYYY')"
+                ></small>
+                <small
+                  class="lg:text-lg text-md"
+                  v-text="moment(item.timestamp).format('HH:mm:ss')"
+                ></small>
+              </div>
             </div>
           </div>
         </div>
@@ -143,17 +153,17 @@ const applyFilterUser = () => {
     </div>
 
     <Teleport to="body">
+      <!-- filter date -->
       <component
         :is="BaseModal"
         :is-open="filterDate.show"
         @on-close="filterDate.show = false"
         size="lg"
-        class="modal-filter-date-attendance"
       >
         <template #content>
-          <div class="max-h-90vh overflow-auto p-4">
+          <div class="max-h-90vh overflow-auto p-4 modal-filter-date-attendance">
             <h2 class="py-4 text-2xl font-bold">Report Period</h2>
-            <form class="space-y-8" @submit.prevent="applyFilterDate">
+            <form class="space-y-8 filter-date-attendance" @submit.prevent="applyFilterDate">
               <div class="flex flex-row gap-2">
                 <component
                   :is="baseDatePicker"
@@ -183,17 +193,20 @@ const applyFilterUser = () => {
         </template>
       </component>
 
+      <!-- filter user -->
       <component
         :is="BaseModal"
         :is-open="filterUser.show"
         @on-close="filterUser.show = false"
         size="lg"
-        class="modal-filter-date-attendance"
       >
         <template #content>
-          <div class="max-h-90vh overflow-auto p-4">
+          <div class="max-h-90vh overflow-auto p-4 modal-filter-person-attendance">
             <h2 class="py-4 text-2xl font-bold">List Person</h2>
-            <div class="space-y-8 flex flex-col">
+            <form
+              class="space-y-8 flex flex-col filter-person-attendance"
+              @submit.prevent="applyFilterUser"
+            >
               <component
                 :is="baseInput"
                 v-model="filterUser.searchUser"
@@ -212,13 +225,12 @@ const applyFilterUser = () => {
                     class="border-blue mr-1"
                     v-model="filterUser.selectedUser"
                     :value="item"
+                    id="filter-person"
                   />
                   {{ item }}
                 </label>
               </div>
-              <button class="btn btn-primary btn-block mt-3" @click.prevent="applyFilterUser">
-                Save
-              </button>
+              <button class="btn btn-primary btn-block mt-3" type="submit">Save</button>
               <button
                 class="btn bg-transparent border-1 border-secondary btn-block mt-3"
                 type="button"
@@ -226,20 +238,20 @@ const applyFilterUser = () => {
               >
                 Cancel
               </button>
-            </div>
+            </form>
           </div>
         </template>
       </component>
 
+      <!-- modal notif -->
       <component
         :is="BaseModal"
         :is-open="modalRef.show"
         @on-close="modalRef.show = false"
         :size="modalRef.size"
-        :class="modalRef.className"
       >
         <template #content>
-          <div class="max-h-90vh overflow-auto p-4">
+          <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
             <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
             <div class="space-y-8">
               {{ modalRef.content }}

@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
+import invitation from './invitation.vue'
+import exportUser from './export.vue'
+import { computed } from 'vue'
 
 const route = useRoute()
 const activeRoute = (name: string) => {
   return route.name == name
 }
+const activeComponent = computed(() => {
+  return route.name == 'invitation' ? invitation : exportUser
+})
 </script>
 
 <template>
@@ -13,16 +19,16 @@ const activeRoute = (name: string) => {
       <RouterLink
         class="font-bold lg:text-3xl text-2xl mb-3 cursor-pointer p-2 rounded-lg"
         :class="activeRoute('invitation') ? 'bg-slate-300/20' : 'text-secondary bg-slate-700/20'"
-        to="/account/invitation"
+        to="/invitation"
         >Invitation</RouterLink
       >
       <RouterLink
         class="font-bold lg:text-3xl text-2xl mb-3 cursor-pointer p-2 rounded-lg"
         :class="activeRoute('export') ? 'bg-slate-300/20' : 'text-secondary bg-slate-700/20'"
-        to="/account/export"
-        >Report</RouterLink
+        to="/export"
+        >Export</RouterLink
       >
     </div>
-    <RouterView />
+    <component :is="activeComponent" />
   </div>
 </template>

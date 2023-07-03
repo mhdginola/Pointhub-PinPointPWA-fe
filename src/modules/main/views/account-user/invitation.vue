@@ -1,38 +1,56 @@
 <script setup lang="ts">
-import { useBaseNotification, TypesEnum } from '@/composable/notification'
+import type { SizeType } from '@/components/base-modal.vue'
 import { useAccountStore } from '@/stores/account'
-import { TabGroup, TabList, TabPanel, Tab, TabPanels } from '@headlessui/vue'
+import baseModal from '@/components/base-modal.vue'
 import moment from 'moment'
-import { onMounted } from 'vue'
+import { onMounted, reactive } from 'vue'
 
 const account = useAccountStore()
-const { notification } = useBaseNotification()
-interface notifInterface {
-  type: TypesEnum
-  title: string
-  text: string
-}
-const openNotif = (model: notifInterface) => {
-  notification(model.title, model.text, { type: model.type })
-}
-
 onMounted(() => {
   account.mockInvitation()
 })
 
 const acceptInvitation = () => {
-  openNotif({
-    title: 'Accepted',
-    text: 'Success to Join Group',
-    type: TypesEnum.Success
+  openModal({
+    show: true,
+    title: 'Joined',
+    content: `Success to join Group`,
+    size: 'md',
+    className: 'modal-invitation-accepted'
   })
 }
 const rejectInvitation = () => {
-  openNotif({
+  openModal({
+    show: true,
     title: 'Rejected',
-    text: 'Invitation Rejected',
-    type: TypesEnum.Danger
+    content: `Success Reject invitation`,
+    size: 'md',
+    className: 'modal-invitation-rejected'
   })
+}
+
+interface modalInterface {
+  show: boolean
+  title: string
+  content: string
+  size: SizeType
+  className?: string
+}
+const modalRef = reactive<modalInterface>({
+  show: false,
+  title: '',
+  content: '',
+  size: 'md',
+  className: ''
+})
+const openModal = (model: modalInterface) => {
+  setTimeout(() => {
+    modalRef.show = true
+    modalRef.title = model.title
+    modalRef.content = model.content
+    modalRef.size = model.size
+    modalRef.className = model.className
+  }, 500)
 }
 </script>
 <template>
@@ -69,7 +87,7 @@ const rejectInvitation = () => {
             join
           </button>
           <button
-            class="bg-transparent border-1 text-center py-2 px-10 text-white capitalize rounded-5 capitalize rejected"
+            class="bg-transparent border-1 text-center py-2 px-10 text-white capitalize rounded-5 capitalize reject"
             @click.prevent="rejectInvitation"
           >
             reject
@@ -78,4 +96,25 @@ const rejectInvitation = () => {
       </div>
     </div>
   </div>
+
+  <Teleport to="body">
+    <component
+      :is="baseModal"
+      :is-open="modalRef.show"
+      @on-close="modalRef.show = false"
+      :size="modalRef.size"
+    >
+      <template #content>
+        <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
+          <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
+          <div class="space-y-8">
+            {{ modalRef.content }}
+            <button class="btn btn-primary btn-block mt-3" @click="modalRef.show = false">
+              Close
+            </button>
+          </div>
+        </div>
+      </template>
+    </component>
+  </Teleport>
 </template>

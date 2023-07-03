@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
+import { useUserStore } from '@/stores/auth'
+import { ref, type Ref } from 'vue'
 
 /**
  * Shortcut using dynamic icon on the fly, at the compile time
@@ -54,24 +56,6 @@ export const useSidebarMenuStore = defineStore('sidebar-menu', {
           this.$state.activeShortcutIndex = index
           return
         }
-        // for (const menu of shortcut.menu) {
-        //   if (route.path.includes(menu.path as string)) {
-        //     this.$state.activeShortcut = shortcut
-        //     this.$state.activeShortcutIndex = index
-        //     this.$state.activeMenuName = menu.name
-        //     return
-        //   }
-        //   if (menu.submenu) {
-        //     for (const submenu of menu.submenu) {
-        //       if (route.path.includes(submenu.path as string)) {
-        //         this.$state.activeShortcut = shortcut
-        //         this.$state.activeShortcutIndex = index
-        //         this.$state.activeMenuName = menu.name
-        //         return
-        //       }
-        //     }
-        //   }
-        // }
         if (route.path.split('/')[1] === shortcut.path?.split('/')[1]) {
           this.$state.activeShortcut = shortcut
           this.$state.activeShortcutIndex = index
@@ -97,20 +81,22 @@ export const useSidebarMenuStore = defineStore('sidebar-menu', {
   }
 })
 
+const user = useUserStore()
+
 const menuMain = {
-  name: 'Home',
-  path: '/dashboard',
+  name: 'Dashboard',
+  path: '/',
   icon: 'i-fad-house-chimney'
 }
 
 const menuAttendance = {
-  name: 'Attendance',
+  name: 'Attendances',
   path: '/attendances',
   icon: 'i-fad-location-dot'
 }
 
 const menuAccount = {
-  name: 'Account',
-  path: '/account',
+  name: user.role == 'user' ? 'Invitation' : 'Invite',
+  path: user.role == 'user' ? '/invitation' : '/invite',
   icon: 'i-fad-circle-user'
 }

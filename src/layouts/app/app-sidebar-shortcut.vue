@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { useSidebarStore } from '@/stores/sidebar'
 import { useSidebarMenuStore } from '@/stores/sidebar-menu'
-import { watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 
 const sidebarMenuStore = useSidebarMenuStore()
 const sidebarStore = useSidebarStore()
 const route = useRoute()
 const isActiveRoutes = (name: string) => {
-  return route.name == name
+  return route.name?.toString().toLowerCase() == name.toLowerCase()
 }
 </script>
 
@@ -31,7 +30,7 @@ const isActiveRoutes = (name: string) => {
           :to="shortcut.path as string"
           class="sidebar-shortcut-link"
           :class="{
-            'bg-slate-300': isActiveRoutes(shortcut.name)
+            'bg-slate-300/20': isActiveRoutes(shortcut.name)
           }"
         >
           <i :class="`block text-2xl ${shortcut.icon}`"></i>
@@ -70,9 +69,5 @@ const isActiveRoutes = (name: string) => {
 
 .sidebar-shortcut-link {
   @apply flex h-11 w-11 lg:w-full lg:justify-start lg:gap-2 lg:px-2 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25;
-}
-
-.sidebar-shortcut-link.router-link-active {
-  @apply bg-slate-300/20;
 }
 </style>
