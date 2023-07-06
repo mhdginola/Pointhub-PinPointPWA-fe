@@ -76,7 +76,7 @@ const getCameraAccess = async (facingMode: string) => {
     }
     let constraint = {
       audio: false,
-      video: { facingMode }
+      video: { facingMode, width: { ideal: 4096 }, height: { ideal: 2160 } }
     }
     //@ts-ignore */} //this will do the trick
     await navigator.mediaDevices.getUserMedia(constraint).then((stream) => {
