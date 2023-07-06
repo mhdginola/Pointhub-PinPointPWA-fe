@@ -154,7 +154,7 @@ watch(
   <BaseSelect
     v-model="videoModel.facial"
     :list="listOption"
-    @update:model-value="getCameraAccess"
+    @update:model-value="getCameraAccess(videoModel.facial.value)"
   />
   <div
     class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center"
