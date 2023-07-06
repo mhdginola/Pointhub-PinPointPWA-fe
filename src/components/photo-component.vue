@@ -135,7 +135,7 @@ watch(
 <template v-cloak>
   <span class="font-bold lg:text-4xl text-2xl mb-3">Photo</span>
   <BaseSelect
-    v-model="(videoModel.facial as string)"
+    v-model="videoModel.facial"
     :list="listOption"
     @update:model-value="getCameraAccess"
   />
