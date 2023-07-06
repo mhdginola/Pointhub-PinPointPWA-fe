@@ -57,7 +57,7 @@ const openModal = (model: modalInterface) => {
   modalRef.size = model.size
   modalRef.className = model.className
 }
-const getCameraAccess = async () => {
+const getCameraAccess = async (facingMode: string) => {
   try {
     const support = window.navigator.mediaDevices.getSupportedConstraints()
     if (!support['facingMode']) {
@@ -78,12 +78,12 @@ const getCameraAccess = async () => {
         width: { ideal: 4096 },
         height: { ideal: 2160 },
         facingMode: {
-          exact: videoModel.facial.value
+          facingMode
         }
       }
     }
     console.log(constraint)
-    await window.navigator.mediaDevices.getUserMedia(constraint).then((stream) => {
+    await navigator.mediaDevices.getUserMedia(constraint).then((stream) => {
       photoStore.setCameraAccess(true)
       photoStore.setPhotoData('')
       mediaStream.value = stream
