@@ -64,7 +64,9 @@ const getCameraAccess = async () => {
       .getUserMedia({
         audio: false,
         video: {
-          facingMode: videoModel.facial.value
+          facingMode: {
+            exact: videoModel.facial.value
+          }
         }
       })
       .then((stream) => {
