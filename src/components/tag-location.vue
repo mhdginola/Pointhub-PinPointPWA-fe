@@ -27,7 +27,7 @@ const props = withDefaults(
     modelValue: string
   }>(),
   {
-    modelValue: tagLocations[0]
+    modelValue: ''
   }
 )
 const tagModel = reactive({
@@ -72,7 +72,7 @@ const value = computed({
   }
 })
 onMounted(() => {
-  value.value = tagLocations[0]
+  console.log(value.value)
 })
 
 interface modalInterface {
@@ -138,7 +138,7 @@ const openModal = (model: modalInterface) => {
             v-model="tagModel.searchModel"
             required
           />
-          <div class="max-h-[80%] overflow-auto">
+          <div class="max-h-[75%] overflow-auto">
             <div
               v-for="tag in filteredTag"
               class="block p2 border-1 border-slate hover:brightness-90 bg-white dark:bg-slate-9 cursor-pointer"

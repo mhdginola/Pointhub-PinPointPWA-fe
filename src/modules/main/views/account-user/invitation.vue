@@ -88,7 +88,7 @@ const openModal = (model: modalInterface) => {
             join
           </button>
           <button
-            class="bg-transparent border-1 text-center py-2 px-10 text-white capitalize rounded-5 capitalize reject"
+            class="bg-transparent border-1 border-slate-800 dark:border-slate-500 text-center py-2 px-10 text-slate-800 dark:text-white capitalize rounded-5 capitalize reject"
             @click.prevent="rejectInvitation"
           >
             reject

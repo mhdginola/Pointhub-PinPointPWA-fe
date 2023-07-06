@@ -66,6 +66,14 @@ const SubmitAttendance = async () => {
     })
     return
   }
+  if (!tagLocation.value) {
+    openNotif({
+      title: 'Error',
+      text: 'Please Select Tag Location',
+      type: TypesEnum.Danger
+    })
+    return
+  }
   let data = <attendanceState>{
     name: 'Hafiz',
     address: 'Jakarta',

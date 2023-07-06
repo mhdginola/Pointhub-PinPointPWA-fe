@@ -224,6 +224,7 @@ const openModal = (model: modalInterface) => {
               class="w-full"
               mode="bordered"
               :error="errorModel.name"
+              :disabled="inviteModel.id != 0"
             />
             <component
               name="email"
@@ -233,6 +234,7 @@ const openModal = (model: modalInterface) => {
               class="w-full"
               mode="bordered"
               :error="errorModel.email"
+              :disabled="inviteModel.id != 0"
             />
             <baseSelect
               name="role"

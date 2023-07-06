@@ -11,7 +11,7 @@ const filter = reactive({
 </script>
 
 <template>
-  <div class="flex flex-col w-full gap-2 overflow-y-auto">
+  <div class="flex flex-col w-full overflow-y-auto">
     <div class="flex justify-end">
       <div class="w-auto">
         <Filter

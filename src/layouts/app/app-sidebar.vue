@@ -25,7 +25,7 @@ const isActiveRoutes = (name: string) => {
 
     <!-- mobile sidebar -->
     <div
-      class="block lg:hidden fixed bottom-0 w-full p-2 z-20 dark:bg-slate-900 bg-white border-t-1 flex flex-row justify-around"
+      class="block lg:hidden fixed bottom-0 w-full p-2 z-20 dark:bg-slate-900 bg-white border-t-1 dark:border-slate-800 flex flex-row justify-around"
     >
       <div
         v-for="shortcut in sideBarMenu.$state.shortcut"

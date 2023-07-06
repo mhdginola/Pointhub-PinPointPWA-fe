@@ -22,11 +22,11 @@ interface videoInterface {
 const listOption: listInterface[] = [
   {
     label: 'Front Camera',
-    value: 'USER'
+    value: 'user'
   },
   {
     label: 'Rear Camera',
-    value: 'ENVIRONTMENT'
+    value: 'environtment'
   }
 ]
 const videoModel = reactive<videoInterface>({
@@ -59,23 +59,37 @@ const openModal = (model: modalInterface) => {
 }
 const getCameraAccess = async () => {
   try {
-    await stopCameraAccess()
-    await window.navigator.mediaDevices
-      .getUserMedia({
-        audio: false,
-        video: {
-          facingMode: {
-            exact: videoModel.facial.value
-          }
+    const support = window.navigator.mediaDevices.getSupportedConstraints()
+    if (!support['facingMode']) {
+      openModal({
+        show: true,
+        title: 'Tidak bisa membuka kamera',
+        content: `Perangkat tidak mendukung untuk menjalankan operasi ini`,
+        size: 'md',
+        className: 'modal-access-camera-failed'
+      })
+      return
+    }
+
+    stopCameraAccess()
+    let constraint = {
+      audio: false,
+      video: {
+        width: { ideal: 4096 },
+        height: { ideal: 2160 },
+        facingMode: {
+          exact: videoModel.facial.value
         }
-      })
-      .then((stream) => {
-        photoStore.setCameraAccess(true)
-        photoStore.setPhotoData('')
-        mediaStream.value = stream
-        videoRef.value.srcObject = stream
-        videoRef.value.play()
-      })
+      }
+    }
+    console.log(constraint)
+    await window.navigator.mediaDevices.getUserMedia(constraint).then((stream) => {
+      photoStore.setCameraAccess(true)
+      photoStore.setPhotoData('')
+      mediaStream.value = stream
+      videoRef.value.srcObject = stream
+      videoRef.value.play()
+    })
   } catch (e) {
     console.log(e)
     openModal({
@@ -145,7 +159,7 @@ watch(
     class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center"
     v-if="!photoStore.cameraAccess && !photoStore.photo"
   >
-    <i class="i-fad-camera text-20"></i>
+    <i class="i-fad-camera-slash text-20"></i>
   </div>
   <!-- video -->
   <video

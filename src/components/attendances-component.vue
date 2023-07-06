@@ -5,6 +5,7 @@ const attendance = useAttendanceStore()
 </script>
 
 <template>
+  <span class="font-bold lg:text-4xl text-2xl mb-3">Photo</span>
   <div
     class="bg-slate-300/20 rounded-5 h-lg flex justify-center items-center"
     id="activity"
@@ -14,7 +15,7 @@ const attendance = useAttendanceStore()
   </div>
   <!-- data -->
   <div
-    class="flex flex-col py-5"
+    class="flex flex-col mb-5"
     id="activity"
     v-else
     v-for="item in attendance.$state.attendances"
@@ -23,7 +24,6 @@ const attendance = useAttendanceStore()
       <div class="lg:w-[70%] w-full">
         <div class="flex flex-col w-full">
           <!-- photo -->
-          <span class="font-bold lg:text-4xl text-2xl mb-3">Photo</span>
           <div class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center">
             <img :src="item.photo" class="rounded-5 w-full h-full" />
           </div>
