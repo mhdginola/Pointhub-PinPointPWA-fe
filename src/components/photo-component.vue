@@ -57,10 +57,17 @@ const openModal = (model: modalInterface) => {
   modalRef.size = model.size
   modalRef.className = model.className
 }
-const getCameraAccess = async (facingMode: string) => {
+
+const streamCamera = async (facingMode: string) => {
+  const options = {
+    audio: false,
+    video: {
+      facingMode
+    }
+  }
   try {
-    const support = window.navigator.mediaDevices.getSupportedConstraints()
-    if (!support['facingMode']) {
+    const supports = navigator.mediaDevices.getSupportedConstraints()
+    if (!supports['facingMode']) {
       openModal({
         show: true,
         title: 'Tidak bisa membuka kamera',
@@ -70,22 +77,10 @@ const getCameraAccess = async (facingMode: string) => {
       })
       return
     }
-
     if (mediaStream.value) {
       stopCameraAccess()
     }
-    let constraint = {
-      audio: false,
-      video: { facingMode }
-    }
-    //@ts-ignore */} //this will do the trick
-    await navigator.mediaDevices.getUserMedia(constraint).then((stream) => {
-      photoStore.setCameraAccess(true)
-      photoStore.setPhotoData('')
-      mediaStream.value = stream
-      videoRef.value.srcObject = stream
-      videoRef.value.play()
-    })
+    mediaStream.value = await navigator.mediaDevices.getUserMedia(options)
   } catch (e) {
     alert(e)
     openModal({
@@ -98,8 +93,14 @@ const getCameraAccess = async (facingMode: string) => {
       size: 'md',
       className: 'modal-access-camera-failed'
     })
+    return
   }
+  photoStore.setCameraAccess(true)
+  photoStore.setPhotoData('')
+  videoRef.value.srcObject = mediaStream.value
+  videoRef.value.play()
 }
+
 const stopCameraAccess = () => {
   mediaStream.value?.getTracks().forEach((track) => {
     track.stop()
@@ -118,7 +119,7 @@ const getCameraPhoto = async () => {
   }
 }
 onBeforeMount(async () => {
-  await getCameraAccess(videoModel.facial.value)
+  await streamCamera(videoModel.facial.value)
 })
 onMounted(async () => {
   document.addEventListener('blur', () => {
@@ -149,7 +150,7 @@ watch(
   <BaseSelect
     v-model="videoModel.facial"
     :list="listOption"
-    @update:model-value="getCameraAccess(videoModel.facial.value)"
+    @update:model-value="streamCamera(videoModel.facial.value)"
   />
   <div
     class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center"
@@ -181,7 +182,7 @@ watch(
   </div>
   <BaseButton
     :class-name="photoStore.photo ? 'bg-blue' : 'bg-[#D757F6]'"
-    @click.prevent="photoStore.photo ? getCameraAccess(videoModel.facial.value) : getCameraPhoto()"
+    @click.prevent="photoStore.photo ? streamCamera(videoModel.facial.value) : getCameraPhoto()"
   >
     {{ photoStore.photo ? 'Re-Capture' : 'Capture' }}
   </BaseButton>
