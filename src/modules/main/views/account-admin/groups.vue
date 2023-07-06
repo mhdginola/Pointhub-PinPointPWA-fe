@@ -2,6 +2,7 @@
 import { useAccountStore } from '@/stores/account'
 import baseInput from '@/components/base-input.vue'
 import baseModal, { type SizeType } from '@/components/base-modal.vue'
+import baseButton from '@/components/base-button.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import index from './index.vue'
 import { useRouter } from 'vue-router'
@@ -180,7 +181,7 @@ const openModal = (model: modalInterface) => {
             {{ groupModel.oldName == '' ? 'Create Group' : 'Update Group' }}
           </h2>
           <form
-            class="space-y-8 flex flex-col"
+            class="gap-5 flex flex-col"
             :class="groupModel.oldName == '' ? 'add-group' : 'edit-group'"
             @submit.prevent="createGroup"
           >
@@ -193,17 +194,14 @@ const openModal = (model: modalInterface) => {
               mode="bordered"
               :error="errorModel.group"
             />
-
-            <button class="btn btn-primary btn-block mt-3" type="submit">
-              {{ groupModel.oldName == '' ? 'Create' : 'Update' }}
-            </button>
-            <button
-              class="btn bg-transparent border-1 border-secondary btn-block mt-3"
-              type="button"
-              @click="groupModel.show = false"
-            >
-              Cancel
-            </button>
+            <div class="flex flex-col">
+              <baseButton class="bg-blue" type="submit">
+                {{ groupModel.oldName == '' ? 'Create' : 'Update' }}
+              </baseButton>
+              <baseButton class-name="bg-secondary" type="button" @click="groupModel.show = false">
+                Cancel
+              </baseButton>
+            </div>
           </form>
         </div>
       </template>
@@ -218,7 +216,7 @@ const openModal = (model: modalInterface) => {
       <template #content>
         <div class="max-h-90vh overflow-auto p-4 modal-delete-group">
           <h2 class="py-4 text-2xl font-bold">Delete Group ?</h2>
-          <form class="space-y-8 flex flex-col delete-group" @submit.prevent="deleteGroup">
+          <form class="gap-5 flex flex-col delete-group" @submit.prevent="deleteGroup">
             <component
               name="password"
               :is="baseInput"
@@ -229,7 +227,7 @@ const openModal = (model: modalInterface) => {
               type="password"
               :error="errorModel.password"
             />
-            <button class="btn btn-primary btn-block mt-3" type="submit">Confirm</button>
+            <baseButton class-name="bg-blue" type="submit">Confirm</baseButton>
           </form>
         </div>
       </template>
@@ -245,11 +243,9 @@ const openModal = (model: modalInterface) => {
       <template #content>
         <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
           <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
-          <div class="space-y-8">
+          <div class="gap-5 flex flex-col">
             {{ modalRef.content }}
-            <button class="btn btn-primary btn-block mt-3" @click="modalRef.show = false">
-              Close
-            </button>
+            <baseButton class="bg-blue" @click="modalRef.show = false"> Close </baseButton>
           </div>
         </div>
       </template>

@@ -40,13 +40,17 @@ export default defineConfig({
       success: '#2eb85c',
       warning: '#f9b115',
       danger: '#e55353',
-      light: '#8899A6'
+      light: '#8899A6',
+      ['green-primary']: '#629C44'
     }
   },
   safelist: [
-    'i-fad-house-chimney',
-    'i-fad-location-dot',
-    'i-fad-circle-user',
+    'i-far-house-chimney',
+    'i-far-location-dot',
+    'i-far-circle-user',
+    'i-fas-house-chimney',
+    'i-fas-location-dot',
+    'i-fas-circle-user',
     'i-fad-camera',
     'i-fad-location-dot-slash',
     'i-fad-calendar'

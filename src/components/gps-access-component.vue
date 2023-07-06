@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import type { SizeType } from './base-modal.vue'
 import { useGetLocationStore } from '@/stores/get-location'
 import { MapboxMap, MapboxMarker } from 'vue-mapbox-ts'
@@ -47,8 +47,6 @@ const openModal = (model: modalInterface) => {
   modalRef.className = model.className
 }
 
-const locationComp = computed(() => [locationStore.$state.longitude, locationStore.$state.latitude])
-
 const getLocationAccess = async () => {
   await locationStore.getLocation().catch(() => {
     openModal({
@@ -64,13 +62,20 @@ const getLocationAccess = async () => {
   })
 }
 
+const locationComputed = computed(() => [
+  locationStore.$state.longitude,
+  locationStore.$state.latitude
+])
+const locationName = ref()
 onMounted(async () => {
   await getLocationAccess()
+  locationName.value = await GetMapBoxLocationName()
 })
 </script>
 <template>
   <span class="font-bold lg:text-4xl text-2xl my-3">Location</span>
   <div>
+    <p>Location: {{ locationName }}</p>
     <p class="capitalize longitude">Longitude: {{ locationStore.longitude }}</p>
     <p class="capitalize latitude">Latitude: {{ locationStore.latitude }}</p>
     <p class="accessGPS" v-if="locationStore.accessGPS"></p>
@@ -78,11 +83,11 @@ onMounted(async () => {
   <div class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center" id="map">
     <MapboxMap
       :accessToken="MapBoxToken"
-      :center="locationComp"
+      :center="locationComputed"
       :zoom="10"
       v-if="locationStore.$state.accessGPS"
     >
-      <MapboxMarker :lng-lat="locationComp" />
+      <MapboxMarker :lng-lat="locationComputed" />
     </MapboxMap>
     <i class="i-fad-location-dot-slash text-20" v-else></i>
   </div>

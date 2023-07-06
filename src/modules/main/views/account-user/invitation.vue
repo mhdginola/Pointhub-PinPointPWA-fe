@@ -4,6 +4,7 @@ import { useAccountStore } from '@/stores/account'
 import baseModal from '@/components/base-modal.vue'
 import moment from 'moment'
 import { onMounted, reactive } from 'vue'
+import BaseButton from '@/components/base-button.vue'
 
 const account = useAccountStore()
 onMounted(() => {
@@ -98,6 +99,7 @@ const openModal = (model: modalInterface) => {
   </div>
 
   <Teleport to="body">
+    <!-- modal notif -->
     <component
       :is="baseModal"
       :is-open="modalRef.show"
@@ -107,11 +109,9 @@ const openModal = (model: modalInterface) => {
       <template #content>
         <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
           <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
-          <div class="space-y-8">
+          <div class="gap-5 flex flex-col">
             {{ modalRef.content }}
-            <button class="btn btn-primary btn-block mt-3" @click="modalRef.show = false">
-              Close
-            </button>
+            <BaseButton class="bg-blue" @click="modalRef.show = false"> Close </BaseButton>
           </div>
         </div>
       </template>

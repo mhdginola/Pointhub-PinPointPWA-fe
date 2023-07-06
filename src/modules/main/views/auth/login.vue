@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import BaseInput from '@/components/base-input.vue'
+import BaseButton from '@/components/base-button.vue'
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/auth'
+import logo from '@/assets/images/logo.png'
 
 interface FormModel {
   username: string
@@ -21,7 +23,7 @@ const form = reactive<FormModel>({
 const loginWithGoogle = async () => {
   await auth.setAccessToken('token')
   router.push({
-    name: 'attendances'
+    name: 'dashboard'
   })
 }
 </script>
@@ -31,41 +33,35 @@ const loginWithGoogle = async () => {
     <div
       class="w-0% lg-w-75% h-100% bg-[url(@/assets/images/background.webp)] bg-left-center bg-cover bg-no-repeat"
     ></div>
-    <div class="w-100% lg-w-25% px-5 flex flex-col justify-center">
-      <button
-        class="bg-#629C44 block text-center p-2 text-white capitalize rounded my-2 login-google"
-        @click="loginWithGoogle"
-      >
-        Signin With Google
-      </button>
-      <button class="bg-#606060 block text-center p-2 text-white capitalize rounded my-2">
-        signin with github
-      </button>
-      <span class="text-dark font-bold text-center">OR</span>
+    <div class="w-100% lg-w-25% px-5 flex flex-col justify-center gap-5">
+      <img alt="Logo" :src="logo" />
+      <p class="text-3xl text-center">Sign in to your account</p>
       <BaseInput
         mode="bordered"
         type="text"
-        placeholder="Username or Email"
-        class="my-2 text-dark rounded"
+        label="Username or Email"
+        class="text-dark rounded"
         v-model="form.username"
       />
       <BaseInput
         mode="bordered"
         type="password"
-        placeholder="Password"
-        class="my-2 text-dark rounded"
+        label="Password"
+        class="text-dark rounded"
         v-model="form.password"
       />
-      <div class="flex flex-row justify-between my-1">
+      <div class="flex flex-row justify-between">
         <label class="text-blue">
           <input type="checkbox" class="border-blue mr-1" v-model="form.remember" />
           Remember me
         </label>
         <a class="text-blue" href="#">Forgot Password</a>
       </div>
-      <button class="bg-#629C44 text-center py-2 px-7 text-white capitalize rounded my-2 mx-auto">
-        sign in
-      </button>
+      <BaseButton class-name="bg-blue "> sign in </BaseButton>
+      <span class="font-normal text-dark font-bold text-center">Or Continue with</span>
+      <BaseButton class-name="bg-blue login-google" @click="loginWithGoogle">
+        signin with google
+      </BaseButton>
     </div>
   </div>
 </template>

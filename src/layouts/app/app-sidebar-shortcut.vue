@@ -14,7 +14,7 @@ const isActiveRoutes = (name: string) => {
 <template>
   <div class="sidebar-shortcut" :class="{ 'delay-100 duration-200': !sidebarStore.isSidebarOpen }">
     <div class="sidebar-shortcut-container">
-      <div class="flex pt-4">
+      <div class="flex pt-4 px-3">
         <router-link to="/">
           <img
             class="sidebar-logo"
@@ -30,11 +30,15 @@ const isActiveRoutes = (name: string) => {
           :to="shortcut.path as string"
           class="sidebar-shortcut-link"
           :class="{
-            'bg-slate-300/20': isActiveRoutes(shortcut.name)
+            active: isActiveRoutes(shortcut.name)
           }"
         >
-          <i :class="`block text-2xl ${shortcut.icon}`"></i>
-          <span class="lg:block hidden text-2xl" v-text="shortcut.name"></span>
+          <i
+            :class="`block text-2xl ${
+              isActiveRoutes(shortcut.name) ? shortcut.iconActive : shortcut.icon
+            }`"
+          ></i>
+          <span class="lg:block hidden text-2xl" v-text="shortcut.tempName ?? shortcut.name"></span>
         </router-link>
       </div>
       <div class="my-2">
@@ -56,7 +60,7 @@ const isActiveRoutes = (name: string) => {
 }
 
 .sidebar-shortcut-container {
-  @apply flex h-full w-full flex-col items-center lg:items-start lg:px-5 border-r bg-slate-800 border-slate-700  lg:bg-transparent;
+  @apply flex h-full w-full flex-col items-center lg:items-start lg:px-5 border-r bg-white dark:bg-slate-900 border-slate;
 }
 
 .sidebar-shortcut-body {
@@ -68,6 +72,9 @@ const isActiveRoutes = (name: string) => {
 }
 
 .sidebar-shortcut-link {
-  @apply flex h-11 w-11 lg:w-full lg:justify-start lg:gap-2 lg:px-2 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25;
+  @apply flex h-11 w-11 text-slate-5 dark:text-slate-2 lg:w-full lg:justify-start lg:gap-2 lg:px-5 items-center justify-center rounded-100 outline-none transition-colors duration-200 hover:bg-slate-200 dark:hover:bg-slate-300  dark:hover:text-slate-900;
+}
+.sidebar-shortcut-link.active {
+  @apply font-bold text-slate-900 dark:text-slate-2 dark:hover:text-slate-900;
 }
 </style>

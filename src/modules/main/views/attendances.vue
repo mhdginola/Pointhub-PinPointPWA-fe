@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import baseModal, { type SizeType } from '@/components/base-modal.vue'
+import BaseButton from '@/components/base-button.vue'
 import Maps, { GetMapBoxLocationName } from '@/components/gps-access-component.vue'
 import Photo from '@/components/photo-component.vue'
 import TagLocation from '@/components/tag-location.vue'
@@ -107,15 +108,13 @@ const SubmitAttendance = async () => {
         <TagLocation v-model="tagLocation" />
       </div>
     </div>
-    <button
-      class="bg-green lg:w-[60%] w-full text-center p-2 text-white capitalize rounded-5 capitalize mt-5"
-      @click.prevent="SubmitAttendance"
-    >
+    <BaseButton class-name="bg-green-primary lg:w-[60%] w-full" @click.prevent="SubmitAttendance">
       submit
-    </button>
+    </BaseButton>
 
     <!-- modal -->
     <Teleport to="body">
+      <!-- modal notif -->
       <component
         :is="baseModal"
         :is-open="modalRef.show"
@@ -124,12 +123,10 @@ const SubmitAttendance = async () => {
       >
         <template #content>
           <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
-            <span class="py-4 text-2xl font-bold" v-html="modalRef.title"></span>
-            <div class="space-y-8">
+            <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
+            <div class="gap-5 flex flex-col">
               {{ modalRef.content }}
-              <button class="btn btn-primary btn-block mt-3" @click="modalRef.show = false">
-                Close
-              </button>
+              <BaseButton class="bg-blue" @click="modalRef.show = false"> Close </BaseButton>
             </div>
           </div>
         </template>

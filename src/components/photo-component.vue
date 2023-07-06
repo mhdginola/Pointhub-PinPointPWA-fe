@@ -1,17 +1,24 @@
 <script setup lang="ts">
 import { usePhotoStore } from '@/stores/get-photo'
-import { useSidebarMenuStore } from '@/stores/sidebar-menu'
 import { onBeforeMount, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import type { SizeType } from './base-modal.vue'
 import BaseModal from './base-modal.vue'
+import BaseButton from '@/components/base-button.vue'
+import BaseSelect from './base-select.vue'
 
 const photoStore = usePhotoStore()
 const canvasRef = ref()
 const mediaStream = ref<MediaStream>()
 const videoRef = ref()
-const videoModel = reactive({
+interface videoInterface {
+  width: number
+  height: number
+  facial: 'USER' | 'ENVIRONTMENT'
+}
+const videoModel = reactive<videoInterface>({
   width: 320,
-  height: 0
+  height: 0,
+  facial: 'USER'
 })
 const modalPreview = ref(false)
 
@@ -38,8 +45,14 @@ const openModal = (model: modalInterface) => {
 }
 const getCameraAccess = async () => {
   try {
+    await stopCameraAccess()
     await window.navigator.mediaDevices
-      .getUserMedia({ audio: false, video: true })
+      .getUserMedia({
+        audio: false,
+        video: {
+          facingMode: videoModel.facial
+        }
+      })
       .then((stream) => {
         photoStore.setCameraAccess(true)
         photoStore.setPhotoData('')
@@ -107,6 +120,14 @@ watch(
 
 <template v-cloak>
   <span class="font-bold lg:text-4xl text-2xl mb-3">Photo</span>
+  <BaseSelect
+    v-model="(videoModel.facial as string)"
+    :list="[
+      { label: 'Front Camera', value: 'USER' },
+      { label: 'Rear', value: 'ENVIRONTMENT' }
+    ]"
+    @update:model-value="getCameraAccess"
+  />
   <div
     class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center"
     v-if="!photoStore.cameraAccess && !photoStore.photo"
@@ -135,13 +156,12 @@ watch(
       @click.prevent="modalPreview = true"
     />
   </div>
-  <button
-    class="block text-center p-2 text-white capitalize rounded-5 capitalize"
-    :class="photoStore.photo ? 'bg-blue' : 'bg-green'"
+  <BaseButton
+    :class-name="photoStore.photo ? 'bg-blue' : 'bg-[#D757F6]'"
     @click.prevent="photoStore.photo ? getCameraAccess() : getCameraPhoto()"
   >
     {{ photoStore.photo ? 'Re-Capture' : 'Capture' }}
-  </button>
+  </BaseButton>
 
   <!-- temp. photo -->
   <canvas class="hidden" ref="canvasRef"></canvas>

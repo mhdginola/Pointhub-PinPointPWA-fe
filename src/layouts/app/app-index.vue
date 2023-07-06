@@ -11,7 +11,7 @@ import AppFooter from './app-footer.vue'
   <app-preloader class="print:hidden"></app-preloader>
 
   <!-- Page Wrapper -->
-  <div class="flex flex-col grow bg-slate-50 dark:bg-slate-900 lg:px-[15%] w-full min-h-screen">
+  <div class="flex flex-col grow bg-white dark:bg-slate-900 lg:px-[15%] w-full min-h-screen">
     <!-- Header -->
     <app-header class="print:hidden"></app-header>
     <!-- Sidebar -->

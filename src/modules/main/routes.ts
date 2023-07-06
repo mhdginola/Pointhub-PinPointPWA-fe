@@ -14,11 +14,6 @@ export const routes: RouteRecordRaw[] = [
         name: 'dashboard',
         component: () => import('./views/dashboard.vue')
       },
-      {
-        path: 'account',
-        name: 'account',
-        component: () => import('./views/account.vue')
-      },
       // user
       {
         path: 'invitation',

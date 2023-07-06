@@ -31,6 +31,7 @@
     "cleave.js": "^1.6.0",
     "dayjs": "^1.11.7",
     "highlight.js": "^11.7.0",
+    "jslib-html5-camera-photo": "^3.3.4",
     "leaflet": "^1.9.4",
     "mapbox-gl": "^2.15.0",
     "moment": "^2.29.4",

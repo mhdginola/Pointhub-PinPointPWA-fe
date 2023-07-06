@@ -25,18 +25,18 @@ const isActiveRoutes = (name: string) => {
 
     <!-- mobile sidebar -->
     <div
-      class="block lg:hidden fixed bottom-0 w-full p-2 z-20 bg-slate-800 shadow flex flex-row justify-around"
+      class="block lg:hidden fixed bottom-0 w-full p-2 z-20 dark:bg-slate-900 bg-white border-t-1 flex flex-row justify-around"
     >
       <div
         v-for="shortcut in sideBarMenu.$state.shortcut"
         class="flex justify-center p-4 rounded-lg"
         @click.prevent="router.push({ path: shortcut.path as string })"
-        :class="{
-          'bg-slate-300/20': isActiveRoutes(shortcut.name)
-        }"
       >
-        <i :class="`block text-2xl ${shortcut.icon}`"></i>
-        <span class="lg:block hidden text-2xl" v-text="shortcut.name"></span>
+        <i
+          :class="`block text-2xl ${
+            isActiveRoutes(shortcut.name) ? shortcut.iconActive : shortcut.icon
+          }`"
+        ></i>
       </div>
     </div>
   </div>

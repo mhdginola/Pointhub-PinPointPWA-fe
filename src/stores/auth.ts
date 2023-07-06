@@ -11,7 +11,20 @@ export const useUserStore = defineStore('auth', {
     <userState>{
       accessToken: 'localStorage' in window ? window.localStorage.getItem('token') ?? '' : '',
       role: 'localStorage' in window ? window.localStorage.getItem('role') ?? 'user' : 'user',
-      users: ['Hafiz', 'Arif Muhammad', 'Melati', 'Mawar', 'Jingga']
+      users: [
+        'Hafiz',
+        'Arif Muhammad',
+        'Melati',
+        'Mawar',
+        'Jingga',
+        'Denis',
+        'Nia',
+        'Ani',
+        'Budi',
+        'Jason',
+        'Andri',
+        'Alex'
+      ]
     },
   actions: {
     async setAccessToken(token: string) {

@@ -14,9 +14,10 @@ import { ref, type Ref } from 'vue'
 export interface ShortcutInterface {
   name: string
   icon: string
-  // menu: Array<MenuInterface>
+  iconActive?: string
   path?: string
   link?: string
+  tempName?: string
 }
 
 export interface MenuInterface {
@@ -86,17 +87,21 @@ const user = useUserStore()
 const menuMain = {
   name: 'Dashboard',
   path: '/',
-  icon: 'i-fad-house-chimney'
+  icon: 'i-far-house-chimney',
+  iconActive: 'i-fas-house-chimney'
 }
 
 const menuAttendance = {
   name: 'Attendances',
   path: '/attendances',
-  icon: 'i-fad-location-dot'
+  icon: 'i-far-location-dot',
+  iconActive: 'i-fas-location-dot'
 }
 
 const menuAccount = {
   name: user.role == 'user' ? 'Invitation' : 'Invite',
   path: user.role == 'user' ? '/invitation' : '/invite',
-  icon: 'i-fad-circle-user'
+  icon: 'i-far-circle-user',
+  iconActive: 'i-fas-circle-user',
+  tempName: 'Account'
 }

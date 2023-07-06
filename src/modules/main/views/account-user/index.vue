@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import invitation from './invitation.vue'
-import exportUser from './export.vue'
+import exportUser from './../export.vue'
 import { computed } from 'vue'
 
 const route = useRoute()
@@ -17,14 +17,14 @@ const activeComponent = computed(() => {
   <div class="flex flex-col w-full gap-2">
     <div class="flex flex-row gap-3">
       <RouterLink
-        class="font-bold lg:text-3xl text-2xl mb-3 cursor-pointer p-2 rounded-lg"
-        :class="activeRoute('invitation') ? 'bg-slate-300/20' : 'text-secondary bg-slate-700/20'"
+        class="lg:text-3xl text-2xl mb-3 cursor-pointer py-2 px-5 rounded-100 hover:bg-slate-200 dark:hover:bg-slate-300/20"
+        :class="activeRoute('invitation') ? 'font-bold' : 'text-secondary'"
         to="/invitation"
         >Invitation</RouterLink
       >
       <RouterLink
-        class="font-bold lg:text-3xl text-2xl mb-3 cursor-pointer p-2 rounded-lg"
-        :class="activeRoute('export') ? 'bg-slate-300/20' : 'text-secondary bg-slate-700/20'"
+        class="lg:text-3xl text-2xl mb-3 cursor-pointer py-2 px-5 rounded-100 hover:bg-slate-200 dark:hover:bg-slate-300/20"
+        :class="activeRoute('export') ? 'font-bold' : 'text-secondary'"
         to="/export"
         >Export</RouterLink
       >
