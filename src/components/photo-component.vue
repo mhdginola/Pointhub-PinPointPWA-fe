@@ -59,46 +59,48 @@ const openModal = (model: modalInterface) => {
 }
 
 const streamCamera = async (facingMode: string) => {
-  const options = {
-    audio: false,
-    video: {
-      facingMode
-    }
+  if (mediaStream.value) {
+    stopCameraAccess()
   }
-  try {
-    const supports = navigator.mediaDevices.getSupportedConstraints()
-    if (!supports['facingMode']) {
+  setTimeout(async () => {
+    const options = {
+      audio: false,
+      video: {
+        facingMode
+      }
+    }
+    try {
+      const supports = navigator.mediaDevices.getSupportedConstraints()
+      if (!supports['facingMode']) {
+        openModal({
+          show: true,
+          title: 'Tidak bisa membuka kamera',
+          content: `Perangkat tidak mendukung untuk menjalankan operasi ini`,
+          size: 'md',
+          className: 'modal-access-camera-failed'
+        })
+        return
+      }
+      mediaStream.value = await navigator.mediaDevices.getUserMedia(options)
+    } catch (e) {
+      alert(e)
       openModal({
         show: true,
-        title: 'Tidak bisa membuka kamera',
-        content: `Perangkat tidak mendukung untuk menjalankan operasi ini`,
+        title: 'Buka pengaturan perangkat Anda',
+        content: `Cari opsi "Privasi" atau "Keamanan" dan masuk ke dalamnya. 
+      Cari opsi "Camera" atau "Izin Camera" dan buka. 
+      Aktifkan opsi "Izinkan Aplikasi Mengakses Camera" atau serupa. 
+      Anda juga dapat memilih pengaturan yang lebih spesifik untuk setiap aplikasi yang terdaftar di bawah opsi tersebut.`,
         size: 'md',
         className: 'modal-access-camera-failed'
       })
       return
     }
-    if (mediaStream.value) {
-      stopCameraAccess()
-    }
-    mediaStream.value = await navigator.mediaDevices.getUserMedia(options)
-  } catch (e) {
-    alert(e)
-    openModal({
-      show: true,
-      title: 'Buka pengaturan perangkat Anda',
-      content: `Cari opsi "Privasi" atau "Keamanan" dan masuk ke dalamnya. 
-      Cari opsi "Camera" atau "Izin Camera" dan buka. 
-      Aktifkan opsi "Izinkan Aplikasi Mengakses Camera" atau serupa. 
-      Anda juga dapat memilih pengaturan yang lebih spesifik untuk setiap aplikasi yang terdaftar di bawah opsi tersebut.`,
-      size: 'md',
-      className: 'modal-access-camera-failed'
-    })
-    return
-  }
-  photoStore.setCameraAccess(true)
-  photoStore.setPhotoData('')
-  videoRef.value.srcObject = mediaStream.value
-  videoRef.value.play()
+    photoStore.setCameraAccess(true)
+    photoStore.setPhotoData('')
+    videoRef.value.srcObject = mediaStream.value
+    videoRef.value.play()
+  }, 1000)
 }
 
 const stopCameraAccess = () => {
