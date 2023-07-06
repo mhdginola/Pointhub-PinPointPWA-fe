@@ -76,7 +76,7 @@ const getCameraAccess = async (facingMode: string) => {
     }
     let constraint = {
       audio: false,
-      video: { facingMode, width: { ideal: 4096 }, height: { ideal: 2160 } }
+      video: { facingMode }
     }
     //@ts-ignore */} //this will do the trick
     await navigator.mediaDevices.getUserMedia(constraint).then((stream) => {
@@ -87,6 +87,7 @@ const getCameraAccess = async (facingMode: string) => {
       videoRef.value.play()
     })
   } catch (e) {
+    alert(e)
     openModal({
       show: true,
       title: 'Buka pengaturan perangkat Anda',
