@@ -83,6 +83,7 @@ const getCameraAccess = async (facingMode: string) => {
       }
     }
     console.log(constraint)
+    //@ts-ignore */} //this will do the trick
     await navigator.mediaDevices.getUserMedia(constraint).then((stream) => {
       photoStore.setCameraAccess(true)
       photoStore.setPhotoData('')
@@ -122,7 +123,7 @@ const getCameraPhoto = async () => {
   }
 }
 onBeforeMount(async () => {
-  await getCameraAccess()
+  await getCameraAccess(videoModel.facial.value)
 })
 onMounted(async () => {
   document.addEventListener('blur', () => {
@@ -185,7 +186,7 @@ watch(
   </div>
   <BaseButton
     :class-name="photoStore.photo ? 'bg-blue' : 'bg-[#D757F6]'"
-    @click.prevent="photoStore.photo ? getCameraAccess() : getCameraPhoto()"
+    @click.prevent="photoStore.photo ? getCameraAccess(videoModel.facial.value) : getCameraPhoto()"
   >
     {{ photoStore.photo ? 'Re-Capture' : 'Capture' }}
   </BaseButton>
