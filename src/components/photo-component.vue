@@ -26,7 +26,7 @@ const listOption: listInterface[] = [
   },
   {
     label: 'Rear Camera',
-    value: 'environtment'
+    value: 'environment'
   }
 ]
 const videoModel = reactive<videoInterface>({
@@ -71,13 +71,13 @@ const getCameraAccess = async (facingMode: string) => {
       return
     }
 
-    stopCameraAccess()
+    if (mediaStream.value) {
+      stopCameraAccess()
+    }
     let constraint = {
       audio: false,
-      video: {}
+      video: { facingMode }
     }
-    constraint.video = { facingMode }
-    console.log(constraint)
     //@ts-ignore */} //this will do the trick
     await navigator.mediaDevices.getUserMedia(constraint).then((stream) => {
       photoStore.setCameraAccess(true)
@@ -87,7 +87,6 @@ const getCameraAccess = async (facingMode: string) => {
       videoRef.value.play()
     })
   } catch (e) {
-    console.log(e)
     openModal({
       show: true,
       title: 'Buka pengaturan perangkat Anda',
