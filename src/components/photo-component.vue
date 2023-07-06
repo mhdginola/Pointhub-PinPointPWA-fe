@@ -10,15 +10,29 @@ const photoStore = usePhotoStore()
 const canvasRef = ref()
 const mediaStream = ref<MediaStream>()
 const videoRef = ref()
+interface listInterface {
+  label: string
+  value: string
+}
 interface videoInterface {
   width: number
   height: number
-  facial: 'USER' | 'ENVIRONTMENT'
+  facial: listInterface
 }
+const listOption: listInterface[] = [
+  {
+    label: 'Front Camera',
+    value: 'USER'
+  },
+  {
+    label: 'Rear Camera',
+    value: 'ENVIRONTMENT'
+  }
+]
 const videoModel = reactive<videoInterface>({
   width: 320,
   height: 0,
-  facial: 'USER'
+  facial: listOption[0]
 })
 const modalPreview = ref(false)
 
@@ -50,7 +64,7 @@ const getCameraAccess = async () => {
       .getUserMedia({
         audio: false,
         video: {
-          facingMode: videoModel.facial
+          facingMode: videoModel.facial.value
         }
       })
       .then((stream) => {
@@ -122,10 +136,7 @@ watch(
   <span class="font-bold lg:text-4xl text-2xl mb-3">Photo</span>
   <BaseSelect
     v-model="(videoModel.facial as string)"
-    :list="[
-      { label: 'Front Camera', value: 'USER' },
-      { label: 'Rear', value: 'ENVIRONTMENT' }
-    ]"
+    :list="listOption"
     @update:model-value="getCameraAccess"
   />
   <div
