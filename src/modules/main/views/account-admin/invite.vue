@@ -136,18 +136,18 @@ const openModal = (model: modalInterface) => {
   <div class="bg-slate-300/20 p-5 rounded-5">
     <div class="flex flex-row justify-between items-center gap-2 mb-3">
       <button
-        class="hover:border-1 hover:border-slate-200/20 border-1 border-transparent text-center py-2 px-2 text-white capitalize rounded-5 capitalize flex flex-row gap-2 show-group"
+        class="hover:border-1 hover:border-slate-200/20 border-1 border-transparent text-center py-2 px-2 text-slate-500 dark:text-slate-200 capitalize rounded-5 capitalize flex flex-row gap-2 show-group"
         @click="openGroups"
       >
         KB-Sidoarjo
-        <i class="i-fad-chevron-down text-2xl text-white"></i>
+        <i class="i-fad-chevron-down text-2xl text-slate-500 dark:text-slate-200"></i>
       </button>
       <button
-        class="hover:border-1 hover:border-slate-200/20 border-1 border-transparent text-center py-2 px-2 text-white capitalize rounded-5 capitalize flex flex-row gap-2 invite-user"
+        class="hover:border-1 hover:border-slate-200/20 border-1 border-transparent text-center py-2 px-2 text-slate-500 dark:text-slate-200 capitalize rounded-5 capitalize flex flex-row gap-2 invite-user"
         @click=";[clear(), (inviteModel.show = true)]"
       >
         invite user
-        <i class="i-fad-user-plus text-2xl text-white"></i>
+        <i class="i-fad-user-plus text-2xl text-slate-500 dark:text-slate-200"></i>
       </button>
     </div>
 
