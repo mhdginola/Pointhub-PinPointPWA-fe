@@ -59,9 +59,6 @@ const openModal = (model: modalInterface) => {
 }
 
 const streamCamera = async (facingMode: string) => {
-  if (mediaStream.value) {
-    stopCameraAccess()
-  }
   setTimeout(async () => {
     const options = {
       audio: false,
@@ -88,9 +85,9 @@ const streamCamera = async (facingMode: string) => {
         show: true,
         title: 'Buka pengaturan perangkat Anda',
         content: `Cari opsi "Privasi" atau "Keamanan" dan masuk ke dalamnya. 
-      Cari opsi "Camera" atau "Izin Camera" dan buka. 
-      Aktifkan opsi "Izinkan Aplikasi Mengakses Camera" atau serupa. 
-      Anda juga dapat memilih pengaturan yang lebih spesifik untuk setiap aplikasi yang terdaftar di bawah opsi tersebut.`,
+        Cari opsi "Camera" atau "Izin Camera" dan buka. 
+        Aktifkan opsi "Izinkan Aplikasi Mengakses Camera" atau serupa. 
+        Anda juga dapat memilih pengaturan yang lebih spesifik untuk setiap aplikasi yang terdaftar di bawah opsi tersebut.`,
         size: 'md',
         className: 'modal-access-camera-failed'
       })
@@ -104,9 +101,11 @@ const streamCamera = async (facingMode: string) => {
 }
 
 const stopCameraAccess = () => {
-  mediaStream.value?.getTracks().forEach((track) => {
-    track.stop()
-  })
+  if (mediaStream.value) {
+    mediaStream.value?.getTracks().forEach((track) => {
+      track.stop()
+    })
+  }
 }
 
 const getCameraPhoto = async () => {
@@ -152,7 +151,7 @@ watch(
   <BaseSelect
     v-model="videoModel.facial"
     :list="listOption"
-    @update:model-value="streamCamera(videoModel.facial.value)"
+    @update:model-value=";[stopCameraAccess(), streamCamera(videoModel.facial.value)]"
   />
   <div
     class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center"
