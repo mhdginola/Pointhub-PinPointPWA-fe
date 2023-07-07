@@ -6,10 +6,10 @@ const attendance = useAttendanceStore()
 const sortedAttendance = computed(() => {
   return attendance.attendances.sort((a: attendanceState, b: attendanceState) => {
     if (a.timestamp.valueOf() < b.timestamp.valueOf()) {
-      return -1
+      return 1
     }
     if (a.timestamp.valueOf() > b.timestamp.valueOf()) {
-      return 1
+      return -1
     }
     return 0
   })
@@ -17,7 +17,9 @@ const sortedAttendance = computed(() => {
 </script>
 
 <template>
-  <span class="font-bold lg:text-4xl text-2xl mb-3">Photo</span>
+  <span class="font-bold lg:text-4xl text-2xl mb-3" v-if="attendance.$state.attendances.length > 0"
+    >List Attendances</span
+  >
   <div
     class="bg-slate-300/20 rounded-5 h-lg flex justify-center items-center"
     id="activity"
@@ -32,7 +34,7 @@ const sortedAttendance = computed(() => {
         <div class="flex flex-col w-full">
           <!-- photo -->
           <div class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center">
-            <img :src="item.photo" class="rounded-5 w-full h-full" />
+            <img :src="item.photo" class="rounded-5 h-90%" />
           </div>
         </div>
       </div>

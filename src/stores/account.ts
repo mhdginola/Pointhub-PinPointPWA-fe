@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { defineStore } from 'pinia'
 
 interface invitation {
@@ -50,17 +51,17 @@ export const useAccountStore = defineStore('account-user', {
       this.reports.splice(0)
       this.reports.push(
         {
-          timestamp: new Date(),
+          timestamp: moment().add(0, 'day').add(-3, 'hour').toString(),
           location: 'Jakarta',
           user: 'Hafiz'
         },
         {
-          timestamp: new Date(),
+          timestamp: moment().add(-1, 'day').add(-4, 'hour').toString(),
           location: 'Jakarta',
           user: 'Arif Muhammad'
         },
         {
-          timestamp: new Date(),
+          timestamp: moment().add(-2, 'day').add(-5, 'hour').toString(),
           location: 'Jakarta',
           user: 'Jingga'
         }

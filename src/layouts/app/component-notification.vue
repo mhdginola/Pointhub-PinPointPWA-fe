@@ -14,7 +14,10 @@ const router = useRouter()
     <button class="relative rounded-full p-2 hover:bg-slate-300/20 dark:hover:bg-slate-300/20">
       <i class="i-ph-bell-ringing h-24px w-24px flex items-center justify-center" />
       <!-- ping -->
-      <span class="absolute right-px top-px h-2 w-2 flex items-center justify-center">
+      <span
+        class="absolute right-px top-px h-2 w-2 flex items-center justify-center"
+        v-if="user.role == 'user'"
+      >
         <span
           class="absolute h-full w-full inline-flex animate-ping rounded-full bg-red-400 opacity-80"
         ></span>
@@ -29,11 +32,11 @@ const router = useRouter()
           <div class="flex items-center justify-between px-4 pt-2">
             <div class="flex items-center space-x-2">
               <h3 class="font-medium text-slate-700 dark:text-slate-100">Notifications</h3>
-              <div
+              <!-- <div
                 class="badge h-5 rounded-full bg-primary/10 px-1.5 text-primary dark:bg-slate/15 dark:text-slate"
               >
                 2
-              </div>
+              </div> -->
             </div>
 
             <button
@@ -58,18 +61,17 @@ const router = useRouter()
           </div>
         </div>
         <div class="tab-content flex flex-col overflow-hidden">
-          <div v-if="activeTab === 'all'" class="overflow-y-auto p-4 space-y-4">
+          <div
+            v-if="activeTab === 'all' && user.role == 'user'"
+            class="overflow-y-auto p-4 space-y-4"
+          >
             <div class="flex items-center space-x-3">
               <div
                 class="h-10 w-10 flex shrink-0 items-center justify-center rounded-lg bg-secondary/10 dark:bg-secondary-light/15"
               >
                 <i class="fa fa-user-edit text-secondary dark:text-secondary-light"></i>
               </div>
-              <div
-                v-if="user.role == 'user'"
-                class="cursor-pointer"
-                @click.prevent="router.push({ name: 'invitation' })"
-              >
+              <div class="cursor-pointer" @click.prevent="router.push({ name: 'invitation' })">
                 <p class="font-medium text-slate-600 dark:text-slate-100">Group Invitation</p>
                 <div class="line-clamp-1 mt-1 text-xs text-slate-400 dark:text-slate-300">
                   Nur Aini invite you to join group
