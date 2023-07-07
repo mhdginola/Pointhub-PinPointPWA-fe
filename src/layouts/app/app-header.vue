@@ -4,6 +4,7 @@ import { useUserStore } from '@/stores/auth'
 import BaseDropdown from '@/components/base-dropdown.vue'
 import ComponentNotification from './component-notification.vue'
 import ComponentToggleSidebar from './component-toggle-sidebar.vue'
+import logo from '@/assets/images/logo.png'
 
 const htmlTag = document.getElementsByTagName('html')[0]
 const isDarkMode = ref(htmlTag.classList.contains('dark'))
@@ -32,11 +33,10 @@ const user = useUserStore()
     <div class="relative w-full flex">
       <div class="w-full flex items-center justify-between">
         <!-- Left: Sidebar Toggle Button -->
-        <div class="flex">
+        <div class="flex justify-center items-center">
           <!-- <component :is="ComponentToggleSidebar" class="pr-4 lg:hidden" /> -->
-          <h1 class="text-base font-extrabold lg:text-lg">
-            PAPP <span class="font-normal">STARTER</span>
-          </h1>
+
+          <img :src="logo" class="h-10 lg:hidden block" />
         </div>
 
         <!-- Right: Header Buttons -->

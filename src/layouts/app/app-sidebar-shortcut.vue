@@ -2,6 +2,7 @@
 import { useSidebarStore } from '@/stores/sidebar'
 import { useSidebarMenuStore } from '@/stores/sidebar-menu'
 import { useRoute } from 'vue-router'
+import logo from '@/assets/images/logo.png'
 
 const sidebarMenuStore = useSidebarMenuStore()
 const sidebarStore = useSidebarStore()
@@ -14,13 +15,9 @@ const isActiveRoutes = (name: string) => {
 <template>
   <div class="sidebar-shortcut" :class="{ 'delay-100 duration-200': !sidebarStore.isSidebarOpen }">
     <div class="sidebar-shortcut-container">
-      <div class="flex pt-4 px-3">
+      <div class="flex">
         <router-link to="/">
-          <img
-            class="sidebar-logo"
-            src="https://assets.pointhub.net/assets/images/logo/primary/icon-circle.png"
-            alt="logo"
-          />
+          <img :src="logo" class="h-10 lg:block hidden" />
         </router-link>
       </div>
       <div class="sidebar-shortcut-body">

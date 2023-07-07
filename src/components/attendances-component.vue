@@ -1,7 +1,19 @@
 <script setup lang="ts">
-import { useAttendanceStore } from '@/stores/attendance'
+import { type attendanceState, useAttendanceStore } from '@/stores/attendance'
 import moment from 'moment'
+import { computed } from 'vue'
 const attendance = useAttendanceStore()
+const sortedAttendance = computed(() => {
+  return attendance.attendances.sort((a: attendanceState, b: attendanceState) => {
+    if (a.timestamp.valueOf() < b.timestamp.valueOf()) {
+      return -1
+    }
+    if (a.timestamp.valueOf() > b.timestamp.valueOf()) {
+      return 1
+    }
+    return 0
+  })
+})
 </script>
 
 <template>
@@ -14,12 +26,7 @@ const attendance = useAttendanceStore()
     <h1 class="text-3xl bold">No Activity</h1>
   </div>
   <!-- data -->
-  <div
-    class="flex flex-col mb-5"
-    id="activity"
-    v-else
-    v-for="item in attendance.$state.attendances"
-  >
+  <div class="flex flex-col mb-5" id="activity" v-else v-for="item in sortedAttendance">
     <div class="flex flex-col lg:flex-row w-full">
       <div class="lg:w-[70%] w-full">
         <div class="flex flex-col w-full">

@@ -18,7 +18,7 @@ interface Props {
 </script>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, type Ref } from 'vue'
 
 const props = withDefaults(defineProps<Props>(), {
   mode: 'simple',
@@ -42,11 +42,13 @@ const value = computed({
 
 const prefixRef = ref()
 const suffixRef = ref()
+const inputRef = ref()
 const paddingLeft = ref(0)
 const paddingRight = ref(0)
 onMounted(() => {
   paddingLeft.value = prefixRef.value.clientWidth === 0 ? 10 : prefixRef.value.clientWidth
   paddingRight.value = suffixRef.value.clientWidth === 0 ? 10 : suffixRef.value.clientWidth
+  setTimeout(() => inputRef.value.focus(), 500)
 })
 </script>
 
@@ -92,6 +94,7 @@ onMounted(() => {
             paddingRight: `${paddingRight}px`
           }"
           :name="props.name"
+          ref="inputRef"
         />
         <div
           ref="suffixRef"

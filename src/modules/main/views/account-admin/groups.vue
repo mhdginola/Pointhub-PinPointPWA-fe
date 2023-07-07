@@ -15,6 +15,8 @@ const filteredGroup = computed(() => {
     ? account.groups.filter((x) => x.toLowerCase().includes(filterGroup.value))
     : account.groups
 })
+const inputGroupRef = ref()
+const inputPasswordRef = ref()
 
 const baseModalShow = ref(true)
 const groupModel = reactive({
@@ -35,6 +37,11 @@ const errorModel = reactive({
 onMounted(() => {
   account.mockGroup()
 })
+const openCreateGroup = () => {
+  clear()
+  groupModel.show = true
+  console.log(inputGroupRef.value)
+}
 
 const createGroup = () => {
   if (!groupModel.group) {
@@ -120,10 +127,7 @@ const openModal = (model: modalInterface) => {
           <hr class="border-1 border-slate-200/20 my-1" />
           <div class="text-center">
             Please choose your group below or <br />
-            <button
-              class="text-blue cursor-pointer create-group"
-              @click=";[clear(), (groupModel.show = true)]"
-            >
+            <button class="text-blue cursor-pointer create-group" @click="openCreateGroup">
               create a new one
             </button>
           </div>
@@ -193,6 +197,7 @@ const openModal = (model: modalInterface) => {
               class="w-full"
               mode="bordered"
               :error="errorModel.group"
+              :ref="inputGroupRef"
             />
             <div class="flex flex-col">
               <baseButton class="bg-blue" type="submit">
@@ -226,6 +231,7 @@ const openModal = (model: modalInterface) => {
               mode="bordered"
               type="password"
               :error="errorModel.password"
+              :ref="inputPasswordRef"
             />
             <baseButton class-name="bg-blue" type="submit">Confirm</baseButton>
           </form>
