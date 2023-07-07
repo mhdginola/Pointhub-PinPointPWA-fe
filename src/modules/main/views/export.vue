@@ -85,8 +85,8 @@ const openModal = (model: modalInterface) => {
 
 <template>
   <div class="flex flex-col">
-    <div class="bg-slate-300/20 p-5 rounded-5">
-      <div class="flex justify-end items-center gap-2">
+    <div class="bg-slate-300/20 lg:px-5 px-0 py-5 rounded-5">
+      <div class="flex justify-end items-center gap-2 lg:px-0 px-5">
         <div class="w-auto">
           <Filter
             v-model:filter-date-from="filterModel.dateFrom"

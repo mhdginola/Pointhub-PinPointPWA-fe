@@ -5,6 +5,9 @@ import baseModal, { type SizeType } from '@/components/base-modal.vue'
 import baseSelect from '@/components/base-select.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import Table from '@/components/table-component.vue'
+import Row from '@/components/table-row-component.vue'
+import Col from '@/components/table-col-component.vue'
 
 const router = useRouter()
 const account = useAccountStore()
@@ -155,52 +158,54 @@ const openModal = (model: modalInterface) => {
       mode="bordered"
       placeholder="Search"
     />
-    <table class="w-full mt-5 table-fixed">
-      <thead class="p-5 text-left border-b-slate border-b-1">
-        <th class="px-2 py-3 text-xl">Name</th>
-        <th class="px-2 py-3 text-xl">Role</th>
-        <th></th>
-      </thead>
-      <tbody>
-        <tr v-for="item in filteredUser">
-          <td class="px-2 py-3 capitalize">
-            <span class="p-3 block flex flex-col">
-              {{ item.name }}
-              <small>{{ item.email }}</small>
-            </span>
-          </td>
-          <td class="px-2 py-3 capitalize">
-            <span class="p-3 block h-full">
-              {{ item.role }}
-            </span>
-          </td>
-          <td class="px-2 py-3">
-            <div class="flex flex-row justify-center items-center gap-2">
-              <button
-                class="flex flex-col justify-center items-center w-22 capitalize px-3 py-1 border-1 border-slate-200/20 rounded edit-user"
-                @click="
-                  ;[
-                    Object.assign(inviteModel, item),
-                    (inviteModel.show = true),
-                    (tempRole.label = item.role ?? '')
-                  ]
-                "
-              >
-                <i class="i-fad-pencil cursor-pointer"></i>
-                <small>edit</small>
-              </button>
-              <button
-                class="flex flex-col justify-center items-center w-22 capitalize px-3 py-1 border-1 border-slate-200/20 rounded remove-user"
-                @click=";[(deleteModel.show = true), (deleteModel.email = item.email)]"
-              >
-                <i class="i-fad-circle-xmark cursor-pointer"></i>
-                <small>remove</small>
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <Table :cols="['Name', 'Role', 'Action']" class="mt-5">
+      <template #body>
+        <Row v-for="(item, index) in filteredUser" v-if="filteredUser.length > 0">
+          <template #col>
+            <Col>
+              <span class="block flex flex-col">
+                <p class="font-bold">{{ item.name }}</p>
+                <small>{{ item.email }}</small>
+              </span>
+            </Col>
+            <Col>
+              <span class="block h-full">
+                {{ item.role }}
+              </span>
+            </Col>
+            <Col>
+              <div class="flex flex-row justify-center items-center gap-2">
+                <button
+                  class="flex flex-row gap-2 justify-center items-center w-22 capitalize px-3 py-1 border-1 border-slate-200/20 rounded edit-user"
+                  @click="
+                    ;[
+                      Object.assign(inviteModel, item),
+                      (inviteModel.show = true),
+                      (tempRole.label = item.role ?? '')
+                    ]
+                  "
+                >
+                  <i class="i-fad-pencil cursor-pointer"></i>
+                  <small>edit</small>
+                </button>
+                <button
+                  class="flex flex-row gap-2 justify-center items-center w-22 capitalize px-3 py-1 border-1 border-slate-200/20 rounded remove-user"
+                  @click=";[(deleteModel.show = true), (deleteModel.email = item.email)]"
+                >
+                  <i class="i-fad-circle-xmark cursor-pointer"></i>
+                  <small>remove</small>
+                </button>
+              </div>
+            </Col>
+          </template>
+        </Row>
+        <Row v-else>
+          <template #col>
+            <Col colspan="5" class="text-center"> No Data</Col>
+          </template>
+        </Row>
+      </template>
+    </Table>
   </div>
 
   <Teleport to="body">
