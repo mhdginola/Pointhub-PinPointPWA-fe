@@ -146,7 +146,7 @@ const openModal = (model: modalInterface) => {
               <span>{{ item }}</span>
               <div class="flex flex-row gap-2">
                 <button
-                  class="cursor-pointer edit-group text-center p-2 text-white capitalize flex flex-row"
+                  class="cursor-pointer edit-group text-center p-2 text-slate-500 dark:text-slate-200 capitalize flex flex-row"
                   @click="
                     ;[
                       (groupModel.group = item),
@@ -155,13 +155,13 @@ const openModal = (model: modalInterface) => {
                     ]
                   "
                 >
-                  <i class="i-fad-pencil"></i>
+                  <i class="i-far-pencil"></i>
                 </button>
                 <button
-                  class="cursor-pointer delete-group text-center p-2 text-white capitalize flex flex-row"
+                  class="cursor-pointer delete-group text-center p-2 text-slate-500 dark:text-slate-200 capitalize flex flex-row"
                   @click=";[(deleteModel.show = true), (deleteModel.group = item)]"
                 >
-                  <i class="i-fad-trash"></i>
+                  <i class="i-far-trash"></i>
                 </button>
               </div>
             </div>
