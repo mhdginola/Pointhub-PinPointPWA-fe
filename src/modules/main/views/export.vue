@@ -24,14 +24,6 @@ const filteredReport = computed(() => {
       ? account.reports.filter((acc) => filterModel.users.includes(acc.user))
       : account.reports
   if (filterModel.dateFrom) {
-    console.log(
-      filterByUser.map((x) => {
-        return {
-          ori: new Date(x.timestamp).getTime(),
-          dateOri: new Date(moment(filterModel.dateFrom).format('DD-MM-YYYY HH:mm:ss')).getTime()
-        }
-      })
-    )
     filterByUser = filterByUser.filter(
       (dt) =>
         new Date(dt.timestamp).getTime() >=
@@ -57,7 +49,7 @@ const exportReport = () => {
   })
 }
 onMounted(() => {
-  account.mockReport()
+  // account.mockReport()
 })
 
 interface modalInterface {
@@ -86,7 +78,7 @@ const openModal = (model: modalInterface) => {
 <template>
   <div class="flex flex-col">
     <div class="bg-slate-300/20 lg:px-5 px-0 py-5 rounded-5">
-      <div class="flex justify-end items-center gap-2 lg:px-0 px-5">
+      <div class="flex lg:justify-end justify-center items-center gap-2 lg:px-0 px-5">
         <div class="w-auto">
           <Filter
             v-model:filter-date-from="filterModel.dateFrom"
@@ -95,11 +87,18 @@ const openModal = (model: modalInterface) => {
           />
         </div>
         <baseButton
-          class="bg-white dark:bg-slate-800 !text-slate-5 !dark:text-slate border-1 border-slate flex items-center export-attendance gap-3"
+          class="bg-white dark:bg-slate-800 !text-slate-5 !dark:text-slate border-1 border-slate flex items-center export-attendance gap-3 whitespace-nowrap"
           @click="exportReport"
         >
           <span>Export</span>
           <i class="i-far-download block"></i>
+        </baseButton>
+        <baseButton
+          class="bg-white dark:bg-slate-800 !text-slate-5 !dark:text-slate border-1 border-slate flex items-center whitespace-nowrap gap-3"
+          @click="account.mockReport()"
+        >
+          <span>Mock Data</span>
+          <i class="i-far-flask block"></i>
         </baseButton>
       </div>
       <Table :cols="['#', 'Date', 'Time', 'User', 'Location']">

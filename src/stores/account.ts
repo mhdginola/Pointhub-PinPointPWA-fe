@@ -48,7 +48,7 @@ export const useAccountStore = defineStore('account-user', {
       })
     },
     mockReport() {
-      this.reports.splice(0)
+      // this.reports.splice(0)
       this.reports.push(
         {
           timestamp: moment().add(0, 'day').add(-3, 'hour').toString(),

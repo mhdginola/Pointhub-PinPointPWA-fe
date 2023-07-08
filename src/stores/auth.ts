@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 interface userState {
+  username: string
   accessToken: string | null
   role: 'admin' | 'user'
   users: string[]
@@ -11,6 +12,7 @@ export const useUserStore = defineStore('auth', {
     <userState>{
       accessToken: 'localStorage' in window ? window.localStorage.getItem('token') ?? '' : '',
       role: 'localStorage' in window ? window.localStorage.getItem('role') ?? 'user' : 'user',
+      username: 'Hafiz',
       users: [
         'Hafiz',
         'Arif Muhammad',

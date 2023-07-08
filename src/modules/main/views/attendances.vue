@@ -10,8 +10,12 @@ import { reactive, ref } from 'vue'
 import { usePhotoStore } from '@/stores/get-photo'
 import { useAttendanceStore, type attendanceState } from '@/stores/attendance'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/auth'
+import { useAccountStore } from '@/stores/account'
 
+const user = useUserStore()
 const router = useRouter()
+const account = useAccountStore()
 const { notification } = useBaseNotification()
 const attendance = useAttendanceStore()
 const locationStore = useGetLocationStore()
@@ -75,7 +79,7 @@ const SubmitAttendance = async () => {
     return
   }
   let data = <attendanceState>{
-    name: 'Hafiz',
+    name: user.username,
     address: 'Jakarta',
     email: 'hafiz@gmail.com',
     location: await GetMapBoxLocationName(),
@@ -84,6 +88,11 @@ const SubmitAttendance = async () => {
     timestamp: new Date()
   }
   attendance.setAttendance(data)
+  account.reports.push({
+    location: data.location,
+    timestamp: data.timestamp,
+    user: data.name
+  })
   openModal({
     show: true,
     title: 'Success',

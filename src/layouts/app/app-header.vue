@@ -50,7 +50,7 @@ const user = useUserStore()
                   <i class="i-far-user text-2xl"></i>
                 </div>
                 <div class="hidden lg:block">
-                  <span class="block">John Doe</span>
+                  <span class="block">{{ user.username }}</span>
                   <span class="block text-xs" v-text="user.role"></span>
                 </div>
               </div>

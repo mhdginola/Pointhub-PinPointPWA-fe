@@ -97,7 +97,7 @@ const openModal = (model: modalInterface) => {
 
 <template>
   <baseButton
-    class-name=" w-full bg-white dark:bg-slate-800 !text-slate-5 !dark:text-slate border-1 border-slate flex flex-row items-center gap-3"
+    class-name=" w-full bg-white dark:bg-slate-800 !text-slate-5 !dark:text-slate border-1 border-slate flex flex-row items-center gap-3 whitespace-nowrap"
     type="submit"
     @click.prevent="filterModel.show = true"
   >
