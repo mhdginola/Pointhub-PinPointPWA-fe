@@ -90,14 +90,14 @@ const openModal = (model: modalInterface) => {
           class="bg-white dark:bg-slate-800 !text-slate-5 !dark:text-slate border-1 border-slate flex items-center export-attendance gap-3 whitespace-nowrap"
           @click="exportReport"
         >
-          <span>Export</span>
+          <span class="hidden lg:block">Export</span>
           <i class="i-far-download block"></i>
         </baseButton>
         <baseButton
           class="bg-white dark:bg-slate-800 !text-slate-5 !dark:text-slate border-1 border-slate flex items-center whitespace-nowrap gap-3"
           @click="account.mockReport()"
         >
-          <span>Mock Data</span>
+          <span class="hidden lg:block">Mock Data</span>
           <i class="i-far-flask block"></i>
         </baseButton>
       </div>

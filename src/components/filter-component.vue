@@ -101,7 +101,7 @@ const openModal = (model: modalInterface) => {
     type="submit"
     @click.prevent="filterModel.show = true"
   >
-    <span>Filter</span>
+    <span class="hidden lg:block">Filter</span>
     <i class="block" :class="isFiltered ? 'i-fas-filter text-danger' : 'i-far-filter'"></i>
   </baseButton>
 
