@@ -1,20 +1,3 @@
-<script lang="ts">
-export const tagLocations = reactive<string[]>([
-  'Rumah',
-  'Kantor',
-  'Kantor 2',
-  'Coffeeshop',
-  'Coffeeshop 2',
-  'Coffeeshop 3',
-  'Coffeeshop 4',
-  'Coffeeshop 5',
-  'Kost 1',
-  'Kost 2',
-  'Kost 3',
-  'Kost 4',
-  'Kost 5'
-])
-</script>
 <script setup lang="ts">
 import { computed, onMounted, reactive } from 'vue'
 import type { SizeType } from './base-modal.vue'
@@ -30,6 +13,7 @@ const props = withDefaults(
     modelValue: ''
   }
 )
+const tagLocations = reactive<string[]>([])
 const tagModel = reactive({
   showCreate: false,
   showList: false,
@@ -114,66 +98,90 @@ const openModal = (model: modalInterface) => {
     />
   </div>
 
-  <Teleport to="body">
-    <!-- list -->
-    <component
-      :is="BaseModal"
-      :is-open="tagModel.showList"
-      @on-close="tagModel.showList = false"
-      size="lg"
-    >
-      <template #content>
-        <div class="h-75vh p-6 modal-add-tagLocation">
-          <div class="mb-3 flex flex-row justify-between">
-            <h2 class="py-4 text-2xl font-bold">Choose Location Tag</h2>
-            <BaseButton class-name="bg-secondary" @click.prevent="tagModel.showCreate = true"
-              >New Tag</BaseButton
-            >
+  <!-- list -->
+  <component
+    :is="BaseModal"
+    :is-open="tagModel.showList"
+    @on-close="tagModel.showList = false"
+    size="lg"
+  >
+    <template #content>
+      <div class="h-75vh p-6 modal-add-tagLocation">
+        <div class="mb-3 flex flex-row justify-between">
+          <h2 class="py-4 text-2xl font-bold">Location Tag</h2>
+          <BaseButton class-name="bg-secondary" @click.prevent="tagModel.showCreate = true"
+            >New Tag</BaseButton
+          >
+        </div>
+        <BaseInput
+          mode="bordered"
+          type="text"
+          placeholder="Search Tag"
+          class="my-2 rounded"
+          v-model="tagModel.searchModel"
+          required
+        />
+        <div class="max-h-[75%] overflow-auto">
+          <div
+            v-for="tag in filteredTag"
+            class="block p2 border-1 border-slate hover:brightness-90 bg-white dark:bg-slate-9 cursor-pointer"
+            @click="selectTagLocation(tag)"
+          >
+            {{ tag }}
           </div>
+        </div>
+      </div>
+    </template>
+  </component>
+
+  <!-- new -->
+  <component
+    :is="BaseModal"
+    :is-open="tagModel.showCreate"
+    @on-close="tagModel.showCreate = false"
+    size="md"
+  >
+    <template #content>
+      <div class="max-h-90vh overflow-auto p-4 modal-add-tagLocation">
+        <h2 class="py-4 text-2xl font-bold">New Tag</h2>
+        <form class="space-y-8 action-form-tagLocation">
           <BaseInput
             mode="bordered"
             type="text"
-            placeholder="Search Tag"
+            placeholder="Tag"
             class="my-2 rounded"
-            v-model="tagModel.searchModel"
+            v-model="tagModel.createModel"
             required
           />
-          <div class="max-h-[75%] overflow-auto">
-            <div
-              v-for="tag in filteredTag"
-              class="block p2 border-1 border-slate hover:brightness-90 bg-white dark:bg-slate-9 cursor-pointer"
-              @click="selectTagLocation(tag)"
-            >
-              {{ tag }}
-            </div>
-          </div>
-        </div>
-      </template>
-    </component>
-
-    <!-- new -->
-    <component
-      :is="BaseModal"
-      :is-open="tagModel.showCreate"
-      @on-close="tagModel.showCreate = false"
-      size="md"
-    >
-      <template #content>
-        <div class="max-h-90vh overflow-auto p-4 modal-add-tagLocation">
-          <h2 class="py-4 text-2xl font-bold">New Tag</h2>
-          <form class="space-y-8 action-form-tagLocation" @submit.prevent="newTagLocation">
-            <BaseInput
-              mode="bordered"
-              type="text"
-              placeholder="Tag"
-              class="my-2 rounded"
-              v-model="tagModel.createModel"
-              required
-            />
-            <BaseButton class="bg-blue w-full" type="submit">Save</BaseButton>
-          </form>
-        </div>
-      </template>
-    </component>
-  </Teleport>
+          <BaseInput
+            mode="bordered"
+            type="text"
+            placeholder="Tag"
+            class="my-2 rounded"
+            v-model="tagModel.createModel"
+            required
+          />
+          <BaseInput
+            mode="bordered"
+            type="text"
+            placeholder="Tag"
+            class="my-2 rounded"
+            v-model="tagModel.createModel"
+            required
+          />
+          <BaseInput
+            mode="bordered"
+            type="text"
+            placeholder="Tag"
+            class="my-2 rounded"
+            v-model="tagModel.createModel"
+            required
+          />
+          <BaseButton class="bg-blue w-full" type="button" @click.prevent="newTagLocation">
+            Save
+          </BaseButton>
+        </form>
+      </div>
+    </template>
+  </component>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import invitation from './invitation.vue'
+import invitation from './invitation/index.vue'
 import exportUser from './../export.vue'
 import { computed } from 'vue'
 

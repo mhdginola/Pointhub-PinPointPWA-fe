@@ -35,7 +35,7 @@ const loginWithGoogle = async () => {
     ></div>
     <div class="w-100% lg-w-25% px-5 flex flex-col justify-center gap-5">
       <img alt="Logo" :src="logo" />
-      <p class="text-3xl text-center">Sign in to your account</p>
+      <p class="text-xl text-center text-slate-9">Sign in to your account</p>
       <BaseInput
         mode="bordered"
         type="text"

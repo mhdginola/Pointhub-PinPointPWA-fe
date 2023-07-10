@@ -18,28 +18,28 @@ export const routes: RouteRecordRaw[] = [
       {
         path: 'invitation',
         name: 'invitation',
-        component: () => import('./views/account-user/index.vue')
+        component: () => import('./views/_user/index.vue')
       },
       {
         path: 'export',
         name: 'export',
-        component: () => import('./views/account-user/index.vue')
+        component: () => import('./views/_user/index.vue')
       },
       // admin
       {
         path: 'invite',
         name: 'invite',
-        component: () => import('./views/account-admin/index.vue')
+        component: () => import('./views/_admin/index.vue')
       },
       {
         path: 'report',
         name: 'report',
-        component: () => import('./views/account-admin/index.vue')
+        component: () => import('./views/_admin/index.vue')
       },
       {
         path: 'groups',
         name: 'groups',
-        component: () => import('./views/account-admin/groups.vue')
+        component: () => import('./views/_admin/groups.vue')
       }
     ]
   },

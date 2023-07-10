@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { SizeType } from '@/components/base-modal.vue'
-import { useAccountStore } from '@/stores/account'
 import baseModal from '@/components/base-modal.vue'
 import moment from 'moment'
 import { onMounted, reactive } from 'vue'
 import BaseButton from '@/components/base-button.vue'
+import { UseInvitationStore } from './store'
 
-const account = useAccountStore()
+const invitation = UseInvitationStore()
 onMounted(() => {
-  account.mockInvitation()
+  invitation.mockInvitation()
 })
 
 const acceptInvitation = () => {
@@ -55,7 +55,7 @@ const openModal = (model: modalInterface) => {
 }
 </script>
 <template>
-  <div class="bg-slate-300/20 rounded-5 lg:p-10 p-5 mt-5" v-for="item in account.invitations">
+  <div class="bg-slate-300/20 rounded-5 lg:p-10 p-5 mt-5" v-for="item in invitation.invitations">
     <div class="flex flex-col">
       <span class="lg:text-2xl text-xl uppercase"
         >{{ item.from }} has invite you to join group</span

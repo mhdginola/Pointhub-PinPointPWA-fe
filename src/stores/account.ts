@@ -1,13 +1,6 @@
 import moment from 'moment'
 import { defineStore } from 'pinia'
 
-interface invitation {
-  timestamp: Date | string
-  from: string
-  to: string
-  inviteRole: string
-  inviteGroup: string
-}
 interface report {
   timestamp: Date | string
   user: string
@@ -22,7 +15,6 @@ export interface user {
 }
 
 interface state {
-  invitations: invitation[]
   reports: report[]
   users: user[]
   groups: string[]
@@ -31,22 +23,11 @@ interface state {
 export const useAccountStore = defineStore('account-user', {
   state: () =>
     <state>{
-      invitations: [],
       reports: [],
       users: [],
       groups: []
     },
   actions: {
-    mockInvitation() {
-      this.invitations.splice(0)
-      this.invitations.push({
-        from: 'Nur Aini',
-        to: 'Hafiz',
-        inviteGroup: 'KB-Sidoarjo',
-        inviteRole: 'User',
-        timestamp: new Date()
-      })
-    },
     mockReport() {
       // this.reports.splice(0)
       this.reports.push(
