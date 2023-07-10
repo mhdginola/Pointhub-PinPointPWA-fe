@@ -48,7 +48,6 @@ const paddingRight = ref(0)
 onMounted(() => {
   paddingLeft.value = prefixRef.value.clientWidth === 0 ? 10 : prefixRef.value.clientWidth
   paddingRight.value = suffixRef.value.clientWidth === 0 ? 10 : suffixRef.value.clientWidth
-  setTimeout(() => inputRef.value.focus(), 500)
 })
 </script>
 
@@ -81,7 +80,8 @@ onMounted(() => {
           :class="{
             'border-b border-x-none border-t-none': mode === 'simple',
             'border ': mode === 'bordered',
-            'border-none p-0!': mode === 'none'
+            'border-none p-0!': mode === 'none',
+            'bg-gray-200 dark:bg-gray-700': props.disabled
           }"
           v-model="value"
           :type="props.type"

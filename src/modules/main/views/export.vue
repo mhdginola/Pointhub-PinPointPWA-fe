@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import BaseModal, { type SizeType } from '@/components/base-modal.vue'
 import baseButton from '@/components/base-button.vue'
-import { useAccountStore } from '@/stores/account'
-import { computed, onMounted, reactive } from 'vue'
+import { useAccountStore, type report } from '@/stores/account'
+import { computed, onMounted, reactive, ref, type Ref } from 'vue'
 import moment from 'moment'
 import Filter from '@/components/filter-component.vue'
 import Table from '@/components/table-component.vue'
@@ -18,7 +18,8 @@ const filterModel = reactive({
   users: [...user.users]
 })
 
-const filteredReport = computed(() => {
+const reports: Ref<report[]> = ref([])
+const setReports = () => {
   let filterByUser =
     filterModel.users.length > 0
       ? account.reports.filter((acc) => filterModel.users.includes(acc.user))
@@ -37,8 +38,9 @@ const filteredReport = computed(() => {
         new Date(moment(filterModel.dateTo).format('DD-MM-YYYY HH:mm:ss')).getTime()
     )
   }
-  return filterByUser
-})
+
+  reports.value = filterByUser
+}
 const exportReport = () => {
   openModal({
     show: true,
@@ -49,7 +51,7 @@ const exportReport = () => {
   })
 }
 onMounted(() => {
-  // account.mockReport()
+  setReports()
 })
 
 interface modalInterface {
@@ -81,6 +83,7 @@ const openModal = (model: modalInterface) => {
       <div class="flex lg:justify-end justify-center items-center gap-2 lg:px-0 px-5">
         <div class="w-auto">
           <Filter
+            @apply-filter="setReports"
             v-model:filter-date-from="filterModel.dateFrom"
             v-model:filter-date-to="filterModel.dateTo"
             v-model:filter-user="filterModel.users"
@@ -95,7 +98,7 @@ const openModal = (model: modalInterface) => {
         </baseButton>
         <baseButton
           class="bg-white dark:bg-slate-800 !text-slate-5 !dark:text-slate border-1 border-slate flex items-center whitespace-nowrap gap-3"
-          @click="account.mockReport()"
+          @click=";[account.mockReport(), setReports()]"
         >
           <span class="hidden lg:block">Mock Data</span>
           <i class="i-far-flask block"></i>
@@ -103,7 +106,7 @@ const openModal = (model: modalInterface) => {
       </div>
       <Table :cols="['#', 'Date', 'Time', 'User', 'Location']">
         <template #body>
-          <Row v-for="(item, index) in filteredReport" v-if="filteredReport.length > 0">
+          <Row v-for="(item, index) in reports" v-if="reports.length > 0">
             <template #col>
               <Col> {{ index + 1 }}</Col>
               <Col> {{ moment(item.timestamp).format('DD/MM/YYYY') }}</Col>

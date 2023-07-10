@@ -23,7 +23,7 @@ const form = reactive<FormModel>({
 const loginWithGoogle = async () => {
   await auth.setAccessToken('token')
   router.push({
-    name: 'dashboard'
+    name: 'attendance'
   })
 }
 </script>

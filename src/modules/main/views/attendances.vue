@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import baseModal, { type SizeType } from '@/components/base-modal.vue'
 import BaseButton from '@/components/base-button.vue'
-import Maps, { GetMapBoxLocationName } from '@/components/gps-access-component.vue'
+import Maps from '@/components/gps-access-component.vue'
 import Photo from '@/components/photo-component.vue'
 import TagLocation from '@/components/tag-location.vue'
 import { useBaseNotification, TypesEnum } from '@/composable/notification'
@@ -82,7 +82,7 @@ const SubmitAttendance = async () => {
     name: user.username,
     address: 'Jakarta',
     email: 'hafiz@gmail.com',
-    location: await GetMapBoxLocationName(),
+    location: await locationStore.getLocationName(),
     photo: photoStore.$state.photo,
     tagLocation: tagLocation.value,
     timestamp: new Date()

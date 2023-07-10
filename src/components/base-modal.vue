@@ -17,7 +17,6 @@ const props = withDefaults(
 const isOpen = ref(props.isOpen)
 
 const emit = defineEmits(['onClose'])
-const backdrop = ref()
 
 const close = () => {
   isOpen.value = false
@@ -38,9 +37,9 @@ const clearButton = ref()
 
 <template>
   <TransitionRoot appear :show="isOpen" as="template">
-    <Dialog as="div" class="relative z-60" :initial-focus="backdrop">
+    <Dialog as="div" class="relative z-60" :initial-focus="clearButton">
       <!-- The backdrop, rendered as a fixed sibling to the panel container -->
-      <div class="fixed inset-0 bg-black/40" aria-hidden="true" ref="backdrop" />
+      <div class="fixed inset-0 bg-black/40" aria-hidden="true" />
 
       <TransitionChild
         as="template"

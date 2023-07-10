@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Filter from '@/components/filter-component.vue'
 import Attendances from '@/components/attendances-component.vue'
-import { computed, reactive } from 'vue'
+import { computed, onMounted, reactive, ref, type Ref } from 'vue'
 import { useAttendanceStore, type attendanceState } from '@/stores/attendance'
 import { useUserStore } from '@/stores/auth'
 import moment from 'moment'
@@ -15,8 +15,10 @@ const filter = reactive({
   users: [...user.users]
 })
 
-const sortedAttendance = computed(() => {
-  let filterByUser =
+const attendances: Ref<attendanceState[]> = ref([])
+
+const setAttendances = () => {
+  let filterByUser: attendanceState[] =
     filter.users.length > 0
       ? attendance.attendances.filter((acc) => filter.users.includes(acc.name))
       : attendance.attendances
@@ -36,7 +38,7 @@ const sortedAttendance = computed(() => {
     )
   }
 
-  return filterByUser.sort((a: attendanceState, b: attendanceState) => {
+  filterByUser = filterByUser.sort((a: attendanceState, b: attendanceState) => {
     if (a.timestamp.valueOf() < b.timestamp.valueOf()) {
       return 1
     }
@@ -45,6 +47,12 @@ const sortedAttendance = computed(() => {
     }
     return 0
   })
+
+  attendances.value = filterByUser
+}
+
+onMounted(() => {
+  setAttendances()
 })
 </script>
 
@@ -53,12 +61,13 @@ const sortedAttendance = computed(() => {
     <div class="flex justify-end">
       <div class="w-auto">
         <Filter
+          @apply-filter="setAttendances"
           v-model:filter-date-from="filter.dateFrom"
           v-model:filter-date-to="filter.dateTo"
           v-model:filter-user="filter.users"
         />
       </div>
     </div>
-    <Attendances :attendances="sortedAttendance" />
+    <Attendances :attendances="attendances" />
   </div>
 </template>

@@ -35,12 +35,12 @@ export const routes: RouteRecordRaw[] = [
         path: 'report',
         name: 'report',
         component: () => import('./views/_admin/index.vue')
-      },
-      {
-        path: 'groups',
-        name: 'groups',
-        component: () => import('./views/_admin/groups.vue')
       }
+      // {
+      //   path: 'groups',
+      //   name: 'groups',
+      //   component: () => import('./views/_admin/groups.vue')
+      // }
     ]
   },
   {

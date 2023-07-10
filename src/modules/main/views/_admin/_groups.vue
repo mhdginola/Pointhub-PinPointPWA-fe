@@ -18,18 +18,18 @@ const filteredGroup = computed(() => {
 const inputGroupRef = ref()
 const inputPasswordRef = ref()
 
-const baseModalShow = ref(true)
+const baseModalShow = ref(true) //base
 const groupModel = reactive({
   show: false,
   group: '',
   oldName: ''
 })
-const deleteModel = reactive({
+const deleteGroupModel = reactive({
   show: false,
   group: '',
   password: ''
 })
-const errorModel = reactive({
+const errorGroupModel = reactive({
   group: '',
   password: ''
 })
@@ -38,17 +38,16 @@ onMounted(() => {
   account.mockGroup()
 })
 const openCreateGroup = () => {
-  clear()
+  clearGroupModel()
   groupModel.show = true
-  console.log(inputGroupRef.value)
 }
 
 const createGroup = () => {
   if (!groupModel.group) {
-    errorModel.group = 'This field is required'
+    errorGroupModel.group = 'This field is required'
     return
   } else {
-    errorModel.group = ''
+    errorGroupModel.group = ''
   }
   account.createGroup(groupModel.group, groupModel.oldName)
   openModal({
@@ -62,13 +61,13 @@ const createGroup = () => {
 }
 
 const deleteGroup = () => {
-  if (!deleteModel.password) {
-    errorModel.password = 'This field is required'
+  if (!deleteGroupModel.password) {
+    errorGroupModel.password = 'This field is required'
     return
   } else {
-    errorModel.password = ''
+    errorGroupModel.password = ''
   }
-  account.deleteGroup(deleteModel.group)
+  account.deleteGroup(deleteGroupModel.group)
   openModal({
     show: true,
     title: 'Success',
@@ -76,10 +75,10 @@ const deleteGroup = () => {
     size: 'md',
     className: 'modal-delete-group-success'
   })
-  deleteModel.show = false
+  deleteGroupModel.show = false
 }
 
-const clear = () => {
+const clearGroupModel = () => {
   groupModel.group = ''
   groupModel.oldName = ''
 }
@@ -159,7 +158,7 @@ const openModal = (model: modalInterface) => {
                 </button>
                 <button
                   class="cursor-pointer delete-group text-center p-2 text-slate-500 dark:text-slate-200 capitalize flex flex-row"
-                  @click=";[(deleteModel.show = true), (deleteModel.group = item)]"
+                  @click=";[(deleteGroupModel.show = true), (deleteGroupModel.group = item)]"
                 >
                   <i class="i-far-trash"></i>
                 </button>
@@ -196,7 +195,7 @@ const openModal = (model: modalInterface) => {
               label="Name"
               class="w-full"
               mode="bordered"
-              :error="errorModel.group"
+              :error="errorGroupModel.group"
               :ref="inputGroupRef"
             />
             <div class="flex flex-col">
@@ -214,8 +213,8 @@ const openModal = (model: modalInterface) => {
 
     <component
       :is="baseModal"
-      :is-open="deleteModel.show"
-      @on-close="deleteModel.show = false"
+      :is-open="deleteGroupModel.show"
+      @on-close="deleteGroupModel.show = false"
       size="lg"
     >
       <template #content>
@@ -225,12 +224,12 @@ const openModal = (model: modalInterface) => {
             <component
               name="password"
               :is="baseInput"
-              v-model="deleteModel.password"
+              v-model="deleteGroupModel.password"
               label="Type Password"
               class="w-full"
               mode="bordered"
               type="password"
-              :error="errorModel.password"
+              :error="errorGroupModel.password"
               :ref="inputPasswordRef"
             />
             <baseButton class-name="bg-blue" type="submit">Confirm</baseButton>

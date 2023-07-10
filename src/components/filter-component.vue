@@ -18,6 +18,7 @@ const emits = defineEmits<{
   (e: 'update:filterDateFrom', value: string): void
   (e: 'update:filterDateTo', value: string): void
   (e: 'update:filterUser', value: string[]): void
+  (e: 'applyFilter'): void
 }>()
 const valueFromDate = computed({
   get() {
@@ -60,6 +61,7 @@ const filterAllUser = () => {
 }
 
 const applyFilter = () => {
+  emits('applyFilter')
   openModal({
     show: true,
     title: 'Applied',

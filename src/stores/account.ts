@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { defineStore } from 'pinia'
 
-interface report {
+export interface report {
   timestamp: Date | string
   user: string
   location: string

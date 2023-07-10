@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import type { SizeType } from './base-modal.vue'
 import BaseModal from './base-modal.vue'
 import BaseInput from './base-input.vue'
 import BaseButton from '@/components/base-button.vue'
+import { useGetLocationStore } from '@/stores/get-location'
 
+const locationStore = useGetLocationStore()
 const props = withDefaults(
   defineProps<{
     modelValue: string
@@ -13,31 +15,20 @@ const props = withDefaults(
     modelValue: ''
   }
 )
-const tagLocations = reactive<string[]>([])
 const tagModel = reactive({
   showCreate: false,
   showList: false,
-  createModel: '',
-  searchModel: ''
+  searchModel: '',
+  createModel: ''
 })
+const refCreateModel = ref()
 const filteredTag = computed(() => {
   return tagModel.searchModel
-    ? tagLocations.filter((x) => x.toLowerCase().includes(tagModel.searchModel.toLowerCase()))
-    : tagLocations
+    ? locationStore.tagLocations.filter((x) =>
+        x.toLowerCase().includes(tagModel.searchModel.toLowerCase())
+      )
+    : locationStore.tagLocations
 })
-
-const newTagLocation = () => {
-  tagLocations.push(tagModel.createModel)
-  tagModel.createModel = ''
-  tagModel.showCreate = false
-  openModal({
-    show: true,
-    title: 'Success',
-    content: `Create tag location Success`,
-    size: 'md',
-    className: 'modal-create-tag-location-success'
-  })
-}
 
 const selectTagLocation = (tag: string) => {
   value.value = tag
@@ -55,9 +46,18 @@ const value = computed({
     emit('update:modelValue', value)
   }
 })
-onMounted(() => {
-  console.log(value.value)
-})
+const newTagLocation = () => {
+  locationStore.addTagLocation(tagModel.createModel)
+  tagModel.createModel = ''
+  tagModel.showCreate = false
+  openModal({
+    show: true,
+    title: 'Success',
+    content: `Create tag location Success`,
+    size: 'md',
+    className: 'modal-create-tag-location-success'
+  })
+}
 
 interface modalInterface {
   show: boolean
@@ -109,7 +109,9 @@ const openModal = (model: modalInterface) => {
       <div class="h-75vh p-6 modal-add-tagLocation">
         <div class="mb-3 flex flex-row justify-between">
           <h2 class="py-4 text-2xl font-bold">Location Tag</h2>
-          <BaseButton class-name="bg-secondary" @click.prevent="tagModel.showCreate = true"
+          <BaseButton
+            class-name="bg-secondary"
+            @click.prevent=";[(tagModel.showCreate = true), (tagModel.showList = false)]"
             >New Tag</BaseButton
           >
         </div>
@@ -138,7 +140,7 @@ const openModal = (model: modalInterface) => {
   <component
     :is="BaseModal"
     :is-open="tagModel.showCreate"
-    @on-close="tagModel.showCreate = false"
+    @on-close=";[(tagModel.showCreate = false), (tagModel.showList = true)]"
     size="md"
   >
     <template #content>
@@ -148,31 +150,7 @@ const openModal = (model: modalInterface) => {
           <BaseInput
             mode="bordered"
             type="text"
-            placeholder="Tag"
-            class="my-2 rounded"
-            v-model="tagModel.createModel"
-            required
-          />
-          <BaseInput
-            mode="bordered"
-            type="text"
-            placeholder="Tag"
-            class="my-2 rounded"
-            v-model="tagModel.createModel"
-            required
-          />
-          <BaseInput
-            mode="bordered"
-            type="text"
-            placeholder="Tag"
-            class="my-2 rounded"
-            v-model="tagModel.createModel"
-            required
-          />
-          <BaseInput
-            mode="bordered"
-            type="text"
-            placeholder="Tag"
+            placeholder="New Tag"
             class="my-2 rounded"
             v-model="tagModel.createModel"
             required

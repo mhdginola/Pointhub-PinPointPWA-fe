@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { type attendanceState } from '@/stores/attendance'
 import moment from 'moment'
+import type { Ref } from 'vue'
 
 const props = defineProps<{
   attendances: attendanceState[]

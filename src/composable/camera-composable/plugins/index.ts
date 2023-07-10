@@ -1,1 +1,0 @@
-export { downloadPhoto } from './downloadPhoto';

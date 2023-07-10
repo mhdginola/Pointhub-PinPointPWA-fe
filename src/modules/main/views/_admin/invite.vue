@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router'
 import Table from '@/components/table-component.vue'
 import Row from '@/components/table-row-component.vue'
 import Col from '@/components/table-col-component.vue'
+import BaseButton from '@/components/base-button.vue'
 
 const router = useRouter()
 const account = useAccountStore()
@@ -46,6 +47,7 @@ const deleteModel = reactive({
 
 onMounted(() => {
   account.mockUser()
+  account.mockGroup()
 })
 
 const inviteUser = () => {
@@ -102,12 +104,90 @@ const clear = () => {
   inviteModel.role = 'user'
 }
 
-// route as modal
+// group
+
+const filterGroup = ref('')
+const filteredGroup = computed(() => {
+  return filterGroup.value
+    ? account.groups.filter((x) => x.toLowerCase().includes(filterGroup.value))
+    : account.groups
+})
+const inputGroupRef = ref()
+const inputPasswordRef = ref()
+
+const groupModel = reactive({
+  showBase: false,
+  showCreate: false,
+  group: '',
+  oldName: ''
+})
+const deleteGroupModel = reactive({
+  show: false,
+  group: '',
+  password: ''
+})
+const errorGroupModel = reactive({
+  group: '',
+  password: ''
+})
 const openGroups = () => {
-  router.push({
-    name: 'groups'
-  })
+  groupModel.showBase = true
 }
+
+const openCreateGroup = () => {
+  clearGroupModel()
+  groupModel.showCreate = true
+  groupModel.showBase = false
+}
+
+const createGroup = () => {
+  if (!groupModel.group) {
+    errorGroupModel.group = 'This field is required'
+    return
+  } else {
+    errorGroupModel.group = ''
+  }
+  account.createGroup(groupModel.group, groupModel.oldName)
+  openModal({
+    show: true,
+    title: 'Success',
+    content: groupModel.oldName == '' ? 'Create Group Success' : 'Edit Group Success',
+    size: 'md',
+    className: groupModel.oldName == '' ? 'modal-create-group-success' : 'modal-edit-group-success'
+  })
+  groupModel.showCreate = false
+  groupModel.showBase = true
+}
+
+const deleteGroup = () => {
+  if (!deleteGroupModel.password) {
+    errorGroupModel.password = 'This field is required'
+    return
+  } else {
+    errorGroupModel.password = ''
+  }
+  account.deleteGroup(deleteGroupModel.group)
+  openModal({
+    show: true,
+    title: 'Success',
+    content: 'Delete Group Success',
+    size: 'md',
+    className: 'modal-delete-group-success'
+  })
+  deleteGroupModel.show = false
+  groupModel.showBase = true
+}
+
+const clearGroupModel = () => {
+  groupModel.group = ''
+  groupModel.oldName = ''
+}
+
+const closeGroup = () => {
+  groupModel.showBase = false
+}
+
+//
 
 interface modalInterface {
   show: boolean
@@ -209,6 +289,140 @@ const openModal = (model: modalInterface) => {
   </div>
 
   <Teleport to="body">
+    <!-- modal group -->
+    <component :is="baseModal" :is-open="groupModel.showBase" @on-close="closeGroup" size="lg">
+      <template #content>
+        <div class="bg-slate-300/20 p-5 rounded-5 modal-show-group">
+          <h2 class="text-2xl font-bold">Choose Group</h2>
+          <hr class="border-1 border-slate-200/20 my-1" />
+          <div class="text-center">
+            Please choose your group below or <br />
+            <button class="text-blue cursor-pointer create-group" @click="openCreateGroup">
+              create a new one
+            </button>
+          </div>
+          <component
+            :is="baseInput"
+            v-model="filterGroup"
+            label="Search"
+            mode="bordered"
+            placeholder="Search"
+          />
+          <div class="w-full mt-5 flex flex-col gap-3">
+            <div
+              v-for="item in filteredGroup"
+              class="justify-between items-center flex flex-row shadow shadow-lg shadow-slate-300/20 p-3 rounded-md block"
+            >
+              <span>{{ item }}</span>
+              <div class="flex flex-row gap-2">
+                <button
+                  class="cursor-pointer edit-group text-center p-2 text-slate-500 dark:text-slate-200 capitalize flex flex-row"
+                  @click="
+                    ;[
+                      (groupModel.group = item),
+                      (groupModel.oldName = item),
+                      (groupModel.showCreate = true),
+                      (groupModel.showBase = false)
+                    ]
+                  "
+                >
+                  <i class="i-far-pencil"></i>
+                </button>
+                <button
+                  class="cursor-pointer delete-group text-center p-2 text-slate-500 dark:text-slate-200 capitalize flex flex-row"
+                  @click="
+                    ;[
+                      (deleteGroupModel.show = true),
+                      (deleteGroupModel.group = item),
+                      (groupModel.showBase = false)
+                    ]
+                  "
+                >
+                  <i class="i-far-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </component>
+
+    <!-- modal create group -->
+    <component
+      :is="baseModal"
+      :is-open="groupModel.showCreate"
+      @on-close=";(groupModel.showCreate = false), (groupModel.showBase = true)"
+      size="lg"
+    >
+      <template #content>
+        <div
+          class="max-h-90vh overflow-auto p-4"
+          :class="groupModel.oldName == '' ? 'modal-create-group' : 'modal-edit-group'"
+        >
+          <h2 class="py-4 text-2xl font-bold">
+            {{ groupModel.oldName == '' ? 'Create Group' : 'Update Group' }}
+          </h2>
+          <form
+            class="gap-5 flex flex-col"
+            :class="groupModel.oldName == '' ? 'add-group' : 'edit-group'"
+            @submit.prevent="createGroup"
+          >
+            <component
+              name="name"
+              :is="baseInput"
+              v-model="groupModel.group"
+              label="Name"
+              class="w-full"
+              mode="bordered"
+              :error="errorGroupModel.group"
+              :ref="inputGroupRef"
+            />
+            <div class="flex flex-col">
+              <BaseButton class="bg-blue" type="submit">
+                {{ groupModel.oldName == '' ? 'Create' : 'Update' }}
+              </BaseButton>
+              <BaseButton
+                class-name="bg-secondary"
+                type="button"
+                @click="groupModel.showCreate = false"
+              >
+                Cancel
+              </BaseButton>
+            </div>
+          </form>
+        </div>
+      </template>
+    </component>
+
+    <!-- modal delete group -->
+    <component
+      :is="baseModal"
+      :is-open="deleteGroupModel.show"
+      @on-close=";(deleteGroupModel.show = false), (groupModel.showBase = true)"
+      size="lg"
+    >
+      <template #content>
+        <div class="max-h-90vh overflow-auto p-4 modal-delete-group">
+          <h2 class="py-4 text-2xl font-bold">Delete Group ?</h2>
+          <form class="gap-5 flex flex-col delete-group" @submit.prevent="deleteGroup">
+            <component
+              name="password"
+              :is="baseInput"
+              v-model="deleteGroupModel.password"
+              label="Type Password"
+              class="w-full"
+              mode="bordered"
+              type="password"
+              :error="errorGroupModel.password"
+              :ref="inputPasswordRef"
+            />
+            <BaseButton class-name="bg-blue" type="submit">Confirm</BaseButton>
+          </form>
+        </div>
+      </template>
+    </component>
+
+    <!-- modal user -->
     <component
       :is="baseModal"
       :is-open="inviteModel.show"
@@ -266,6 +480,7 @@ const openModal = (model: modalInterface) => {
       </template>
     </component>
 
+    <!-- delete user -->
     <component
       :is="baseModal"
       :is-open="deleteModel.show"
