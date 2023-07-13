@@ -28,9 +28,11 @@ const isActiveRoutes = (name: string) => {
       class="block lg:hidden fixed bottom-0 w-full p-2 z-20 dark:bg-slate-900 bg-white border-t-1 dark:border-slate-800 flex flex-row justify-around"
     >
       <div
-        v-for="shortcut in sidebarMenuStore.$state.shortcut"
+        v-for="shortcut in sidebarMenuStore.$state.shortcut[0].menu"
         class="flex justify-center p-4 rounded-lg"
-        @click.prevent="router.push({ path: shortcut.path as string })"
+        @click.prevent="
+          router.push({ path: (shortcut.tempPath as string) ?? (shortcut.path as string) })
+        "
       >
         <i
           :class="`block text-2xl ${

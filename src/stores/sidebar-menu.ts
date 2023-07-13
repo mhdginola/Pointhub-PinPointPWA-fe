@@ -27,6 +27,9 @@ export interface MenuInterface {
   link?: string
   separator?: boolean
   submenu?: SubmenuInterface[]
+  icon?: string
+  iconActive?: string
+  tempPath?: string
 }
 
 export interface SubmenuInterface {
@@ -113,14 +116,21 @@ const menu: StateInterface['shortcut'] = [
     menu: [
       {
         name: 'Dashboard',
-        path: '/'
+        path: '/',
+        icon: 'i-far-house-chimney',
+        iconActive: 'i-fas-house-chimney'
       },
       {
         name: 'Attendances',
-        path: '/attendances'
+        path: '/attendances',
+        icon: 'i-far-location-dot',
+        iconActive: 'i-fas-location-dot'
       },
       {
         name: 'Account',
+        icon: 'i-far-circle-user',
+        iconActive: 'i-fas-circle-user',
+        tempPath: user.role == 'user' ? '/invitation' : '/invite',
         submenu:
           user.role == 'admin'
             ? [
