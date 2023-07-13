@@ -34,6 +34,7 @@ export interface SubmenuInterface {
   path?: string
   link?: string
   separator?: boolean
+  parent?: string
 }
 
 interface StateInterface {
@@ -45,8 +46,8 @@ interface StateInterface {
 
 export const useSidebarMenuStore = defineStore('sidebar-menu', {
   state: (): StateInterface => ({
-    shortcut: [menuMain, menuAttendance, menuAccount],
-    activeShortcut: menuMain,
+    shortcut: [...menu],
+    activeShortcut: menu[0],
     activeShortcutIndex: 0,
     activeMenuName: ''
   }),
@@ -103,61 +104,64 @@ export const useSidebarMenuStore = defineStore('sidebar-menu', {
 
 const user = useUserStore()
 
-const menuMain: ShortcutInterface = {
-  displayName: 'Main Menu',
-  name: 'Dashboard',
-  path: '/',
-  icon: 'i-far-house-chimney',
-  iconActive: 'i-fas-house-chimney',
-  menu: [
-    {
-      name: 'Dashboard',
-      path: '/'
-    }
-  ]
-}
-
-const menuAttendance: ShortcutInterface = {
-  displayName: 'Attendances Menu',
-  name: 'Attendances',
-  path: '/attendances',
-  icon: 'i-far-location-dot',
-  iconActive: 'i-fas-location-dot',
-  menu: [
-    {
-      name: 'Attendances',
-      path: '/attendances'
-    }
-  ]
-}
-
-const menuAccount: ShortcutInterface = {
-  displayName: 'Account Menu',
-  name: user.role == 'user' ? 'Invitation' : 'Invite',
-  path: user.role == 'user' ? '/invitation' : '/invite',
-  icon: 'i-far-circle-user',
-  iconActive: 'i-fas-circle-user',
-  tempName: 'Account',
-  menu:
-    user.role == 'admin'
-      ? [
-          {
-            name: 'Invite User',
-            path: '/invite'
-          },
-          {
-            name: 'Report',
-            path: '/report'
-          }
-        ]
-      : [
-          {
-            name: 'Invitation',
-            path: '/invitation'
-          },
-          {
-            name: 'Export',
-            path: '/export'
-          }
-        ]
-}
+const menu: StateInterface['shortcut'] = [
+  {
+    name: 'Main Menu',
+    displayName: 'Main Menu',
+    path: '/',
+    icon: 'i-far-house-chimney',
+    menu: [
+      {
+        name: 'Dashboard',
+        path: '/'
+      },
+      {
+        name: 'Attendances',
+        path: '/attendances'
+      },
+      {
+        name: 'Account',
+        submenu:
+          user.role == 'admin'
+            ? [
+                {
+                  name: 'Invite User',
+                  path: '/invite',
+                  parent: 'Account'
+                },
+                {
+                  name: 'Report',
+                  path: '/report',
+                  parent: 'Account'
+                }
+              ]
+            : [
+                {
+                  name: 'Invitation',
+                  path: '/invitation',
+                  parent: 'Account'
+                },
+                {
+                  name: 'Export',
+                  path: '/export',
+                  parent: 'Account'
+                }
+              ]
+      }
+    ]
+  },
+  {
+    name: 'Account Menu',
+    displayName: 'Account Menu',
+    path: '#',
+    icon: 'i-far-circle-user',
+    menu: []
+  },
+  {
+    name: 'Mail Menu',
+    displayName: 'Mail Menu',
+    path: '#',
+    icon: 'i-far-envelope',
+    menu: []
+  }
+]

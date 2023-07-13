@@ -5,14 +5,6 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/layouts/app/app-index.vue'),
     children: [
       {
-        path: 'attendances',
-        name: 'attendances',
-        meta: {
-          displayName: 'Attendances Menu'
-        },
-        component: () => import('./views/attendances.vue')
-      },
-      {
         path: '/',
         name: 'dashboard',
         meta: {
@@ -20,12 +12,20 @@ export const routes: RouteRecordRaw[] = [
         },
         component: () => import('./views/dashboard.vue')
       },
+      {
+        path: 'attendances',
+        name: 'attendances',
+        meta: {
+          displayName: 'Main Menu'
+        },
+        component: () => import('./views/attendances.vue')
+      },
       // user
       {
         path: 'invitation',
         name: 'invitation',
         meta: {
-          displayName: 'Account Menu'
+          displayName: 'Main Menu'
         },
         component: () => import('./views/_user/index.vue')
       },
@@ -33,7 +33,8 @@ export const routes: RouteRecordRaw[] = [
         path: 'export',
         name: 'export',
         meta: {
-          displayName: 'Account Menu'
+          displayName: 'Main Menu',
+          parentName: 'Account'
         },
         component: () => import('./views/_user/index.vue')
       },
@@ -42,7 +43,8 @@ export const routes: RouteRecordRaw[] = [
         path: 'invite',
         name: 'invite',
         meta: {
-          displayName: 'Account Menu'
+          displayName: 'Main Menu',
+          parentName: 'Account'
         },
         component: () => import('./views/_admin/index.vue')
       },
@@ -50,7 +52,8 @@ export const routes: RouteRecordRaw[] = [
         path: 'report',
         name: 'report',
         meta: {
-          displayName: 'Account Menu'
+          displayName: 'Main Menu',
+          parentName: 'Account'
         },
         component: () => import('./views/_admin/index.vue')
       }

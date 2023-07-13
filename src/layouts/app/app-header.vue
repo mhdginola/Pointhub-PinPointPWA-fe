@@ -6,21 +6,6 @@ import ComponentNotification from './component-notification.vue'
 import ComponentToggleSidebar from './component-toggle-sidebar.vue'
 import logo from '@/assets/images/logo.png'
 
-const htmlTag = document.getElementsByTagName('html')[0]
-const isDarkMode = ref(htmlTag.classList.contains('dark'))
-
-function toggleDarkMode() {
-  if (htmlTag.classList.contains('dark')) {
-    htmlTag.classList.remove('dark')
-    localStorage.setItem('dark-mode', 'light')
-  } else {
-    htmlTag.classList.add('dark')
-    localStorage.setItem('dark-mode', 'dark')
-  }
-
-  isDarkMode.value = htmlTag.classList.contains('dark')
-}
-
 const isOpen = ref(false)
 
 const user = useUserStore()

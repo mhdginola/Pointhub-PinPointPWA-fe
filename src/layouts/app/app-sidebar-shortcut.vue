@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useSidebarStore } from '@/stores/sidebar'
 import { useSidebarMenuStore, type ShortcutInterface } from '@/stores/sidebar-menu'
-import { onMounted, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 const sidebarMenuStore = useSidebarMenuStore()
@@ -19,7 +19,6 @@ const setActiveRoute = (displayName: string) => {
       (x) => x.displayName == displayName
     )
   }
-  console.log(active)
 
   return active
 }
@@ -27,6 +26,21 @@ const setActiveRoute = (displayName: string) => {
 onMounted(() => {
   setActiveRoute(route.meta.displayName as string)
 })
+
+const htmlTag = document.getElementsByTagName('html')[0]
+const isDarkMode = ref(htmlTag.classList.contains('dark'))
+
+function toggleDarkMode() {
+  if (htmlTag.classList.contains('dark')) {
+    htmlTag.classList.remove('dark')
+    localStorage.setItem('dark-mode', 'light')
+  } else {
+    htmlTag.classList.add('dark')
+    localStorage.setItem('dark-mode', 'dark')
+  }
+
+  isDarkMode.value = htmlTag.classList.contains('dark')
+}
 </script>
 
 <template>
@@ -43,7 +57,7 @@ onMounted(() => {
       </div>
       <div class="sidebar-shortcut-body">
         <router-link
-          v-for="(shortcut, index) in sidebarMenuStore.shortcut"
+          v-for="shortcut in sidebarMenuStore.shortcut"
           :key="shortcut.icon"
           :to="shortcut.path as string"
           class="sidebar-shortcut-link"
@@ -54,9 +68,12 @@ onMounted(() => {
           <i :class="`block text-2xl ${shortcut.icon}`"></i>
         </router-link>
       </div>
-      <div class="my-2">
+      <div class="my-2 flex flex-col gap-2">
+        <button class="sidebar-shortcut-link" @click="toggleDarkMode()">
+          <i class="i-far-moon block text-2xl"></i>
+        </button>
         <button class="sidebar-shortcut-link">
-          <i class="i-fas-power-off block text-2xl"></i>
+          <i class="i-far-power-off block text-2xl"></i>
         </button>
       </div>
     </div>
