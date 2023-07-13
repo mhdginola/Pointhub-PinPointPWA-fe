@@ -7,11 +7,11 @@ export const useSidebarStore = defineStore('sidebar', {
   actions: {
     toggleSidebar() {
       this.isSidebarOpen = document.body.classList.contains('is-sidebar-open')
-      // if (this.isSidebarOpen) {
-      //   this.closeSidebar()
-      // } else {
-      //   this.openSidebar()
-      // }
+      if (this.isSidebarOpen) {
+        this.closeSidebar()
+      } else {
+        this.openSidebar()
+      }
     },
     openSidebar() {
       document.body.classList.add('is-sidebar-open')

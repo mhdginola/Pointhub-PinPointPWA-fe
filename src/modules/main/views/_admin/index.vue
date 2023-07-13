@@ -15,7 +15,7 @@ const activeComponent = computed(() => {
 
 <template>
   <div class="flex flex-col w-full gap-2">
-    <div class="flex flex-row gap-3">
+    <div class="flex flex-row gap-3 block lg:hidden">
       <RouterLink
         class="font-bold lg:text-3xl text-2xl mb-3 cursor-pointer p-2 rounded-lg"
         :class="activeRoute('invite') ? 'font-bold' : 'text-secondary'"

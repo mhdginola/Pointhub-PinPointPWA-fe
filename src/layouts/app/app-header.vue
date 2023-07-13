@@ -34,7 +34,7 @@ const user = useUserStore()
       <div class="w-full flex items-center justify-between">
         <!-- Left: Sidebar Toggle Button -->
         <div class="flex justify-center items-center">
-          <!-- <component :is="ComponentToggleSidebar" class="pr-4 lg:hidden" /> -->
+          <component :is="ComponentToggleSidebar" class="px-5 lg:block hidden" />
 
           <img :src="logo" class="h-10 lg:hidden block" />
         </div>
@@ -82,10 +82,6 @@ const user = useUserStore()
 
 <style scoped>
 nav.header {
-  @apply sticky top-0 flex w-full h-60px z-20 px-4 shadow lg:shadow-none lg:border-b-slate-200  bg-white dark:bg-slate-900;
-}
-
-.is-sidebar-open nav.header {
-  @apply lg:w-[calc(100%-(var(--sidebar-panel-width)))] lg:ml-[calc(var(--sidebar-panel-width))] duration-200;
+  @apply sticky top-0 flex w-full z-20 p-4 shadow  lg:border-b-slate-200  bg-white dark:bg-slate-900;
 }
 </style>

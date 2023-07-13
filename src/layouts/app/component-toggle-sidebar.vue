@@ -1,10 +1,10 @@
 <template>
   <button @click="toggleSidebar()">
     <div v-if="!sidebarStore.isSidebarOpen">
-      <i class="i-fas-bars block"></i>
+      <i class="i-fas-angle-left block"></i>
     </div>
     <div v-if="sidebarStore.isSidebarOpen">
-      <i class="i-fas-angle-left block"></i>
+      <i class="i-fas-bars block"></i>
     </div>
   </button>
 </template>

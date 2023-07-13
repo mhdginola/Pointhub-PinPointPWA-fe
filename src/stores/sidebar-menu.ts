@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
-import { useUserStore } from '@/stores/auth'
-import { ref, type Ref } from 'vue'
+import { useUserStore } from './auth'
 
 /**
  * Shortcut using dynamic icon on the fly, at the compile time
@@ -13,8 +12,10 @@ import { ref, type Ref } from 'vue'
 
 export interface ShortcutInterface {
   name: string
+  displayName?: string
   icon: string
   iconActive?: string
+  menu: Array<MenuInterface>
   path?: string
   link?: string
   tempName?: string
@@ -37,7 +38,7 @@ export interface SubmenuInterface {
 
 interface StateInterface {
   shortcut: ShortcutInterface[]
-  activeShortcut: ShortcutInterface | null
+  activeShortcut: ShortcutInterface
   activeShortcutIndex: number
   activeMenuName: string
 }
@@ -45,8 +46,8 @@ interface StateInterface {
 export const useSidebarMenuStore = defineStore('sidebar-menu', {
   state: (): StateInterface => ({
     shortcut: [menuMain, menuAttendance, menuAccount],
-    activeShortcut: null,
-    activeShortcutIndex: 1,
+    activeShortcut: menuMain,
+    activeShortcutIndex: 0,
     activeMenuName: ''
   }),
   actions: {
@@ -56,6 +57,24 @@ export const useSidebarMenuStore = defineStore('sidebar-menu', {
           this.$state.activeShortcut = shortcut
           this.$state.activeShortcutIndex = index
           return
+        }
+        for (const menu of shortcut.menu) {
+          if (route.path.includes(menu.path as string)) {
+            this.$state.activeShortcut = shortcut
+            this.$state.activeShortcutIndex = index
+            this.$state.activeMenuName = menu.name
+            return
+          }
+          if (menu.submenu) {
+            for (const submenu of menu.submenu) {
+              if (route.path.includes(submenu.path as string)) {
+                this.$state.activeShortcut = shortcut
+                this.$state.activeShortcutIndex = index
+                this.$state.activeMenuName = menu.name
+                return
+              }
+            }
+          }
         }
         if (route.path.split('/')[1] === shortcut.path?.split('/')[1]) {
           this.$state.activeShortcut = shortcut
@@ -74,9 +93,9 @@ export const useSidebarMenuStore = defineStore('sidebar-menu', {
     hasChildren(route: RouteLocationNormalizedLoaded) {
       for (const shortcut of this.$state.shortcut) {
         if (shortcut.path === route.path) return true
-        // for (const menu of shortcut.menu) {
-        //   if (menu.path === route.path && menu.submenu) return true
-        // }
+        for (const menu of shortcut.menu) {
+          if (menu.path === route.path && menu.submenu) return true
+        }
       }
     }
   }
@@ -84,24 +103,61 @@ export const useSidebarMenuStore = defineStore('sidebar-menu', {
 
 const user = useUserStore()
 
-const menuMain = {
+const menuMain: ShortcutInterface = {
+  displayName: 'Main Menu',
   name: 'Dashboard',
   path: '/',
   icon: 'i-far-house-chimney',
-  iconActive: 'i-fas-house-chimney'
+  iconActive: 'i-fas-house-chimney',
+  menu: [
+    {
+      name: 'Dashboard',
+      path: '/'
+    }
+  ]
 }
 
-const menuAttendance = {
+const menuAttendance: ShortcutInterface = {
+  displayName: 'Attendances Menu',
   name: 'Attendances',
   path: '/attendances',
   icon: 'i-far-location-dot',
-  iconActive: 'i-fas-location-dot'
+  iconActive: 'i-fas-location-dot',
+  menu: [
+    {
+      name: 'Attendances',
+      path: '/attendances'
+    }
+  ]
 }
 
-const menuAccount = {
+const menuAccount: ShortcutInterface = {
+  displayName: 'Account Menu',
   name: user.role == 'user' ? 'Invitation' : 'Invite',
   path: user.role == 'user' ? '/invitation' : '/invite',
   icon: 'i-far-circle-user',
   iconActive: 'i-fas-circle-user',
-  tempName: 'Account'
+  tempName: 'Account',
+  menu:
+    user.role == 'admin'
+      ? [
+          {
+            name: 'Invite User',
+            path: '/invite'
+          },
+          {
+            name: 'Report',
+            path: '/report'
+          }
+        ]
+      : [
+          {
+            name: 'Invitation',
+            path: '/invitation'
+          },
+          {
+            name: 'Export',
+            path: '/export'
+          }
+        ]
 }

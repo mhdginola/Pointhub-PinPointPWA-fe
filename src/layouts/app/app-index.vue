@@ -4,6 +4,9 @@ import AppPreloader from '@/components/app-preloader.vue'
 import AppHeader from './app-header.vue'
 import AppSidebar from './app-sidebar.vue'
 import AppFooter from './app-footer.vue'
+import { useSidebarStore } from '@/stores/sidebar'
+
+const sidebar = useSidebarStore()
 </script>
 
 <template>
@@ -11,17 +14,27 @@ import AppFooter from './app-footer.vue'
   <app-preloader class="print:hidden"></app-preloader>
 
   <!-- Page Wrapper -->
-  <div class="flex flex-col grow bg-white dark:bg-slate-900 lg:px-[15%] w-full min-h-screen">
-    <!-- Header -->
-    <app-header class="print:hidden"></app-header>
+  <div class="h-100vh flex flex-col grow bg-slate-50 dark:bg-slate-900">
     <!-- Sidebar -->
     <app-sidebar class="print:hidden"></app-sidebar>
-    <!-- Main Content -->
-    <div class="main-container">
-      <main class="main-content pt-2 pb-20">
-        <router-view />
-      </main>
-      <app-footer class="pt-4"></app-footer>
+
+    <div
+      class="flex flex-col h-full"
+      :class="{
+        'lg:ml-[calc(var(--sidebar-shortcut-width)+var(--sidebar-panel-width))]':
+          !sidebar.isSidebarOpen,
+        'lg:ml-[calc(var(--sidebar-shortcut-width))]': sidebar.isSidebarOpen
+      }"
+    >
+      <!-- Header -->
+      <app-header class="print:hidden"></app-header>
+      <!-- Main Content -->
+      <div class="main-container">
+        <main class="main-content">
+          <router-view />
+        </main>
+        <app-footer class="pt-4"></app-footer>
+      </div>
     </div>
   </div>
 </template>
@@ -29,10 +42,6 @@ import AppFooter from './app-footer.vue'
 <style>
 .main-container {
   @apply flex flex-col py-4 w-full flex-1;
-}
-
-.is-sidebar-open .main-container {
-  @apply lg:w-[calc(100%-(var(--sidebar-panel-width)))] lg:ml-[calc(var(--sidebar-panel-width))];
 }
 
 .main-content {
