@@ -9,7 +9,8 @@ const sidebarStore = useSidebarStore()
 const route = useRoute()
 
 const setActiveRoute = (displayName: string) => {
-  let active = (route?.meta.displayName?.toLowerCase() as string) == displayName.toLowerCase()
+  let active =
+    (route?.meta.displayName?.toString().toLowerCase() as string) == displayName.toLowerCase()
   if (active) {
     sidebarMenuStore.activeShortcut = sidebarMenuStore.shortcut.find(
       (x) => x.displayName == displayName
