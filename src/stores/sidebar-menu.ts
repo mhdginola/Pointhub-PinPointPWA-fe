@@ -23,13 +23,14 @@ export interface ShortcutInterface {
 
 export interface MenuInterface {
   name: string
+  tempName?: string
   path?: string
+  tempPath?: string
   link?: string
   separator?: boolean
   submenu?: SubmenuInterface[]
   icon?: string
   iconActive?: string
-  tempPath?: string
 }
 
 export interface SubmenuInterface {
@@ -131,6 +132,7 @@ const menu: StateInterface['shortcut'] = [
         icon: 'i-far-circle-user',
         iconActive: 'i-fas-circle-user',
         tempPath: user.role == 'user' ? '/invitation' : '/invite',
+        tempName: user.role == 'user' ? 'Invitation' : 'Invite',
         submenu:
           user.role == 'admin'
             ? [

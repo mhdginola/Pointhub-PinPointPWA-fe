@@ -36,7 +36,7 @@ const isActiveRoutes = (name: string) => {
       >
         <i
           :class="`block text-2xl ${
-            isActiveRoutes(shortcut.name) ? shortcut.iconActive : shortcut.icon
+            isActiveRoutes(shortcut.tempName ?? shortcut.name) ? shortcut.iconActive : shortcut.icon
           }`"
         ></i>
       </div>
