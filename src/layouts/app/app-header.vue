@@ -6,9 +6,21 @@ import ComponentNotification from './component-notification.vue'
 import ComponentToggleSidebar from './component-toggle-sidebar.vue'
 import logo from '@/assets/images/logo.png'
 
-const isOpen = ref(false)
-
 const user = useUserStore()
+const htmlTag = document.getElementsByTagName('html')[0]
+const isDarkMode = ref(htmlTag.classList.contains('dark'))
+
+function toggleDarkMode() {
+  if (htmlTag.classList.contains('dark')) {
+    htmlTag.classList.remove('dark')
+    localStorage.setItem('dark-mode', 'light')
+  } else {
+    htmlTag.classList.add('dark')
+    localStorage.setItem('dark-mode', 'dark')
+  }
+
+  isDarkMode.value = htmlTag.classList.contains('dark')
+}
 </script>
 
 <template>
@@ -27,6 +39,9 @@ const user = useUserStore()
         <!-- Right: Header Buttons -->
         <div class="flex flex-row items-center space-x-2">
           <component :is="ComponentNotification" />
+          <div class="avatar avatar-xs flex justify-center items-center" @click="toggleDarkMode">
+            <i class="i-far-moon text-2xl"></i>
+          </div>
 
           <component :is="BaseDropdown" position="right">
             <template #trigger>
