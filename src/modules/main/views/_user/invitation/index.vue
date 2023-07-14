@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import type { SizeType } from '@/components/base-modal.vue'
-import baseModal from '@/components/base-modal.vue'
 import moment from 'moment'
-import { onMounted, reactive } from 'vue'
-import BaseButton from '@/components/base-button.vue'
+import { onMounted } from 'vue'
 import { UseInvitationStore } from './store'
+import { openModalNotification } from '@/plugins/modal-notification'
 
 const invitation = UseInvitationStore()
 onMounted(() => {
@@ -12,7 +10,7 @@ onMounted(() => {
 })
 
 const acceptInvitation = () => {
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Joined',
     content: `Success to join Group`,
@@ -21,37 +19,13 @@ const acceptInvitation = () => {
   })
 }
 const rejectInvitation = () => {
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Rejected',
     content: `Success Reject invitation`,
     size: 'md',
     className: 'modal-invitation-rejected'
   })
-}
-
-interface modalInterface {
-  show: boolean
-  title: string
-  content: string
-  size: SizeType
-  className?: string
-}
-const modalRef = reactive<modalInterface>({
-  show: false,
-  title: '',
-  content: '',
-  size: 'md',
-  className: ''
-})
-const openModal = (model: modalInterface) => {
-  setTimeout(() => {
-    modalRef.show = true
-    modalRef.title = model.title
-    modalRef.content = model.content
-    modalRef.size = model.size
-    modalRef.className = model.className
-  }, 500)
 }
 </script>
 <template>
@@ -97,24 +71,4 @@ const openModal = (model: modalInterface) => {
       </div>
     </div>
   </div>
-
-  <Teleport to="body">
-    <!-- modal notif -->
-    <component
-      :is="baseModal"
-      :is-open="modalRef.show"
-      @on-close="modalRef.show = false"
-      :size="modalRef.size"
-    >
-      <template #content>
-        <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
-          <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
-          <div class="gap-5 flex flex-col">
-            {{ modalRef.content }}
-            <BaseButton class="bg-blue" @click="modalRef.show = false"> Close </BaseButton>
-          </div>
-        </div>
-      </template>
-    </component>
-  </Teleport>
 </template>

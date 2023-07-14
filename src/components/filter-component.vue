@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import baseDatePicker from '@/components/base-datepicker.vue'
 import baseInput from '@/components/base-input.vue'
-import BaseModal, { type SizeType } from '@/components/base-modal.vue'
+import BaseModal from '@/components/base-modal.vue'
 import baseButton from '@/components/base-button.vue'
 import { useUserStore } from '@/stores/auth'
 import { computed, reactive } from 'vue'
+import { openModalNotification } from '@/plugins/modal-notification'
 
 const props = withDefaults(
   defineProps<{
@@ -62,7 +63,7 @@ const filterAllUser = () => {
 
 const applyFilter = () => {
   emits('applyFilter')
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Applied',
     content: `Filter Applied`,
@@ -70,30 +71,6 @@ const applyFilter = () => {
     className: 'modal-filter-date-attendance-success'
   })
   filterModel.show = false
-}
-
-interface modalInterface {
-  show: boolean
-  title: string
-  content: string
-  size: SizeType
-  className?: string
-}
-const modalRef = reactive<modalInterface>({
-  show: false,
-  title: '',
-  content: '',
-  size: 'md',
-  className: ''
-})
-const openModal = (model: modalInterface) => {
-  setTimeout(() => {
-    modalRef.show = true
-    modalRef.title = model.title
-    modalRef.content = model.content
-    modalRef.size = model.size
-    modalRef.className = model.className
-  }, 500)
 }
 </script>
 
@@ -169,24 +146,6 @@ const openModal = (model: modalInterface) => {
               </baseButton>
             </div>
           </form>
-        </div>
-      </template>
-    </component>
-
-    <!-- modal notif -->
-    <component
-      :is="BaseModal"
-      :is-open="modalRef.show"
-      @on-close="modalRef.show = false"
-      :size="modalRef.size"
-    >
-      <template #content>
-        <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
-          <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
-          <div class="gap-5">
-            {{ modalRef.content }}
-            <baseButton class="bg-blue w-full" @click="modalRef.show = false"> Close </baseButton>
-          </div>
         </div>
       </template>
     </component>

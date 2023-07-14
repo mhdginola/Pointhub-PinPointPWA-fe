@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
-import type { SizeType } from './base-modal.vue'
+import { computed, reactive, ref } from 'vue'
 import BaseModal from './base-modal.vue'
 import BaseInput from './base-input.vue'
 import BaseButton from '@/components/base-button.vue'
 import { useGetLocationStore } from '@/stores/get-location'
+import { openModalNotification } from '@/plugins/modal-notification'
 
 const locationStore = useGetLocationStore()
 const props = withDefaults(
@@ -50,35 +50,13 @@ const newTagLocation = () => {
   locationStore.addTagLocation(tagModel.createModel)
   tagModel.createModel = ''
   tagModel.showCreate = false
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Success',
     content: `Create tag location Success`,
     size: 'md',
     className: 'modal-create-tag-location-success'
   })
-}
-
-interface modalInterface {
-  show: boolean
-  title: string
-  content: string
-  size: SizeType
-  className?: string
-}
-const modalRef = reactive<modalInterface>({
-  show: false,
-  title: '',
-  content: '',
-  size: 'md',
-  className: ''
-})
-const openModal = (model: modalInterface) => {
-  modalRef.show = true
-  modalRef.title = model.title
-  modalRef.content = model.content
-  modalRef.size = model.size
-  modalRef.className = model.className
 }
 </script>
 

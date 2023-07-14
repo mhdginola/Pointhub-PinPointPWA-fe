@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import BaseModal, { type SizeType } from '@/components/base-modal.vue'
 import baseButton from '@/components/base-button.vue'
 import { useAccountStore, type report } from '@/stores/account'
-import { computed, onMounted, reactive, ref, type Ref } from 'vue'
+import { onMounted, reactive, ref, type Ref } from 'vue'
 import moment from 'moment'
 import Filter from '@/components/filter-component.vue'
 import Table from '@/components/table-component.vue'
 import Row from '@/components/table-row-component.vue'
 import Col from '@/components/table-col-component.vue'
 import { useUserStore } from '@/stores/auth'
+import { openModalNotification } from '@/plugins/modal-notification'
 
 const account = useAccountStore()
 const user = useUserStore()
@@ -25,24 +25,25 @@ const setReports = () => {
       ? account.reports.filter((acc) => filterModel.users.includes(acc.user))
       : account.reports
   if (filterModel.dateFrom) {
-    filterByUser = filterByUser.filter(
-      (dt) =>
-        new Date(dt.timestamp).getTime() >=
-        new Date(moment(filterModel.dateFrom).format('DD-MM-YYYY HH:mm:ss')).getTime()
-    )
+    filterByUser = filterByUser.filter((dt) => {
+      return (
+        moment(dt.timestamp).toDate().getTime() >=
+        moment(filterModel.dateFrom, 'DD-MM-YYYY').toDate().getTime()
+      )
+    })
   }
   if (filterModel.dateTo) {
     filterByUser = filterByUser.filter(
       (dt) =>
-        new Date(dt.timestamp).getTime() <=
-        new Date(moment(filterModel.dateTo).format('DD-MM-YYYY HH:mm:ss')).getTime()
+        moment(dt.timestamp).toDate().getTime() <=
+        moment(filterModel.dateTo, 'DD-MM-YYYY').add(1, 'day').toDate().getTime()
     )
   }
 
   reports.value = filterByUser
 }
 const exportReport = () => {
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Exporting',
     content: `Downloading... please wait`,
@@ -53,28 +54,6 @@ const exportReport = () => {
 onMounted(() => {
   setReports()
 })
-
-interface modalInterface {
-  show: boolean
-  title: string
-  content: string
-  size: SizeType
-  className?: string
-}
-const modalRef = reactive<modalInterface>({
-  show: false,
-  title: '',
-  content: '',
-  size: 'md',
-  className: ''
-})
-const openModal = (model: modalInterface) => {
-  modalRef.show = true
-  modalRef.title = model.title
-  modalRef.content = model.content
-  modalRef.size = model.size
-  modalRef.className = model.className
-}
 </script>
 
 <template>
@@ -109,7 +88,7 @@ const openModal = (model: modalInterface) => {
           <Row v-for="(item, index) in reports" v-if="reports.length > 0">
             <template #col>
               <Col> {{ index + 1 }}</Col>
-              <Col> {{ moment(item.timestamp).format('DD/MM/YYYY') }}</Col>
+              <Col> {{ moment(item.timestamp).format('DD-MM-YYYY') }}</Col>
               <Col> {{ moment(item.timestamp).format('HH:mm') }}</Col>
               <Col> {{ item.user }}</Col>
               <Col> {{ item.location }}</Col>
@@ -124,25 +103,4 @@ const openModal = (model: modalInterface) => {
       </Table>
     </div>
   </div>
-
-  <Teleport to="body">
-    <component
-      :is="BaseModal"
-      :is-open="modalRef.show"
-      @on-close="modalRef.show = false"
-      :size="modalRef.size"
-    >
-      <template #content>
-        <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
-          <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
-          <div class="gap-5">
-            {{ modalRef.content }}
-            <button class="btn btn-primary btn-block mt-3" @click="modalRef.show = false">
-              Close
-            </button>
-          </div>
-        </div>
-      </template>
-    </component>
-  </Teleport>
 </template>

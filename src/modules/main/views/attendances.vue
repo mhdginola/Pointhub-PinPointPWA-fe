@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import baseModal, { type SizeType } from '@/components/base-modal.vue'
 import BaseButton from '@/components/base-button.vue'
 import Maps from '@/components/gps-access-component.vue'
 import Photo from '@/components/photo-component.vue'
 import TagLocation from '@/components/tag-location.vue'
 import { useBaseNotification, TypesEnum } from '@/composable/notification'
 import { useGetLocationStore } from '@/stores/get-location'
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import { usePhotoStore } from '@/stores/get-photo'
 import { useAttendanceStore, type attendanceState } from '@/stores/attendance'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/auth'
 import { useAccountStore } from '@/stores/account'
+import { openModalNotification } from '@/plugins/modal-notification'
 
 const user = useUserStore()
 const router = useRouter()
@@ -21,28 +21,6 @@ const attendance = useAttendanceStore()
 const locationStore = useGetLocationStore()
 const photoStore = usePhotoStore()
 const tagLocation = ref()
-
-interface modalInterface {
-  show: boolean
-  title: string
-  content: string
-  size: SizeType
-  className?: string
-}
-const modalRef = reactive<modalInterface>({
-  show: false,
-  title: '',
-  content: '',
-  size: 'md',
-  className: ''
-})
-const openModal = (model: modalInterface) => {
-  modalRef.show = true
-  modalRef.title = model.title
-  modalRef.content = model.content
-  modalRef.size = model.size
-  modalRef.className = model.className
-}
 
 interface notifInterface {
   type: TypesEnum
@@ -93,7 +71,7 @@ const SubmitAttendance = async () => {
     timestamp: data.timestamp,
     user: data.name
   })
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Success',
     content: `Create Attendance Success`,
@@ -109,45 +87,18 @@ const SubmitAttendance = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col w-full gap-2">
-    <div class="flex lg:flex-row flex-col w-full gap-2">
-      <div class="lg:w-[60%] w-full">
-        <div class="flex flex-col gap-2">
-          <!-- photo -->
-          <Photo />
+  <div class="flex flex-col gap-2">
+    <!-- photo -->
+    <Photo />
 
-          <!-- map -->
-          <Maps />
-        </div>
-      </div>
-      <div class="lg:w-[40%] w-full lg:px-5">
-        <!-- tag -->
-        <TagLocation v-model="tagLocation" />
-      </div>
-    </div>
-    <BaseButton class-name="bg-green-primary lg:w-[60%] w-full" @click.prevent="SubmitAttendance">
+    <!-- map -->
+    <Maps />
+
+    <!-- tag -->
+    <TagLocation v-model="tagLocation" />
+
+    <BaseButton class-name="bg-green-primary" @click.prevent="SubmitAttendance">
       submit
     </BaseButton>
-
-    <!-- modal -->
-    <Teleport to="body">
-      <!-- modal notif -->
-      <component
-        :is="baseModal"
-        :is-open="modalRef.show"
-        @on-close="modalRef.show = false"
-        :size="modalRef.size"
-      >
-        <template #content>
-          <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
-            <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
-            <div class="gap-5 flex flex-col">
-              {{ modalRef.content }}
-              <BaseButton class="bg-blue" @click="modalRef.show = false"> Close </BaseButton>
-            </div>
-          </div>
-        </template>
-      </component>
-    </Teleport>
   </div>
 </template>

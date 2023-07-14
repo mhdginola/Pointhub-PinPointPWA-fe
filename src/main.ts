@@ -25,6 +25,8 @@ import Cleave from 'cleave.js'
 import { plugin as VueTippy } from 'vue-tippy'
 import 'tippy.js/dist/tippy.css'
 
+import { modalNotification } from './plugins/modal-notification'
+
 // maps
 // import VueGoogleMaps from '@fawmi/vue-google-maps'
 
@@ -37,6 +39,7 @@ app.directive('cleave', {
 app.use(VueTippy)
 app.use(hljsVuePlugin)
 app.use(Notifications)
+app.use(modalNotification)
 app.use(createPinia())
 app.use(router)
 // app.use(VueGoogleMaps)

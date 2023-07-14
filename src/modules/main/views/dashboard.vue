@@ -24,17 +24,18 @@ const setAttendances = () => {
       : attendance.attendances
 
   if (filter.dateFrom) {
-    filterByUser = filterByUser.filter(
-      (dt) =>
-        new Date(dt.timestamp).getTime() >=
-        new Date(moment(filter.dateFrom).format('DD-MM-YYYY HH:mm:ss')).getTime()
-    )
+    filterByUser = filterByUser.filter((dt) => {
+      return (
+        moment(dt.timestamp).toDate().getTime() >=
+        moment(filter.dateFrom, 'DD-MM-YYYY').toDate().getTime()
+      )
+    })
   }
   if (filter.dateTo) {
     filterByUser = filterByUser.filter(
       (dt) =>
-        new Date(dt.timestamp).getTime() <=
-        new Date(moment(filter.dateTo).format('DD-MM-YYYY HH:mm:ss')).getTime()
+        moment(dt.timestamp).toDate().getTime() <=
+        moment(filter.dateTo, 'DD-MM-YYYY').add(1, 'day').toDate().getTime()
     )
   }
 
@@ -57,7 +58,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col w-full overflow-y-auto">
+  <div class="flex flex-col w-full">
     <div class="flex justify-end">
       <div class="w-auto">
         <Filter

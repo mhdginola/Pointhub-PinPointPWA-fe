@@ -35,7 +35,7 @@ export function useSidebar() {
     if (isMobileBreakpoint()) {
       sidebarStore.closeSidebar()
     } else {
-      // sidebarStore.openSidebar()
+      sidebarStore.openSidebar()
     }
   }
 }

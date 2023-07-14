@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import BasePopper from '@/components/base-popper.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { UseInvitationStore } from '@/modules/main/views/_user/invitation/store'
-import type { SizeType } from '@/components/base-modal.vue'
-import BaseModal from '@/components/base-modal.vue'
-import BaseButton from '@/components/base-button.vue'
+import { openModalNotification } from '@/plugins/modal-notification'
 
 const activeTab = ref('all')
 const user = useUserStore()
@@ -17,7 +15,7 @@ onMounted(() => {
   invitation.mockInvitation()
 })
 const acceptInvitation = () => {
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Joined',
     content: `Success to join Group`,
@@ -26,37 +24,13 @@ const acceptInvitation = () => {
   })
 }
 const rejectInvitation = () => {
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Rejected',
     content: `Success Reject invitation`,
     size: 'md',
     className: 'modal-invitation-rejected'
   })
-}
-
-interface modalInterface {
-  show: boolean
-  title: string
-  content: string
-  size: SizeType
-  className?: string
-}
-const modalRef = reactive<modalInterface>({
-  show: false,
-  title: '',
-  content: '',
-  size: 'md',
-  className: ''
-})
-const openModal = (model: modalInterface) => {
-  setTimeout(() => {
-    modalRef.show = true
-    modalRef.title = model.title
-    modalRef.content = model.content
-    modalRef.size = model.size
-    modalRef.className = model.className
-  }, 500)
 }
 </script>
 
@@ -156,28 +130,11 @@ const openModal = (model: modalInterface) => {
               </div>
             </div>
           </div>
+          <div v-else class="overflow-auto p-4">
+            <p>No Notification</p>
+          </div>
         </div>
       </div>
     </template>
   </component>
-
-  <Teleport to="body">
-    <!-- modal notif -->
-    <component
-      :is="BaseModal"
-      :is-open="modalRef.show"
-      @on-close="modalRef.show = false"
-      :size="modalRef.size"
-    >
-      <template #content>
-        <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
-          <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
-          <div class="gap-5 flex flex-col">
-            {{ modalRef.content }}
-            <BaseButton class="bg-blue" @click="modalRef.show = false"> Close </BaseButton>
-          </div>
-        </div>
-      </template>
-    </component>
-  </Teleport>
 </template>

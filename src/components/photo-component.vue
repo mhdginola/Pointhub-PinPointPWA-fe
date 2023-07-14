@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { usePhotoStore } from '@/stores/get-photo'
 import { onBeforeMount, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
-import type { SizeType } from './base-modal.vue'
-import BaseModal from './base-modal.vue'
 import BaseButton from '@/components/base-button.vue'
 import BaseSelect from './base-select.vue'
+import { openModalNotification } from '@/plugins/modal-notification'
 
 const photoStore = usePhotoStore()
 const canvasRef = ref()
@@ -34,29 +33,6 @@ const videoModel = reactive<videoInterface>({
   height: 0,
   facial: listOption[0]
 })
-const modalPreview = ref(false)
-
-interface modalInterface {
-  show: boolean
-  title: string
-  content: string
-  size: SizeType
-  className?: string
-}
-const modalRef = reactive<modalInterface>({
-  show: false,
-  title: '',
-  content: '',
-  size: 'md',
-  className: ''
-})
-const openModal = (model: modalInterface) => {
-  modalRef.show = true
-  modalRef.title = model.title
-  modalRef.content = model.content
-  modalRef.size = model.size
-  modalRef.className = model.className
-}
 
 const streamCamera = async (facingMode: string) => {
   setTimeout(async () => {
@@ -69,7 +45,7 @@ const streamCamera = async (facingMode: string) => {
     try {
       const supports = navigator.mediaDevices.getSupportedConstraints()
       if (!supports['facingMode']) {
-        openModal({
+        openModalNotification({
           show: true,
           title: 'Tidak bisa membuka kamera',
           content: `Perangkat tidak mendukung untuk menjalankan operasi ini`,
@@ -80,15 +56,20 @@ const streamCamera = async (facingMode: string) => {
       }
       mediaStream.value = await navigator.mediaDevices.getUserMedia(options)
     } catch (e) {
-      alert(e)
-      openModal({
+      openModalNotification({
         show: true,
-        title: 'Buka pengaturan perangkat Anda',
-        content: `Cari opsi "Privasi" atau "Keamanan" dan masuk ke dalamnya. 
-        Cari opsi "Camera" atau "Izin Camera" dan buka. 
-        Aktifkan opsi "Izinkan Aplikasi Mengakses Camera" atau serupa. 
-        Anda juga dapat memilih pengaturan yang lebih spesifik untuk setiap aplikasi yang terdaftar di bawah opsi tersebut.`,
-        size: 'md',
+        title: 'Belum bisa melakukan PinPoint?',
+        content: `
+          <p> 1. Buka pengaturan perangkat Anda </p>
+          <p> 2. Cari opsi "Privasi" atau "Keamanan" </p>
+          <p> 3. Cari opsi "Camera" atau "Izin Kamera" </p>
+          <p> 4. Pastikan Anda memilih aplikasi browser internet yang Anda gunakan </p>
+          <p> 5. Aktifkan opsi "izinkan aplikasi mengakses kamera" atau yang serupa </p>
+          <br/>
+          <p>(Pada perangkat tertentu, langkah 5 bisa mendahului langkah 4)</p>
+
+        `,
+        size: 'xl',
         className: 'modal-access-camera-failed'
       })
       return
@@ -154,33 +135,28 @@ watch(
     @update:model-value=";[stopCameraAccess(), streamCamera(videoModel.facial.value)]"
   />
   <div
-    class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center"
+    class="bg-slate-300/20 rounded-5 h-90 flex justify-center items-center"
     v-if="!photoStore.cameraAccess && !photoStore.photo"
   >
     <i class="i-fad-camera-slash text-20"></i>
   </div>
   <!-- video -->
   <video
-    class="bg-slate-300/20 rounded-5 h-80 w-full flex justify-center items-center"
+    class="bg-slate-300/20 rounded-5 h-90 w-full flex justify-center items-center"
     id="video"
     ref="videoRef"
-    v-show="photoStore.cameraAccess"
+    v-show="photoStore.cameraAccess && !photoStore.photo"
   >
     Video not available
   </video>
   <!-- captured image -->
-  <div v-if="photoStore.photo" class="fixed bottom-[75px] z-20 right-[5px]">
-    <i
-      class="i-fad-xmark-large text-lg text-black absolute top-2 left-2"
-      @click.prevent=";[photoStore.setPhotoData('')]"
-    ></i>
-    <img
-      class="rounded-5 h-30"
-      v-if="photoStore.photo"
-      :src="photoStore.photo"
-      @click.prevent="modalPreview = true"
-    />
+  <div
+    v-if="photoStore.photo"
+    class="bg-slate-300/20 rounded-5 h-90 w-full flex justify-center items-center"
+  >
+    <img :class="`w-[${videoModel.width}px] h-full`" :src="photoStore.photo?.toString()" />
   </div>
+
   <BaseButton
     :class-name="photoStore.photo ? 'bg-blue' : 'bg-[#D757F6]'"
     @click.prevent="photoStore.photo ? streamCamera(videoModel.facial.value) : getCameraPhoto()"
@@ -190,39 +166,4 @@ watch(
 
   <!-- temp. photo -->
   <canvas class="hidden" ref="canvasRef"></canvas>
-
-  <Teleport to="body">
-    <component
-      :is="BaseModal"
-      :is-open="modalRef.show"
-      @on-close="modalRef.show = false"
-      :size="modalRef.size"
-    >
-      <template #content>
-        <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
-          <span class="py-4 text-2xl font-bold" v-html="modalRef.title"></span>
-          <div class="space-y-8">
-            {{ modalRef.content }}
-            <button class="btn btn-primary btn-block mt-3" @click="modalRef.show = false">
-              Close
-            </button>
-          </div>
-        </div>
-      </template>
-    </component>
-
-    <component :is="BaseModal" :is-open="modalPreview" @on-close="modalPreview = false">
-      <template #content>
-        <div class="max-h-90vh overflow-auto p-4">
-          <span class="text-2xl font-bold">Preview</span>
-          <div class="flex flex-col gap-3">
-            <img :src="(photoStore.photo as string)" class="w-full rounded-lg" />
-            <button class="btn btn-primary btn-block mt-3" @click="modalPreview = false">
-              Close
-            </button>
-          </div>
-        </div>
-      </template>
-    </component>
-  </Teleport>
 </template>

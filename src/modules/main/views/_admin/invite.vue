@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAccountStore, type user } from '@/stores/account'
 import baseInput from '@/components/base-input.vue'
-import baseModal, { type SizeType } from '@/components/base-modal.vue'
+import baseModal from '@/components/base-modal.vue'
 import baseSelect from '@/components/base-select.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -9,6 +9,7 @@ import Table from '@/components/table-component.vue'
 import Row from '@/components/table-row-component.vue'
 import Col from '@/components/table-col-component.vue'
 import BaseButton from '@/components/base-button.vue'
+import { openModalNotification } from '@/plugins/modal-notification'
 
 const router = useRouter()
 const account = useAccountStore()
@@ -75,7 +76,7 @@ const inviteUser = () => {
     role: tempRole.value?.label,
     id: inviteModel.id
   })
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Success',
     content: 'Invite Success',
@@ -87,7 +88,7 @@ const inviteUser = () => {
 
 const deleteInvited = () => {
   account.deleteUser(deleteModel.email)
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Success',
     content: 'Delete Success',
@@ -148,7 +149,7 @@ const createGroup = () => {
     errorGroupModel.group = ''
   }
   account.createGroup(groupModel.group, groupModel.oldName)
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Success',
     content: groupModel.oldName == '' ? 'Create Group Success' : 'Edit Group Success',
@@ -167,7 +168,7 @@ const deleteGroup = () => {
     errorGroupModel.password = ''
   }
   account.deleteGroup(deleteGroupModel.group)
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Success',
     content: 'Delete Group Success',
@@ -185,30 +186,6 @@ const clearGroupModel = () => {
 
 const closeGroup = () => {
   groupModel.showBase = false
-}
-
-//
-
-interface modalInterface {
-  show: boolean
-  title: string
-  content: string
-  size: SizeType
-  className?: string
-}
-const modalRef = reactive<modalInterface>({
-  show: false,
-  title: '',
-  content: '',
-  size: 'md',
-  className: ''
-})
-const openModal = (model: modalInterface) => {
-  modalRef.show = true
-  modalRef.title = model.title
-  modalRef.content = model.content
-  modalRef.size = model.size
-  modalRef.className = model.className
 }
 </script>
 
@@ -493,26 +470,6 @@ const openModal = (model: modalInterface) => {
           <button class="btn btn-primary btn-block mt-3 remove-user-confirm" @click="deleteInvited">
             Confirm
           </button>
-        </div>
-      </template>
-    </component>
-
-    <!-- modal notif -->
-    <component
-      :is="baseModal"
-      :is-open="modalRef.show"
-      @on-close="modalRef.show = false"
-      :size="modalRef.size"
-    >
-      <template #content>
-        <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
-          <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
-          <div class="space-y-8">
-            {{ modalRef.content }}
-            <button class="btn btn-primary btn-block mt-3" @click="modalRef.show = false">
-              Close
-            </button>
-          </div>
         </div>
       </template>
     </component>

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useAccountStore } from '@/stores/account'
 import baseInput from '@/components/base-input.vue'
-import baseModal, { type SizeType } from '@/components/base-modal.vue'
+import baseModal from '@/components/base-modal.vue'
 import baseButton from '@/components/base-button.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import index from './index.vue'
 import { useRouter } from 'vue-router'
+import { openModalNotification } from '@/plugins/modal-notification'
 
 const account = useAccountStore()
 const router = useRouter()
@@ -50,7 +51,7 @@ const createGroup = () => {
     errorGroupModel.group = ''
   }
   account.createGroup(groupModel.group, groupModel.oldName)
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Success',
     content: groupModel.oldName == '' ? 'Create Group Success' : 'Edit Group Success',
@@ -68,7 +69,7 @@ const deleteGroup = () => {
     errorGroupModel.password = ''
   }
   account.deleteGroup(deleteGroupModel.group)
-  openModal({
+  openModalNotification({
     show: true,
     title: 'Success',
     content: 'Delete Group Success',
@@ -88,28 +89,6 @@ const closeGroup = () => {
   router.push({
     name: 'invite'
   })
-}
-
-interface modalInterface {
-  show: boolean
-  title: string
-  content: string
-  size: SizeType
-  className?: string
-}
-const modalRef = reactive<modalInterface>({
-  show: false,
-  title: '',
-  content: '',
-  size: 'md',
-  className: ''
-})
-const openModal = (model: modalInterface) => {
-  modalRef.show = true
-  modalRef.title = model.title
-  modalRef.content = model.content
-  modalRef.size = model.size
-  modalRef.className = model.className
 }
 </script>
 
@@ -234,24 +213,6 @@ const openModal = (model: modalInterface) => {
             />
             <baseButton class-name="bg-blue" type="submit">Confirm</baseButton>
           </form>
-        </div>
-      </template>
-    </component>
-
-    <!-- modal notif -->
-    <component
-      :is="baseModal"
-      :is-open="modalRef.show"
-      @on-close="modalRef.show = false"
-      :size="modalRef.size"
-    >
-      <template #content>
-        <div class="max-h-90vh overflow-auto p-4" :class="modalRef.className">
-          <h2 class="py-4 text-2xl font-bold" v-html="modalRef.title"></h2>
-          <div class="gap-5 flex flex-col">
-            {{ modalRef.content }}
-            <baseButton class="bg-blue" @click="modalRef.show = false"> Close </baseButton>
-          </div>
         </div>
       </template>
     </component>
