@@ -26,42 +26,31 @@ const props = defineProps<{
     v-else
     v-for="item in props.attendances"
   >
-    <span class="font-bold lg:text-3xl text-2xl my-3 underline-1 underline">
-      {{ item.name }}
-    </span>
-    <div class="flex flex-col lg:flex-row w-full">
-      <div class="lg:w-[70%] w-full">
-        <div class="flex flex-col w-full">
-          <!-- photo -->
-          <div class="h-90 flex justify-center items-center">
-            <img :src="item.photo" class="rounded-5 h-90%" />
-          </div>
+    <div class="flex flex-col w-full gap-5">
+      <div class="flex flex-row items-center gap-2">
+        <span class="font-bold lg:text-3xl text-2xl">{{ item.name }}</span>
+        <span> &#x2022; </span>
+        <div class="flex flex-row gap-2">
+          <small class="lg:text-lg text-md" v-text="moment(item.timestamp).format('DD-MMM-YYYY')" />
+          <small class="lg:text-lg text-md" v-text="moment(item.timestamp).format('HH:mm:ss')" />
+          <small class="lg:text-lg text-md" v-text="`(${moment(item.timestamp).fromNow()})`" />
         </div>
       </div>
-      <div class="lg:w-[30%] w-full">
-        <div class="flex flex-col w-full lg:px-5 lg:mt-0 mt-3 h-full">
-          <!-- location -->
-          <div class="flex flex-col">
-            <span class="font-bold lg:text-3xl text-2xl mb-3">Location</span>
-            <span class="lg:text-xl text-lg" v-text="item.location"></span>
-          </div>
-          <!-- tag & time -->
-          <div class="flex lg:flex-col flex-row justify-between lg:my-a mt-5">
-            <div class="flex flex-col">
-              <span class="font-bold lg:text-3xl text-2xl">Tag Location</span>
-              <span class="lg:text-xl text-lg" v-text="item.tagLocation"></span>
-            </div>
-            <div class="flex flex-col">
-              <small
-                class="lg:text-lg text-md"
-                v-text="moment(item.timestamp).format('DD-MMM-YYYY')"
-              ></small>
-              <small
-                class="lg:text-lg text-md"
-                v-text="moment(item.timestamp).format('HH:mm:ss')"
-              ></small>
-            </div>
-          </div>
+      <div class="flex flex-col w-full gap-5">
+        <!-- photo -->
+        <div class="h-90 flex justify-center items-center">
+          <img :src="item.photo" class="rounded-5 h-90%" />
+        </div>
+
+        <!-- location -->
+        <div class="flex flex-col">
+          <span class="font-bold lg:text-3xl text-2xl">Location</span>
+          <span class="lg:text-lg text-sm" v-text="item.location"></span>
+        </div>
+        <!-- tag & time -->
+        <div class="flex flex-col">
+          <span class="font-bold lg:text-3xl text-2xl">Tag Location</span>
+          <span class="lg:text-lg text-sm" v-text="item.tagLocation"></span>
         </div>
       </div>
     </div>

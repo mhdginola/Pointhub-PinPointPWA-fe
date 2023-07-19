@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
-import { useUserStore } from './auth'
 
 /**
  * Shortcut using dynamic icon on the fly, at the compile time
@@ -105,8 +104,6 @@ export const useSidebarMenuStore = defineStore('sidebar-menu', {
     }
   }
 })
-
-const user = useUserStore()
 
 const menu: StateInterface['shortcut'] = [
   {

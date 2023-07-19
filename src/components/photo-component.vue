@@ -29,7 +29,7 @@ const listOption: listInterface[] = [
   }
 ]
 const videoModel = reactive<videoInterface>({
-  width: 320,
+  width: 1024,
   height: 0,
   facial: listOption[0]
 })

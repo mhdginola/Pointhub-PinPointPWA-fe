@@ -61,7 +61,7 @@ function toggleDarkMode() {
                 @click="user.switchRole()"
               >
                 <i class="i-far-circle-user block"></i>
-                <span>Switch Role</span>
+                <span>({{ user.role }}) Switch Role</span>
               </div>
             </div>
             <div class="p-1">
