@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAccountStore, type user } from '@/stores/account'
+import { useAccountStore, type user as userType } from '@/stores/account'
 import baseInput from '@/components/base-input.vue'
 import baseModal from '@/components/base-modal.vue'
 import baseSelect from '@/components/base-select.vue'
@@ -10,14 +10,20 @@ import Row from '@/components/table-row-component.vue'
 import Col from '@/components/table-col-component.vue'
 import BaseButton from '@/components/base-button.vue'
 import { openModalNotification } from '@/plugins/modal-notification'
+import { useUserStore } from '@/stores/auth'
 
-const router = useRouter()
 const account = useAccountStore()
+const user = useUserStore()
 const filterUser = ref('')
 const filteredUser = computed(() => {
-  return filterUser.value
+  let data = filterUser.value
     ? account.users.filter((x) => x.name.toLowerCase().includes(filterUser.value))
     : account.users
+  if (user.role == 'user') {
+    data = data.filter((x) => x.name.toLowerCase() == user.username.toLowerCase())
+  }
+
+  return data
 })
 
 interface OptionsInterface {
@@ -26,7 +32,7 @@ interface OptionsInterface {
 const tempRole = ref<OptionsInterface>({
   label: ''
 })
-interface inviteType extends user {
+interface inviteType extends userType {
   show: boolean
 }
 const inviteModel = reactive<inviteType>({
@@ -202,6 +208,7 @@ const closeGroup = () => {
       <button
         class="hover:border-1 hover:border-slate-200/20 border-1 border-transparent text-center py-2 px-2 text-slate-500 dark:text-slate-200 capitalize rounded-5 capitalize flex flex-row gap-2 invite-user"
         @click=";[clear(), (inviteModel.show = true)]"
+        v-if="user.role == 'admin'"
       >
         invite user
         <i class="i-fad-user-plus text-2xl text-slate-500 dark:text-slate-200"></i>
@@ -232,26 +239,31 @@ const closeGroup = () => {
             </Col>
             <Col>
               <div class="flex flex-row justify-center items-center gap-2">
-                <button
-                  class="flex flex-row gap-2 justify-center items-center w-22 capitalize px-3 py-1 border-1 border-slate-200/20 rounded edit-user"
-                  @click="
-                    ;[
-                      Object.assign(inviteModel, item),
-                      (inviteModel.show = true),
-                      (tempRole.label = item.role ?? '')
-                    ]
-                  "
-                >
-                  <i class="i-fad-pencil cursor-pointer"></i>
-                  <small>edit</small>
-                </button>
-                <button
-                  class="flex flex-row gap-2 justify-center items-center w-22 capitalize px-3 py-1 border-1 border-slate-200/20 rounded remove-user"
-                  @click=";[(deleteModel.show = true), (deleteModel.email = item.email)]"
-                >
-                  <i class="i-fad-circle-xmark cursor-pointer"></i>
-                  <small>remove</small>
-                </button>
+                <template v-if="user.role == 'admin'">
+                  <button
+                    class="flex flex-row gap-2 justify-center items-center w-22 capitalize px-3 py-1 border-1 border-slate-200/20 rounded edit-user"
+                    @click="
+                      ;[
+                        Object.assign(inviteModel, item),
+                        (inviteModel.show = true),
+                        (tempRole.label = item.role ?? '')
+                      ]
+                    "
+                  >
+                    <i class="i-fad-pencil cursor-pointer"></i>
+                    <small>edit</small>
+                  </button>
+                  <button
+                    class="flex flex-row gap-2 justify-center items-center w-22 capitalize px-3 py-1 border-1 border-slate-200/20 rounded remove-user"
+                    @click=";[(deleteModel.show = true), (deleteModel.email = item.email)]"
+                  >
+                    <i class="i-fad-circle-xmark cursor-pointer"></i>
+                    <small>remove</small>
+                  </button>
+                </template>
+                <template v-else>
+                  <spa> - </spa>
+                </template>
               </div>
             </Col>
           </template>
@@ -442,16 +454,12 @@ const closeGroup = () => {
             />
             <small class="text-danger" v-if="errorModel.role">{{ errorModel.role }}</small>
 
-            <button class="btn btn-primary btn-block mt-3" type="submit">
+            <BaseButton class="bg-blue w-full mt-3" type="submit">
               {{ inviteModel.id == 0 ? 'Save' : 'Update' }}
-            </button>
-            <button
-              class="btn bg-transparent border-1 border-secondary btn-block mt-3"
-              type="button"
-              @click="inviteModel.show = false"
-            >
+            </BaseButton>
+            <BaseButton class="bg-secondary w-full" type="button" @click="inviteModel.show = false">
               Cancel
-            </button>
+            </BaseButton>
           </form>
         </div>
       </template>
@@ -467,9 +475,10 @@ const closeGroup = () => {
       <template #content>
         <div class="max-h-90vh overflow-auto p-4 modal-remove-user">
           <h2 class="py-4 text-2xl font-bold">Delete User ?</h2>
-          <button class="btn btn-primary btn-block mt-3 remove-user-confirm" @click="deleteInvited">
+          <p>This action cannot be undo</p>
+          <BaseButton class="bg-blue w-full mt-3 remove-user-confirm" @click="deleteInvited">
             Confirm
-          </button>
+          </BaseButton>
         </div>
       </template>
     </component>

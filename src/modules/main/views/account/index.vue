@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import invite from './invite.vue'
-import report from './../export.vue'
+import report from './report.vue'
 import { computed } from 'vue'
 
 const route = useRoute()

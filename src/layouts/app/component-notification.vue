@@ -3,8 +3,8 @@ import BasePopper from '@/components/base-popper.vue'
 import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
-import { UseInvitationStore } from '@/modules/main/views/_user/invitation/store'
 import { openModalNotification } from '@/plugins/modal-notification'
+import { UseInvitationStore } from '@/stores/invitation'
 
 const activeTab = ref('all')
 const user = useUserStore()
@@ -55,7 +55,7 @@ const rejectInvitation = () => {
       >
         <div class="rounded-t-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-200">
           <div class="flex items-center justify-between px-4 pt-2">
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center p-3">
               <h3 class="font-medium text-slate-700 dark:text-slate-100">Notifications</h3>
               <div
                 v-if="user.role == 'user'"
@@ -64,41 +64,15 @@ const rejectInvitation = () => {
                 {{ invitation.invitations.length }}
               </div>
             </div>
-
-            <button
-              class="btn h-7 w-7 rounded-full p-0 -mr-1.5 active:bg-slate-300/25 focus:bg-slate-300/20 hover:bg-slate-300/20 dark:active:bg-slate-300/25 dark:focus:bg-slate-300/20 dark:hover:bg-slate-300/20"
-            >
-              <i icon="fa-regular fa-maximize"></i>
-            </button>
-          </div>
-
-          <div class="scrollbar-hidden flex shrink-0 overflow-x-auto px-3">
-            <button
-              :class="
-                activeTab === 'all'
-                  ? 'border-primary dark:border-accent text-primary dark:text-slate'
-                  : 'border-transparent hover:text-slate-800 focus:text-slate-800 dark:hover:text-slate-100 dark:focus:text-slate-100'
-              "
-              class="btn shrink-0 border-b-2 rounded-none px-3.5 py-2.5"
-              @click="activeTab = 'all'"
-            >
-              <span>All</span>
-            </button>
           </div>
         </div>
-        <div class="tab-content flex flex-col overflow-hidden">
-          <div
-            v-if="activeTab === 'all' && user.role == 'user'"
-            class="overflow-y-auto p-4 space-y-4"
-          >
-            <div
-              class="bg-slate-300/20 rounded-5 lg:p-10 p-5 mt-5"
-              v-for="item in invitation.invitations"
-            >
-              <div class="flex flex-col">
-                <small class="uppercase">{{ item.from }} has invite you to join group</small>
-                <div class="flex lg:flex-row flex-col">
-                  <div class="p-3 border-secondary border-1 rounded-5 mt-3 flex-1">
+        <div class="flex flex-col overflow-hidden">
+          <div v-if="user.role == 'user'" class="overflow-y-auto p-4 space-y-4">
+            <div class="bg-slate-300/20 rounded-5 p-5 mt-5" v-for="item in invitation.invitations">
+              <div class="flex flex-col gap-2">
+                <small class="capitalize">{{ item.from }} has invite you to join group</small>
+                <div class="flex flex-col gap-5">
+                  <div class="p-3 border-secondary border-1 rounded-5 flex-1">
                     <table class="w-full">
                       <tr>
                         <td>Group Name</td>
@@ -112,7 +86,7 @@ const rejectInvitation = () => {
                       </tr>
                     </table>
                   </div>
-                  <div class="flex flex-row justify-center items-center flex-1 gap-2 mt-5 lg:mt-0">
+                  <div class="flex flex-row justify-center items-center flex-1 gap-2">
                     <button
                       class="bg-blue text-center py-2 px-10 text-white capitalize rounded-5 capitalize accept"
                       @click.prevent="acceptInvitation"

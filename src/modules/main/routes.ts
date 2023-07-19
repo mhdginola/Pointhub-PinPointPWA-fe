@@ -10,7 +10,7 @@ export const routes: RouteRecordRaw[] = [
         meta: {
           displayName: 'Main Menu'
         },
-        component: () => import('./views/dashboard.vue')
+        component: () => import('./views/dashboard/index.vue')
       },
       {
         path: 'attendances',
@@ -18,27 +18,8 @@ export const routes: RouteRecordRaw[] = [
         meta: {
           displayName: 'Main Menu'
         },
-        component: () => import('./views/attendances.vue')
+        component: () => import('./views/attendances/index.vue')
       },
-      // user
-      {
-        path: 'invitation',
-        name: 'invitation',
-        meta: {
-          displayName: 'Main Menu'
-        },
-        component: () => import('./views/_user/index.vue')
-      },
-      {
-        path: 'export',
-        name: 'export',
-        meta: {
-          displayName: 'Main Menu',
-          parentName: 'Account'
-        },
-        component: () => import('./views/_user/index.vue')
-      },
-      // admin
       {
         path: 'invite',
         name: 'invite',
@@ -46,7 +27,7 @@ export const routes: RouteRecordRaw[] = [
           displayName: 'Main Menu',
           parentName: 'Account'
         },
-        component: () => import('./views/_admin/index.vue')
+        component: () => import('./views/account/index.vue')
       },
       {
         path: 'report',
@@ -55,13 +36,8 @@ export const routes: RouteRecordRaw[] = [
           displayName: 'Main Menu',
           parentName: 'Account'
         },
-        component: () => import('./views/_admin/index.vue')
+        component: () => import('./views/account/index.vue')
       }
-      // {
-      //   path: 'groups',
-      //   name: 'groups',
-      //   component: () => import('./views/_admin/groups.vue')
-      // }
     ]
   },
   {

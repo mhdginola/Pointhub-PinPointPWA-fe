@@ -7,6 +7,7 @@ import { useUserStore } from '@/stores/auth'
 import { computed, reactive } from 'vue'
 import { openModalNotification } from '@/plugins/modal-notification'
 
+const user = useUserStore()
 const props = withDefaults(
   defineProps<{
     filterDateFrom: string
@@ -46,13 +47,18 @@ const valueUser = computed({
   }
 })
 
-const user = useUserStore()
 const filterModel = reactive({
   show: false,
   searchUser: ''
 })
 const filteredUser = computed(() => {
-  return user.users.filter((u) => u.toLowerCase().includes(filterModel.searchUser.toLowerCase()))
+  let data = user.users.filter((u) =>
+    u.toLowerCase().includes(filterModel.searchUser.toLowerCase())
+  )
+  if (user.role == 'user') {
+    data = data.filter((x) => x.toLowerCase() == user.username.toLowerCase())
+  }
+  return data
 })
 const isFiltered = computed(
   () => valueUser.value.length > 0 || valueFromDate.value || valueFromTo.value

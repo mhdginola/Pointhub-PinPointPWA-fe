@@ -131,34 +131,20 @@ const menu: StateInterface['shortcut'] = [
         name: 'Account',
         icon: 'i-far-circle-user',
         iconActive: 'i-fas-circle-user',
-        tempPath: user.role == 'user' ? '/invitation' : '/invite',
-        tempName: user.role == 'user' ? 'Invitation' : 'Invite',
-        submenu:
-          user.role == 'admin'
-            ? [
-                {
-                  name: 'Invite User',
-                  path: '/invite',
-                  parent: 'Account'
-                },
-                {
-                  name: 'Report',
-                  path: '/report',
-                  parent: 'Account'
-                }
-              ]
-            : [
-                {
-                  name: 'Invitation',
-                  path: '/invitation',
-                  parent: 'Account'
-                },
-                {
-                  name: 'Export',
-                  path: '/export',
-                  parent: 'Account'
-                }
-              ]
+        tempPath: '/invite',
+        tempName: 'Invite',
+        submenu: [
+          {
+            name: 'Invite User',
+            path: '/invite',
+            parent: 'Account'
+          },
+          {
+            name: 'Report',
+            path: '/report',
+            parent: 'Account'
+          }
+        ]
       }
     ]
   },

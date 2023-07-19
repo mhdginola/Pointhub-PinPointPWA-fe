@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import moment from 'moment'
 import { onMounted } from 'vue'
-import { UseInvitationStore } from './store'
 import { openModalNotification } from '@/plugins/modal-notification'
+import { UseInvitationStore } from '@/stores/invitation'
 
 const invitation = UseInvitationStore()
 onMounted(() => {

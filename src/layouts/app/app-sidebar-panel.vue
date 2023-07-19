@@ -175,7 +175,7 @@ watch(
 }
 
 .sidebar-panel-body .menu-link-button {
-  @apply flex w-full items-center justify-between py-2 text-lg outline-none duration-300 ease-in-out text-slate-200 hover:text-slate-50 cursor-pointer hover:bg-slate-700 focus:bg-slate-700 active:bg-slate-700/25 px-2 rounded-md;
+  @apply flex w-full items-center justify-between py-2 outline-none duration-300 ease-in-out text-slate-200 hover:text-slate-50 cursor-pointer hover:bg-slate-700 focus:bg-slate-700 active:bg-slate-700/25 px-2 rounded-md;
 }
 
 .sidebar-panel-body .submenu-link {

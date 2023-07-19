@@ -20,12 +20,12 @@ const filterModel = reactive({
 
 const reports: Ref<report[]> = ref([])
 const setReports = () => {
-  let filterByUser =
+  let data =
     filterModel.users.length > 0
       ? account.reports.filter((acc) => filterModel.users.includes(acc.user))
       : account.reports
   if (filterModel.dateFrom) {
-    filterByUser = filterByUser.filter((dt) => {
+    data = data.filter((dt) => {
       return (
         moment(dt.timestamp).toDate().getTime() >=
         moment(filterModel.dateFrom, 'DD-MM-YYYY').toDate().getTime()
@@ -33,14 +33,17 @@ const setReports = () => {
     })
   }
   if (filterModel.dateTo) {
-    filterByUser = filterByUser.filter(
+    data = data.filter(
       (dt) =>
         moment(dt.timestamp).toDate().getTime() <=
         moment(filterModel.dateTo, 'DD-MM-YYYY').add(1, 'day').toDate().getTime()
     )
   }
+  if (user.role == 'user') {
+    data = data.filter((x) => x.user.toLowerCase() == user.username.toLowerCase())
+  }
 
-  reports.value = filterByUser
+  reports.value = data
 }
 const exportReport = () => {
   openModalNotification({
