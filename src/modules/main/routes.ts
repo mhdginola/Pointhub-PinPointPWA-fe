@@ -22,11 +22,10 @@ export const routes: RouteRecordRaw[] = [
         component: () => import('./views/attendances/index.vue')
       },
       {
-        path: 'invite',
-        name: 'invite',
+        path: 'account',
+        name: 'account',
         meta: {
-          displayName: 'Main Menu',
-          parentName: 'Account'
+          displayName: 'Main Menu'
         },
         component: () => import('./views/account/index.vue')
       },
@@ -34,10 +33,9 @@ export const routes: RouteRecordRaw[] = [
         path: 'report',
         name: 'report',
         meta: {
-          displayName: 'Main Menu',
-          parentName: 'Account'
+          displayName: 'Main Menu'
         },
-        component: () => import('./views/account/index.vue')
+        component: () => import('./views/report/index.vue')
       }
     ]
   },

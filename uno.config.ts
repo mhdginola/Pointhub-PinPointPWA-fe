@@ -53,6 +53,9 @@ export default defineConfig({
     'i-fas-circle-user',
     'i-fad-camera',
     'i-fad-location-dot-slash',
-    'i-fad-calendar'
+    'i-fad-calendar',
+    'i-far-file-export',
+    'i-fas-file-export',
+    'i-far-envelope'
   ]
 })
