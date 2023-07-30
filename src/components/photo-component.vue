@@ -133,6 +133,7 @@ watch(
     v-model="videoModel.facial"
     :list="listOption"
     @update:model-value=";[stopCameraAccess(), streamCamera(videoModel.facial.value)]"
+    class="mb-3"
   />
   <div
     class="bg-slate-300/20 rounded-5 h-90 flex justify-center items-center"

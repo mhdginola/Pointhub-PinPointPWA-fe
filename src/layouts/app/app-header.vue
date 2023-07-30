@@ -22,7 +22,7 @@ const global = useGlobalStore()
         <div class="flex justify-center items-center">
           <component :is="ComponentToggleSidebar" class="px-5 xl:block hidden" />
 
-          <img :src="global.isDarkMode ? logo_dark : logo" class="h-10 lg:hidden block" />
+          <img :src="global.isDarkMode ? logo_dark : logo" class="h-7 lg:hidden block" />
         </div>
 
         <!-- Right: Header Buttons -->
