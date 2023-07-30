@@ -2,13 +2,15 @@ import { defineStore } from 'pinia'
 
 const MapBoxAPI = import.meta.env.VITE_MAPBOX_API
 const MapBoxToken = import.meta.env.VITE_MAPBOX_TOKEN
+const MapAPI = import.meta.env.VITE_MAP_API
 
 interface locationState {
-  latitude: number | null
-  longitude: number | null
+  latitude: number
+  longitude: number
   accessGPS: boolean
   mapBoxToken: string
   mapBoxAPI: string
+  mapAPI: string
   tagLocations: string[]
 }
 
@@ -20,6 +22,7 @@ export const useGetLocationStore = defineStore('get Location', {
       accessGPS: false,
       mapBoxToken: MapBoxToken,
       mapBoxAPI: MapBoxAPI,
+      mapAPI: MapAPI,
       tagLocations: []
     },
   actions: {
@@ -34,16 +37,16 @@ export const useGetLocationStore = defineStore('get Location', {
               resolve()
             },
             (err) => {
-              this.latitude = null
-              this.longitude = null
+              this.latitude = 0
+              this.longitude = 0
               this.accessGPS = false
               reject()
             },
             {}
           )
         } catch (err: GeolocationPositionError | any) {
-          this.latitude = null
-          this.longitude = null
+          this.latitude = 0
+          this.longitude = 0
           this.accessGPS = false
           reject()
         }

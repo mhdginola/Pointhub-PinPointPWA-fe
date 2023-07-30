@@ -61,6 +61,10 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col">
+    <span class="font-bold lg:text-5xl text-3xl mb-3 w-[fit-content]">
+      Report
+      <hr />
+    </span>
     <div class="bg-slate-300/20 lg:px-5 px-0 py-5 rounded-5">
       <div class="flex lg:justify-end justify-center items-center gap-2 lg:px-0 px-5">
         <div class="w-auto">

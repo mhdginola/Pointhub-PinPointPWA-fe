@@ -197,6 +197,10 @@ const closeGroup = () => {
 
 <template>
   <div class="flex flex-col flex-1">
+    <span class="font-bold lg:text-5xl text-3xl mb-3 w-[fit-content]">
+      Account
+      <hr />
+    </span>
     <div class="bg-slate-300/20 p-5 rounded-5">
       <div class="flex flex-row justify-between items-center gap-2 mb-3">
         <button

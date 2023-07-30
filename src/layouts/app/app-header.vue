@@ -5,22 +5,11 @@ import BaseDropdown from '@/components/base-dropdown.vue'
 import ComponentNotification from './component-notification.vue'
 import ComponentToggleSidebar from './component-toggle-sidebar.vue'
 import logo from '@/assets/images/logo.png'
+import logo_dark from '@/assets/images/logo-dark.png'
+import { useGlobalStore } from '@/stores/global'
 
 const user = useUserStore()
-const htmlTag = document.getElementsByTagName('html')[0]
-const isDarkMode = ref(htmlTag.classList.contains('dark'))
-
-function toggleDarkMode() {
-  if (htmlTag.classList.contains('dark')) {
-    htmlTag.classList.remove('dark')
-    localStorage.setItem('dark-mode', 'light')
-  } else {
-    htmlTag.classList.add('dark')
-    localStorage.setItem('dark-mode', 'dark')
-  }
-
-  isDarkMode.value = htmlTag.classList.contains('dark')
-}
+const global = useGlobalStore()
 </script>
 
 <template>
@@ -31,15 +20,18 @@ function toggleDarkMode() {
       <div class="w-full flex items-center justify-between">
         <!-- Left: Sidebar Toggle Button -->
         <div class="flex justify-center items-center">
-          <component :is="ComponentToggleSidebar" class="px-5 lg:block hidden" />
+          <component :is="ComponentToggleSidebar" class="px-5 xl:block hidden" />
 
-          <img :src="logo" class="h-10 lg:hidden block" />
+          <img :src="global.isDarkMode ? logo_dark : logo" class="h-10 lg:hidden block" />
         </div>
 
         <!-- Right: Header Buttons -->
         <div class="flex flex-row items-center space-x-2">
           <component :is="ComponentNotification" />
-          <div class="avatar avatar-xs flex justify-center items-center" @click="toggleDarkMode">
+          <div
+            class="avatar avatar-xs flex justify-center items-center"
+            @click="global.toggleDarkMode()"
+          >
             <i class="i-far-moon text-2xl"></i>
           </div>
 

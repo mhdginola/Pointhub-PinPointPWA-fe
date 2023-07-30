@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import Filter from '@/components/filter-component.vue'
 import Attendances from '@/components/attendances-component.vue'
-import { computed, onMounted, reactive, ref, type Ref } from 'vue'
+import { onMounted, reactive, ref, type Ref } from 'vue'
 import { useAttendanceStore, type attendanceState } from '@/stores/attendance'
 import { useUserStore } from '@/stores/auth'
 import moment from 'moment'
+import { $fetch, $fetchOptions } from '@/services/axios'
 
 const user = useUserStore()
 const attendance = useAttendanceStore()
@@ -52,14 +53,26 @@ const setAttendances = () => {
   attendances.value = filterByUser
 }
 
+const { isLoading } = $fetchOptions
+
+if (isLoading) {
+  console.log('loading fetch')
+}
+
 onMounted(() => {
   setAttendances()
+
+  $fetch('users').then((res) => console.log(res.data))
 })
 </script>
 
 <template>
   <div class="flex flex-col w-full">
-    <div class="flex justify-end">
+    <div class="flex justify-between">
+      <span class="font-bold lg:text-5xl text-3xl mb-3 w-[fit-content]">
+        Dashboard
+        <hr />
+      </span>
       <div class="w-auto">
         <Filter
           @apply-filter="setAttendances"

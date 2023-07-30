@@ -87,18 +87,25 @@ const SubmitAttendance = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <!-- photo -->
-    <Photo />
+  <div class="flex flex-col">
+    <span class="font-bold lg:text-5xl text-3xl mb-3 w-[fit-content]">
+      Attendance
+      <hr />
+    </span>
 
-    <!-- map -->
-    <Maps />
+    <div class="bg-slate-300/20 p-5 rounded-5 flex flex-col">
+      <!-- photo -->
+      <Photo />
 
-    <!-- tag -->
-    <TagLocation v-model="tagLocation" />
+      <!-- map -->
+      <Maps />
 
-    <BaseButton class-name="bg-green-primary" @click.prevent="SubmitAttendance">
-      submit
-    </BaseButton>
+      <!-- tag -->
+      <TagLocation v-model="tagLocation" />
+
+      <BaseButton class-name="bg-green-primary" @click.prevent="SubmitAttendance">
+        submit
+      </BaseButton>
+    </div>
   </div>
 </template>

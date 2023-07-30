@@ -1,9 +1,9 @@
 <script lang="ts">
 import { onMounted, ref } from 'vue'
 import { useGetLocationStore } from '@/stores/get-location'
-import { MapboxMap, MapboxMarker } from 'vue-mapbox-ts'
-import BaseModal from './base-modal.vue'
 import { openModalNotification } from '@/plugins/modal-notification'
+import 'leaflet/dist/leaflet.css'
+import { map, latLng, tileLayer, type MapOptions, marker } from 'leaflet'
 
 const locationStore = useGetLocationStore()
 </script>
@@ -26,23 +26,35 @@ const getLocationAccess = async () => {
   })
 }
 
+const setLocationMaps = () => {
+  const opt: MapOptions = {
+    center: latLng(locationStore.latitude, locationStore.longitude),
+    zoom: 12
+  }
+  const leaflet = map('map', opt)
+  tileLayer(
+    `https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${locationStore.mapAPI}`,
+    {
+      tileSize: 512,
+      zoomOffset: -1,
+      minZoom: 1,
+      crossOrigin: true
+    }
+  ).addTo(leaflet)
+  marker([locationStore.latitude, locationStore.longitude]).addTo(leaflet)
+}
+
 const locationName = ref()
 onMounted(async () => {
   await getLocationAccess()
+  setLocationMaps()
   locationName.value = await locationStore.getLocationName()
 })
 </script>
 <template>
   <span class="font-bold lg:text-4xl text-2xl my-3">Location</span>
   <div class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center" id="map">
-    <MapboxMap
-      :accessToken="locationStore.mapBoxToken"
-      :center="[locationStore.longitude, locationStore.latitude]"
-      :zoom="10"
-      v-if="locationStore.$state.accessGPS"
-    >
-      <MapboxMarker :lng-lat="[locationStore.longitude, locationStore.latitude]" />
-    </MapboxMap>
+    <div v-if="locationStore.$state.accessGPS" class="w-full h-full" id="map"></div>
     <i class="i-fad-location-dot-slash text-20" v-else></i>
   </div>
   <div>
