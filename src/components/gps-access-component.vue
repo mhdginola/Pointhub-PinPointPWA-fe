@@ -38,7 +38,8 @@ const setLocationMaps = () => {
       tileSize: 512,
       zoomOffset: -1,
       minZoom: 1,
-      crossOrigin: true
+      crossOrigin: true,
+      zIndex: 10
     }
   ).addTo(leaflet)
   marker([locationStore.latitude, locationStore.longitude]).addTo(leaflet)
@@ -51,6 +52,12 @@ onMounted(async () => {
   locationName.value = await locationStore.getLocationName()
 })
 </script>
+<style>
+.leaflet-pane,
+.leaflet-control-container div {
+  z-index: 10 !important;
+}
+</style>
 <template>
   <span class="font-bold lg:text-4xl text-2xl my-3">Location</span>
   <div class="bg-slate-300/20 rounded-5 h-80 flex justify-center items-center" id="map">
