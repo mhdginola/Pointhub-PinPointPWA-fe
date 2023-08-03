@@ -87,6 +87,8 @@ export const useGetLocationStore = defineStore('get Location', {
     },
     setTagLocations(tag: tagLocation[]) {
       this.tagLocations = tag
-    }
+    },
+    showPosition() {},
+    showError() {}
   }
 })
