@@ -1,12 +1,23 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import BaseModal from './base-modal.vue'
 import BaseInput from './base-input.vue'
 import BaseButton from '@/components/base-button.vue'
 import { useGetLocationStore } from '@/stores/get-location'
 import { openModalNotification } from '@/plugins/modal-notification'
+import { useBaseNotification, TypesEnum } from '@/composable/notification'
 
 const locationStore = useGetLocationStore()
+const { notification } = useBaseNotification()
+interface notifInterface {
+  type: TypesEnum
+  title: string
+  text: string
+}
+const openNotif = (model: notifInterface) => {
+  notification(model.title, model.text, { type: model.type })
+}
+
 const props = withDefaults(
   defineProps<{
     modelValue: string
@@ -21,11 +32,10 @@ const tagModel = reactive({
   searchModel: '',
   createModel: ''
 })
-const refCreateModel = ref()
 const filteredTag = computed(() => {
   return tagModel.searchModel
     ? locationStore.tagLocations.filter((x) =>
-        x.toLowerCase().includes(tagModel.searchModel.toLowerCase())
+        x.name.toLowerCase().includes(tagModel.searchModel.toLowerCase())
       )
     : locationStore.tagLocations
 })
@@ -46,8 +56,19 @@ const value = computed({
     emit('update:modelValue', value)
   }
 })
-const newTagLocation = () => {
-  locationStore.addTagLocation(tagModel.createModel)
+const newTagLocation = async () => {
+  if (!tagModel.createModel) {
+    openNotif({
+      title: 'Error',
+      text: 'Tag Location Empty',
+      type: TypesEnum.Danger
+    })
+  }
+  await locationStore.createTagLocation({
+    name: tagModel.createModel,
+    latitude: locationStore.latitude,
+    longitude: locationStore.longitude
+  })
   tagModel.createModel = ''
   tagModel.showCreate = false
   openModalNotification({
@@ -58,6 +79,14 @@ const newTagLocation = () => {
     className: 'modal-create-tag-location-success'
   })
 }
+
+const deleteTagLocation = async (id: string) => {
+  await locationStore.deleteTagLocation(id)
+}
+
+onMounted(async () => {
+  await locationStore.fetchTagLocations()
+})
 </script>
 
 <template>
@@ -104,10 +133,14 @@ const newTagLocation = () => {
         <div class="max-h-[75%] overflow-auto">
           <div
             v-for="tag in filteredTag"
-            class="block p2 border-1 border-slate hover:brightness-90 bg-white dark:bg-slate-9 cursor-pointer"
-            @click="selectTagLocation(tag)"
+            class="block p2 border-1 border-slate hover:brightness-90 bg-white dark:bg-slate-9 cursor-pointer flex justify-between items-center"
+            @click="selectTagLocation(tag.name)"
           >
-            {{ tag }}
+            {{ tag.name }}
+            <i
+              @click="deleteTagLocation(tag._id?.toString() as string)"
+              class="i-fas-xmark block text-danger hover:dark-bg-white hover:bg-slate-6 rounded-10"
+            ></i>
           </div>
         </div>
       </div>
@@ -133,7 +166,12 @@ const newTagLocation = () => {
             v-model="tagModel.createModel"
             required
           />
-          <BaseButton class="bg-blue w-full" type="button" @click.prevent="newTagLocation">
+          <BaseButton
+            class="bg-blue w-full"
+            type="button"
+            @click.prevent="newTagLocation"
+            :disabled="!tagModel.createModel"
+          >
             Save
           </BaseButton>
         </form>

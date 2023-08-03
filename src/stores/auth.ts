@@ -1,3 +1,4 @@
+import { API } from '@/services/axios'
 import { defineStore } from 'pinia'
 
 interface userState {
@@ -29,6 +30,18 @@ export const useUserStore = defineStore('auth', {
       ]
     },
   actions: {
+    authWithGoogle() {
+      const auth = window.open(
+        API + 'auth/google',
+        '',
+        'width=300,height=300,toolbar=no,scrollbars=no,menubar=no'
+      )
+
+      auth?.addEventListener('load', () => {
+        console.log('test') //tidak jalan di window yang baru
+        //ekspektasinya adalah melakukan pengambilan token setelah dari page login google
+      })
+    },
     async setAccessToken(token: string) {
       return new Promise((resolve) => {
         this.accessToken = token

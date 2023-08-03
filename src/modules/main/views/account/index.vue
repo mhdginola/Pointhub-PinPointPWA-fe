@@ -1,26 +1,30 @@
 <script setup lang="ts">
-import { useAccountStore, type user as userType } from '@/stores/account'
 import baseInput from '@/components/base-input.vue'
 import baseModal from '@/components/base-modal.vue'
 import baseSelect from '@/components/base-select.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import Table from '@/components/table-component.vue'
 import Row from '@/components/table-row-component.vue'
 import Col from '@/components/table-col-component.vue'
 import BaseButton from '@/components/base-button.vue'
 import { openModalNotification } from '@/plugins/modal-notification'
 import { useUserStore } from '@/stores/auth'
+import { useGroupStore } from '@/stores/groups'
+import { useAttendanceStore } from '@/stores/attendance'
+import { useInviteStore, type invite as userType } from '@/stores/invite'
 
-const account = useAccountStore()
 const user = useUserStore()
+const invitation = useInviteStore()
+const groups = useGroupStore()
+const attendance = useAttendanceStore()
+
 const filterUser = ref('')
 const filteredUser = computed(() => {
   let data = filterUser.value
-    ? account.users.filter((x) => x.name.toLowerCase().includes(filterUser.value))
-    : account.users
+    ? invitation.invites.filter((x) => x.email.toLowerCase().includes(filterUser.value))
+    : invitation.invites
   if (user.role == 'user') {
-    data = data.filter((x) => x.name.toLowerCase() == user.username.toLowerCase())
+    data = data.filter((x) => x.email.toLowerCase() == user.username.toLowerCase())
   }
 
   return data
@@ -37,13 +41,12 @@ interface inviteType extends userType {
 }
 const inviteModel = reactive<inviteType>({
   show: false,
-  name: '',
+  group: '',
   email: '',
-  role: 'user',
-  id: 0
+  _id: ''
 })
 const errorModel = reactive({
-  name: '',
+  group: '',
   email: '',
   role: ''
 })
@@ -52,17 +55,16 @@ const deleteModel = reactive({
   email: ''
 })
 
-onMounted(() => {
-  account.mockUser()
-  account.mockGroup()
+onMounted(async () => {
+  await attendance.fetchAttendaces()
 })
 
-const inviteUser = () => {
-  if (!inviteModel.name) {
-    errorModel.name = 'This field is required'
+const inviteUser = async () => {
+  if (!inviteModel.group) {
+    errorModel.group = 'This field is required'
     return
   } else {
-    errorModel.name = ''
+    errorModel.group = ''
   }
   if (!inviteModel.email) {
     errorModel.email = 'This field is required'
@@ -76,24 +78,20 @@ const inviteUser = () => {
   } else {
     errorModel.role = ''
   }
-  account.inviteUser({
-    email: inviteModel.email,
-    name: inviteModel.name,
-    role: tempRole.value?.label,
-    id: inviteModel.id
-  })
+  await invitation.createInvite(inviteModel)
   openModalNotification({
     show: true,
     title: 'Success',
     content: 'Invite Success',
     size: 'md',
-    className: inviteModel.id == 0 ? 'modal-invite-user-success' : 'modal-invite-user-edit-success'
+    className:
+      inviteModel._id == '' ? 'modal-invite-user-success' : 'modal-invite-user-edit-success'
   })
   inviteModel.show = false
 }
 
-const deleteInvited = () => {
-  account.deleteUser(deleteModel.email)
+const deleteInvited = async (id: string) => {
+  await invitation.deleteInvite(id)
   openModalNotification({
     show: true,
     title: 'Success',
@@ -106,9 +104,8 @@ const deleteInvited = () => {
 
 const clear = () => {
   inviteModel.email = ''
-  inviteModel.id = 0
-  inviteModel.name = ''
-  inviteModel.role = 'user'
+  inviteModel._id = ''
+  inviteModel.group = ''
 }
 
 // group
@@ -116,8 +113,8 @@ const clear = () => {
 const filterGroup = ref('')
 const filteredGroup = computed(() => {
   return filterGroup.value
-    ? account.groups.filter((x) => x.toLowerCase().includes(filterGroup.value))
-    : account.groups
+    ? groups.groups.filter((x) => x.name.toLowerCase().includes(filterGroup.value))
+    : groups.groups
 })
 const inputGroupRef = ref()
 const inputPasswordRef = ref()
@@ -125,19 +122,20 @@ const inputPasswordRef = ref()
 const groupModel = reactive({
   showBase: false,
   showCreate: false,
-  group: '',
-  oldName: ''
+  name: '',
+  _id: ''
 })
 const deleteGroupModel = reactive({
   show: false,
-  group: '',
+  _id: '',
   password: ''
 })
 const errorGroupModel = reactive({
   group: '',
   password: ''
 })
-const openGroups = () => {
+const openGroups = async () => {
+  await groups.fetchGroups()
   groupModel.showBase = true
 }
 
@@ -147,33 +145,39 @@ const openCreateGroup = () => {
   groupModel.showBase = false
 }
 
-const createGroup = () => {
-  if (!groupModel.group) {
+const createGroup = async () => {
+  if (!groupModel.name) {
     errorGroupModel.group = 'This field is required'
     return
   } else {
     errorGroupModel.group = ''
   }
-  account.createGroup(groupModel.group, groupModel.oldName)
+
+  if (groupModel._id) {
+    await groups.updateGroup({ _id: groupModel._id, name: groupModel.name })
+  } else {
+    await groups.createGroup(groupModel.name)
+  }
+
   openModalNotification({
     show: true,
     title: 'Success',
-    content: groupModel.oldName == '' ? 'Create Group Success' : 'Edit Group Success',
+    content: groupModel._id == '' ? 'Create Group Success' : 'Edit Group Success',
     size: 'md',
-    className: groupModel.oldName == '' ? 'modal-create-group-success' : 'modal-edit-group-success'
+    className: groupModel._id == '' ? 'modal-create-group-success' : 'modal-edit-group-success'
   })
   groupModel.showCreate = false
   groupModel.showBase = true
 }
 
-const deleteGroup = () => {
+const deleteGroup = async () => {
   if (!deleteGroupModel.password) {
     errorGroupModel.password = 'This field is required'
     return
   } else {
     errorGroupModel.password = ''
   }
-  account.deleteGroup(deleteGroupModel.group)
+  await groups.deleteGroup(deleteGroupModel._id)
   openModalNotification({
     show: true,
     title: 'Success',
@@ -186,8 +190,8 @@ const deleteGroup = () => {
 }
 
 const clearGroupModel = () => {
-  groupModel.group = ''
-  groupModel.oldName = ''
+  groupModel.name = ''
+  groupModel._id = ''
 }
 
 const closeGroup = () => {
@@ -233,14 +237,12 @@ const closeGroup = () => {
             <template #col>
               <Col>
                 <span class="block flex flex-col">
-                  <p class="font-bold">{{ item.name }}</p>
+                  <p class="font-bold">{{ item.email }}</p>
                   <small>{{ item.email }}</small>
                 </span>
               </Col>
               <Col>
-                <span class="block h-full">
-                  {{ item.role }}
-                </span>
+                <span class="block h-full"> - </span>
               </Col>
               <Col>
                 <div class="flex flex-row justify-center items-center gap-2">
@@ -250,8 +252,8 @@ const closeGroup = () => {
                       @click="
                         ;[
                           Object.assign(inviteModel, item),
-                          (inviteModel.show = true),
-                          (tempRole.label = item.role ?? '')
+                          (inviteModel.show = true)
+                          // (tempRole.label = item.role ?? '')
                         ]
                       "
                     >
@@ -308,14 +310,14 @@ const closeGroup = () => {
               v-for="item in filteredGroup"
               class="justify-between items-center flex flex-row shadow shadow-lg shadow-slate-300/20 p-3 rounded-md block"
             >
-              <span>{{ item }}</span>
+              <span>{{ item.name }}</span>
               <div class="flex flex-row gap-2">
                 <button
                   class="cursor-pointer edit-group text-center p-2 text-slate-500 dark:text-slate-200 capitalize flex flex-row"
                   @click="
                     ;[
-                      (groupModel.group = item),
-                      (groupModel.oldName = item),
+                      (groupModel.name = item.name),
+                      (groupModel._id = item._id),
                       (groupModel.showCreate = true),
                       (groupModel.showBase = false)
                     ]
@@ -328,7 +330,7 @@ const closeGroup = () => {
                   @click="
                     ;[
                       (deleteGroupModel.show = true),
-                      (deleteGroupModel.group = item),
+                      (deleteGroupModel._id = item._id),
                       (groupModel.showBase = false)
                     ]
                   "
@@ -352,20 +354,20 @@ const closeGroup = () => {
       <template #content>
         <div
           class="max-h-90vh overflow-auto p-4"
-          :class="groupModel.oldName == '' ? 'modal-create-group' : 'modal-edit-group'"
+          :class="groupModel._id == '' ? 'modal-create-group' : 'modal-edit-group'"
         >
           <h2 class="py-4 text-2xl font-bold">
-            {{ groupModel.oldName == '' ? 'Create Group' : 'Update Group' }}
+            {{ groupModel._id == '' ? 'Create Group' : 'Update Group' }}
           </h2>
           <form
             class="gap-5 flex flex-col"
-            :class="groupModel.oldName == '' ? 'add-group' : 'edit-group'"
+            :class="groupModel._id == '' ? 'add-group' : 'edit-group'"
             @submit.prevent="createGroup"
           >
             <component
               name="name"
               :is="baseInput"
-              v-model="groupModel.group"
+              v-model="groupModel.name"
               label="Name"
               class="w-full"
               mode="bordered"
@@ -374,7 +376,7 @@ const closeGroup = () => {
             />
             <div class="flex flex-col">
               <BaseButton class="bg-blue" type="submit">
-                {{ groupModel.oldName == '' ? 'Create' : 'Update' }}
+                {{ groupModel._id == '' ? 'Create' : 'Update' }}
               </BaseButton>
               <BaseButton
                 class-name="bg-secondary"
@@ -417,6 +419,7 @@ const closeGroup = () => {
       </template>
     </component>
 
+    <!-- user -->
     <!-- modal user -->
     <component
       :is="baseModal"
@@ -427,18 +430,18 @@ const closeGroup = () => {
       <template #content>
         <div class="max-h-90vh overflow-auto p-4 modal-invite-user">
           <h2 class="py-4 text-2xl font-bold">
-            {{ inviteModel.id == 0 ? 'Invite User' : 'Update User' }}
+            {{ inviteModel._id == '' ? 'Invite User' : 'Update User' }}
           </h2>
           <form class="space-y-8 flex flex-col invite-user" @submit.prevent="inviteUser">
             <component
               name="name"
               :is="baseInput"
-              v-model="inviteModel.name"
-              label="Name"
+              v-model="inviteModel.group"
+              label="Group"
               class="w-full"
               mode="bordered"
-              :error="errorModel.name"
-              :disabled="inviteModel.id != 0"
+              :error="errorModel.group"
+              :disabled="inviteModel._id != ''"
             />
             <component
               name="email"
@@ -448,7 +451,7 @@ const closeGroup = () => {
               class="w-full"
               mode="bordered"
               :error="errorModel.email"
-              :disabled="inviteModel.id != 0"
+              :disabled="inviteModel._id != ''"
             />
             <baseSelect
               name="role"
@@ -461,7 +464,7 @@ const closeGroup = () => {
             <small class="text-danger" v-if="errorModel.role">{{ errorModel.role }}</small>
 
             <BaseButton class="bg-blue w-full mt-3" type="submit">
-              {{ inviteModel.id == 0 ? 'Save' : 'Update' }}
+              {{ inviteModel._id == '' ? 'Save' : 'Update' }}
             </BaseButton>
             <BaseButton class="bg-secondary w-full" type="button" @click="inviteModel.show = false">
               Cancel
@@ -482,7 +485,10 @@ const closeGroup = () => {
         <div class="max-h-90vh overflow-auto p-4 modal-remove-user">
           <h2 class="py-4 text-2xl font-bold">Delete User ?</h2>
           <p>This action cannot be undo</p>
-          <BaseButton class="bg-blue w-full mt-3 remove-user-confirm" @click="deleteInvited">
+          <BaseButton
+            class="bg-blue w-full mt-3 remove-user-confirm"
+            @click="deleteInvited(inviteModel._id as string)"
+          >
             Confirm
           </BaseButton>
         </div>

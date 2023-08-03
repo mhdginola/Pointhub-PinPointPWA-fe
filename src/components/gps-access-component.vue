@@ -49,7 +49,10 @@ const locationName = ref()
 onMounted(async () => {
   await getLocationAccess()
   setLocationMaps()
-  locationName.value = await locationStore.getLocationName()
+  locationName.value = await locationStore.getLocationName(
+    locationStore.longitude,
+    locationStore.latitude
+  )
 })
 </script>
 <style>

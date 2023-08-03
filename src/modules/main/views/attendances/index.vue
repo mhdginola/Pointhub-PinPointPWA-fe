@@ -9,13 +9,9 @@ import { ref } from 'vue'
 import { usePhotoStore } from '@/stores/get-photo'
 import { useAttendanceStore, type attendanceState } from '@/stores/attendance'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/auth'
-import { useAccountStore } from '@/stores/account'
 import { openModalNotification } from '@/plugins/modal-notification'
 
-const user = useUserStore()
 const router = useRouter()
-const account = useAccountStore()
 const { notification } = useBaseNotification()
 const attendance = useAttendanceStore()
 const locationStore = useGetLocationStore()
@@ -56,20 +52,12 @@ const SubmitAttendance = async () => {
     })
     return
   }
-  let data = <attendanceState>{
-    name: user.username,
-    address: 'Jakarta',
-    email: 'hafiz@gmail.com',
-    location: await locationStore.getLocationName(),
-    photo: photoStore.$state.photo,
-    tagLocation: tagLocation.value,
-    timestamp: new Date()
-  }
-  attendance.setAttendance(data)
-  account.reports.push({
-    location: data.location,
-    timestamp: data.timestamp,
-    user: data.name
+  await attendance.postAttendance({
+    email: 'dummy@gmail.com',
+    group: 'dummy group',
+    groupName: 'dummy group',
+    location: [locationStore.longitude, locationStore.latitude],
+    photo: photoStore.photo as string
   })
   openModalNotification({
     show: true,

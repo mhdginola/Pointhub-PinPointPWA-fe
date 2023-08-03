@@ -1,13 +1,14 @@
+import { $fetch } from '@/services/axios'
 import { defineStore } from 'pinia'
+import { useGetLocationStore } from './get-location'
 
 export interface attendanceState {
-  name: string
-  email: string
-  address: string
+  group: string
   photo: string
-  location: string | Promise<string> | any
-  tagLocation: string
-  timestamp: Date | string
+  location: [number, number]
+  email: string
+  groupName: string
+  locationName?: string
 }
 
 interface attendancesState {
@@ -20,8 +21,23 @@ export const useAttendanceStore = defineStore('attendance', {
       attendances: []
     },
   actions: {
-    setAttendance(attendance: attendanceState) {
-      this.attendances.push(attendance)
+    async fetchAttendaces() {
+      let request = await $fetch('attendances', { method: 'GET' })
+      this.setAttendance(request.data?.value?.attendances as attendanceState[])
+    },
+    async postAttendance(attendance: attendanceState) {
+      await $fetch('attendances', { method: 'POST', data: attendance })
+    },
+    async setAttendance(attendance: attendanceState[]) {
+      const location = useGetLocationStore()
+      for (let att of attendance) {
+        att.locationName = await location.getLocationName(att.location[0], att.location[1])
+      }
+      this.attendances = attendance
+    },
+    async export() {
+      let request = await $fetch('attendances/export', { method: 'GET' })
+      window.open(request.data.value?.downloadLink)
     }
   }
 })

@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import Filter from '@/components/filter-component.vue'
 import Attendances from '@/components/attendances-component.vue'
-import { onMounted, reactive, ref, type Ref } from 'vue'
+import { onMounted, reactive } from 'vue'
 import { useAttendanceStore, type attendanceState } from '@/stores/attendance'
 import { useUserStore } from '@/stores/auth'
-import moment from 'moment'
-import { $fetch, $fetchOptions } from '@/services/axios'
 
 const user = useUserStore()
 const attendance = useAttendanceStore()
@@ -16,53 +14,40 @@ const filter = reactive({
   users: [...user.users]
 })
 
-const attendances: Ref<attendanceState[]> = ref([])
-
 const setAttendances = () => {
-  let filterByUser: attendanceState[] =
-    filter.users.length > 0
-      ? attendance.attendances.filter((acc) => filter.users.includes(acc.name))
-      : attendance.attendances
-
-  if (filter.dateFrom) {
-    filterByUser = filterByUser.filter((dt) => {
-      return (
-        moment(dt.timestamp).toDate().getTime() >=
-        moment(filter.dateFrom, 'DD-MM-YYYY').toDate().getTime()
-      )
-    })
-  }
-  if (filter.dateTo) {
-    filterByUser = filterByUser.filter(
-      (dt) =>
-        moment(dt.timestamp).toDate().getTime() <=
-        moment(filter.dateTo, 'DD-MM-YYYY').add(1, 'day').toDate().getTime()
-    )
-  }
-
-  filterByUser = filterByUser.sort((a: attendanceState, b: attendanceState) => {
-    if (a.timestamp.valueOf() < b.timestamp.valueOf()) {
-      return 1
-    }
-    if (a.timestamp.valueOf() > b.timestamp.valueOf()) {
-      return -1
-    }
-    return 0
-  })
-
-  attendances.value = filterByUser
+  // let filterByUser: attendanceState[] =
+  //   filter.users.length > 0
+  //     ? attendance.attendances.filter((acc) => filter.users.includes(acc.email))
+  //     : attendance.attendances
+  // if (filter.dateFrom) {
+  //   filterByUser = filterByUser.filter((dt) => {
+  //     return (
+  //       moment(dt.timestamp).toDate().getTime() >=
+  //       moment(filter.dateFrom, 'DD-MM-YYYY').toDate().getTime()
+  //     )
+  //   })
+  // }
+  // if (filter.dateTo) {
+  //   filterByUser = filterByUser.filter(
+  //     (dt) =>
+  //       moment(dt.timestamp).toDate().getTime() <=
+  //       moment(filter.dateTo, 'DD-MM-YYYY').add(1, 'day').toDate().getTime()
+  //   )
+  // }
+  // filterByUser = filterByUser.sort((a: attendanceState, b: attendanceState) => {
+  //   if (a.timestamp.valueOf() < b.timestamp.valueOf()) {
+  //     return 1
+  //   }
+  //   if (a.timestamp.valueOf() > b.timestamp.valueOf()) {
+  //     return -1
+  //   }
+  //   return 0
+  // })
+  // attendance.setAttendance(filterByUser)
 }
 
-const { isLoading } = $fetchOptions
-
-if (isLoading) {
-  console.log('loading fetch')
-}
-
-onMounted(() => {
-  setAttendances()
-
-  $fetch('users').then((res) => console.log(res.data))
+onMounted(async () => {
+  await attendance.fetchAttendaces()
 })
 </script>
 
@@ -82,6 +67,6 @@ onMounted(() => {
         />
       </div>
     </div>
-    <Attendances :attendances="attendances" />
+    <Attendances :attendances="attendance.attendances" />
   </div>
 </template>

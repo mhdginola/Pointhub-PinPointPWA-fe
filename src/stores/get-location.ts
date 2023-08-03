@@ -1,9 +1,16 @@
+import { $fetch } from '@/services/axios'
 import { defineStore } from 'pinia'
 
 const MapBoxAPI = import.meta.env.VITE_MAPBOX_API
 const MapBoxToken = import.meta.env.VITE_MAPBOX_TOKEN
 const MapAPI = import.meta.env.VITE_MAP_API
 
+interface tagLocation {
+  name: string
+  longitude: number
+  latitude: number
+  _id?: string
+}
 interface locationState {
   latitude: number
   longitude: number
@@ -11,7 +18,7 @@ interface locationState {
   mapBoxToken: string
   mapBoxAPI: string
   mapAPI: string
-  tagLocations: string[]
+  tagLocations: tagLocation[]
 }
 
 export const useGetLocationStore = defineStore('get Location', {
@@ -52,9 +59,9 @@ export const useGetLocationStore = defineStore('get Location', {
         }
       })
     },
-    async getLocationName() {
+    async getLocationName(longitude: number, latitude: number) {
       let response = await fetch(
-        `${MapBoxAPI}/${this.longitude},${this.latitude}.json?access_token=${MapBoxToken}`
+        `${MapBoxAPI}/${longitude},${latitude}.json?access_token=${MapBoxToken}`
       )
       if (!response.ok) {
         alert('error getting location detail')
@@ -66,10 +73,20 @@ export const useGetLocationStore = defineStore('get Location', {
         return ''
       }
     },
-    addTagLocation(tag: string) {
-      this.tagLocations.push(tag)
+    async createTagLocation(tag: tagLocation) {
+      await $fetch('tagLocations', { method: 'POST', data: tag })
+      await this.fetchTagLocations()
     },
-    showPosition() {},
-    showError() {}
+    async deleteTagLocation(id: string) {
+      await $fetch(`tagLocations/${id}`, { method: 'DELETE' })
+      await this.fetchTagLocations()
+    },
+    async fetchTagLocations() {
+      let request = await $fetch('tagLocations', { method: 'GET' })
+      this.setTagLocations(request.data?.value.tagLocations as tagLocation[])
+    },
+    setTagLocations(tag: tagLocation[]) {
+      this.tagLocations = tag
+    }
   }
 })

@@ -56,6 +56,7 @@ export default defineConfig({
     'i-fad-calendar',
     'i-far-file-export',
     'i-fas-file-export',
-    'i-far-envelope'
+    'i-far-envelope',
+    'i-fas-xmark'
   ]
 })
