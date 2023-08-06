@@ -5,13 +5,13 @@ import { onMounted, reactive } from 'vue'
 import { useAttendanceStore, type attendanceState } from '@/stores/attendance'
 import { useUserStore } from '@/stores/auth'
 
-const user = useUserStore()
+const auth = useUserStore()
 const attendance = useAttendanceStore()
 
 const filter = reactive({
   dateFrom: '',
   dateTo: '',
-  users: [...user.users]
+  users: [...auth.users]
 })
 
 const setAttendances = () => {
@@ -47,6 +47,7 @@ const setAttendances = () => {
 }
 
 onMounted(async () => {
+  await auth.getAccessToken()
   await attendance.fetchAttendaces()
 })
 </script>
