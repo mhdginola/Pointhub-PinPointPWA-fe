@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import BaseInput from '@/components/base-input.vue'
 import BaseButton from '@/components/base-button.vue'
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, reactive } from 'vue'
 import { useUserStore } from '@/stores/auth'
 import { useGlobalStore } from '@/stores/global'
 import logo from '@/assets/images/logo.png'
@@ -15,7 +14,6 @@ interface FormModel {
 }
 
 const global = useGlobalStore()
-const router = useRouter()
 const auth = useUserStore()
 const form = reactive<FormModel>({
   username: '',
@@ -24,12 +22,12 @@ const form = reactive<FormModel>({
 })
 
 const loginWithGoogle = async () => {
-  await auth.setAccessToken(import.meta.env.VITE_TOKEN)
-  router.push({
-    name: 'attendances'
-  })
-  // auth.authWithGoogle()
+  auth.authWithGoogle()
 }
+
+onMounted(async () => {
+  await auth.getAccessToken()
+})
 </script>
 
 <template>

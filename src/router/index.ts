@@ -12,11 +12,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-  const user = useUserStore()
-  if (!user.$state.accessToken && to.name !== 'login') {
-    return {
-      name: 'login'
-    }
-  }
+  // const user = useUserStore()
+  // if (!user.accessToken && to.name !== 'login') {
+  //   return {
+  //     name: 'login'
+  //   }
+  // }
 })
 export default router

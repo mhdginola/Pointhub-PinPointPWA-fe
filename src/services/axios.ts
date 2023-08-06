@@ -39,8 +39,8 @@ instance.interceptors.response.use(
         content: err?.response?.data?.message ?? "The URL you'll try to get was returning an error"
       })
       if (err?.response?.data?.code == 401) {
-        const auth = useUserStore()
-        auth.signOut()
+        // const auth = useUserStore()
+        // auth.signOut()
       }
     }
     if (err?.message) {
