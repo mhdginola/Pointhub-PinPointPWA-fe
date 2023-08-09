@@ -37,7 +37,19 @@ export const useAttendanceStore = defineStore('attendance', {
     },
     async export() {
       let request = await $fetch('attendances/export', { method: 'GET' })
-      window.open(request.data.value?.downloadLink)
+      await $fetch(request.data.value?.downloadLink, {
+        method: 'GET',
+        responseType: 'blob'
+      }).then((resp) => {
+        let href = URL.createObjectURL(resp.data.value)
+        let link = document.createElement('a')
+        link.href = href
+        link.setAttribute('download', 'report.xlsx')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(href)
+      })
     }
   }
 })

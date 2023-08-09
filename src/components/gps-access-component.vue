@@ -3,7 +3,8 @@ import { onMounted, ref } from 'vue'
 import { useGetLocationStore } from '@/stores/get-location'
 import { openModalNotification } from '@/plugins/modal-notification'
 import 'leaflet/dist/leaflet.css'
-import { map, latLng, tileLayer, type MapOptions, marker } from 'leaflet'
+import { map, latLng, tileLayer, type MapOptions, marker, icon } from 'leaflet'
+import markerIcon from '@/assets/images/leaflet/marker-icon.png'
 
 const locationStore = useGetLocationStore()
 </script>
@@ -42,7 +43,9 @@ const setLocationMaps = () => {
       zIndex: 10
     }
   ).addTo(leaflet)
-  marker([locationStore.latitude, locationStore.longitude]).addTo(leaflet)
+  marker([locationStore.latitude, locationStore.longitude], {
+    icon: icon({ iconUrl: markerIcon })
+  }).addTo(leaflet)
 }
 
 const locationName = ref()
