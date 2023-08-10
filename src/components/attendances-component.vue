@@ -54,7 +54,7 @@ watch(
       <div class="flex flex-col w-full gap-5">
         <!-- photo -->
         <div class="h-90 flex justify-center items-center">
-          <img :src="`data:image/png;base64,${item.photo}`" class="rounded-5 h-90%" />
+          <img :src="item.photo" class="rounded-5 h-90%" />
         </div>
 
         <!-- location -->

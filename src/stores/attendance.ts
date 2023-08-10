@@ -26,7 +26,21 @@ export const useAttendanceStore = defineStore('attendance', {
       this.setAttendance(request.data?.value?.attendances as attendanceState[])
     },
     async postAttendance(attendance: attendanceState) {
-      await $fetch('attendances', { method: 'POST', data: attendance })
+      let photo = await fetch(attendance.photo)
+      let blob = await photo.blob()
+
+      let data = new FormData()
+      data.append('group', attendance.group)
+      data.append('email', attendance.email)
+      data.append('groupName', attendance.groupName)
+      data.append('location[]', attendance.location[0].toString())
+      data.append('location[]', attendance.location[1].toString())
+      data.append('photo', blob)
+      await $fetch('attendances', {
+        method: 'POST',
+        data: data,
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
     },
     async setAttendance(attendance: attendanceState[]) {
       const location = useGetLocationStore()
