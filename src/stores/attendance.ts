@@ -1,6 +1,7 @@
 import { $fetch } from '@/services/axios'
 import { defineStore } from 'pinia'
 import { useGetLocationStore } from './get-location'
+import { openModalNotification } from '@/plugins/modal-notification'
 
 export interface attendanceState {
   group: string
@@ -26,6 +27,11 @@ export const useAttendanceStore = defineStore('attendance', {
       this.setAttendance(request.data?.value?.attendances as attendanceState[])
     },
     async postAttendance(attendance: attendanceState) {
+      await openModalNotification({
+        show: true,
+        title: 'Please Waiting',
+        content: 'Sending attendance data'
+      })
       let photo = await fetch(attendance.photo)
       let blob = await photo.blob()
 
