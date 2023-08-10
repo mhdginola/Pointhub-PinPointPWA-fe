@@ -13,12 +13,12 @@ instance.interceptors.request.use(
     if ('localStorage' in window && window.localStorage.getItem('token')) {
       cfg.headers.set('Authorization', 'Bearer ' + window.localStorage.getItem('token'))
     }
-    openModalNotification({
-      show: true,
-      title: 'Please wait',
-      content: 'Processing data',
-      size: 'sm'
-    })
+    // openModalNotification({
+    //   show: true,
+    //   title: 'Please wait',
+    //   content: 'Processing data',
+    //   size: 'sm'
+    // })
     return cfg
   },
   (er) => {
