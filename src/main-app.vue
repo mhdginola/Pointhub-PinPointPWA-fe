@@ -10,4 +10,5 @@ useScreenSize()
 <template>
   <router-view />
   <component :is="BaseNotification" />
+  <modal-notification />
 </template>

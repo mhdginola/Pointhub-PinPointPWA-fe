@@ -13,11 +13,12 @@ interface Props {
   disabled?: boolean
   helper?: string
   error?: string
+  name?: string
 }
 </script>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, type Ref } from 'vue'
 
 const props = withDefaults(defineProps<Props>(), {
   mode: 'simple',
@@ -41,6 +42,7 @@ const value = computed({
 
 const prefixRef = ref()
 const suffixRef = ref()
+const inputRef = ref()
 const paddingLeft = ref(0)
 const paddingRight = ref(0)
 onMounted(() => {
@@ -78,7 +80,8 @@ onMounted(() => {
           :class="{
             'border-b border-x-none border-t-none': mode === 'simple',
             'border ': mode === 'bordered',
-            'border-none p-0!': mode === 'none'
+            'border-none p-0!': mode === 'none',
+            'bg-gray-200 dark:bg-gray-700': props.disabled
           }"
           v-model="value"
           :type="props.type"
@@ -90,6 +93,8 @@ onMounted(() => {
             paddingLeft: `${paddingLeft}px`,
             paddingRight: `${paddingRight}px`
           }"
+          :name="props.name"
+          ref="inputRef"
         />
         <div
           ref="suffixRef"
@@ -108,7 +113,7 @@ onMounted(() => {
         <span class="text-sm text-slate-500">{{ helper }}</span>
       </slot>
       <slot name="error" v-if="error">
-        <span class="text-sm text-danger">{{ error }}</span>
+        <span class="text-sm text-danger error-message">{{ error }}</span>
       </slot>
     </div>
   </div>

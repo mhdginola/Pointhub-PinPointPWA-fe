@@ -12,7 +12,7 @@ const props = withDefaults(
   }>(),
   {
     theme: 'primary',
-    options: []
+    options: [] as any
   }
 )
 const selected = ref(props.options[0])

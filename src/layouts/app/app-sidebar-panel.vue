@@ -3,11 +3,35 @@ import { useSidebar } from '@/composable/sidebar'
 import { useSidebarStore } from '@/stores/sidebar'
 import { useSidebarMenuStore } from '@/stores/sidebar-menu'
 import { useMobileBreakpoint } from '@/composable/mobile-breakpoint'
+import { useRoute } from 'vue-router'
+import { watch } from 'vue'
 
 const sidebarMenuStore = useSidebarMenuStore()
 const sidebarStore = useSidebarStore()
+const route = useRoute()
 const { isMobileBreakpoint } = useMobileBreakpoint()
 useSidebar()
+
+const isActiveRoutes = (name: string) => {
+  return name.toLowerCase() == route.name?.toString().toLowerCase()
+}
+
+const isActiveParent = (name: string) => {
+  return name.toLowerCase() == route.meta.parentName?.toString().toLowerCase()
+}
+
+watch(
+  route,
+  (r) => {
+    r.meta.parentName
+      ? sidebarMenuStore.toggleMenu(r.meta.parentName.toString() as string)
+      : sidebarMenuStore.toggleMenu(r.name?.toString() as string)
+  },
+  {
+    deep: true,
+    immediate: true
+  }
+)
 </script>
 
 <template>
@@ -16,7 +40,7 @@ useSidebar()
       <!-- Sidebar Panel Header -->
       <div class="sidebar-panel-header">
         <p class="text-base font-extrabold tracking-wider text-slate-100">
-          {{ sidebarMenuStore.$state.activeShortcut.name }}
+          {{ sidebarMenuStore.shortcut[sidebarMenuStore.activeShortcutIndex]?.displayName }}
         </p>
         <button @click="sidebarStore.closeSidebar()" v-if="isMobileBreakpoint()" class="mr-2">
           <div v-if="sidebarStore.isSidebarOpen">
@@ -24,6 +48,8 @@ useSidebar()
           </div>
         </button>
       </div>
+      <!-- Sidebar Panel Body -->
+
       <!-- Sidebar Panel Body -->
       <div class="sidebar-panel-body">
         <ul class="flex flex-1 flex-col px-4">
@@ -37,12 +63,13 @@ useSidebar()
                 v-if="menu.path"
                 :to="menu.path"
                 class="menu-link-button"
+                :class="isActiveRoutes(menu.name) ? 'font-extrabold' : ''"
                 @click="sidebarMenuStore.toggleMenu(menu.name)"
               >
                 <p>{{ menu.name }}</p>
                 <i
                   v-if="menu.submenu"
-                  class="block i-fas-angle-right"
+                  class="i-fas-angle-right block"
                   :class="{
                     'rotate-90 transition transform-gpu':
                       sidebarMenuStore.$state.activeMenuName === menu.name
@@ -53,12 +80,12 @@ useSidebar()
                 v-else
                 class="menu-link-button"
                 @click="sidebarMenuStore.toggleMenu(menu.name)"
-                :class="{ 'font-extrabold': sidebarMenuStore.$state.activeMenuName === menu.name }"
+                :class="isActiveParent(menu.name) ? 'font-extrabold' : ''"
               >
                 <p>{{ menu.name }}</p>
                 <i
                   v-if="menu.submenu"
-                  class="block i-fas-angle-right"
+                  class="i-fas-angle-right block"
                   :class="{
                     'rotate-90 transition transform-gpu':
                       sidebarMenuStore.$state.activeMenuName === menu.name
@@ -68,7 +95,12 @@ useSidebar()
             </template>
             <template v-else>
               <!-- Internal Menu -->
-              <router-link v-if="menu.path" :to="menu.path as string" class="menu-link-button">
+              <router-link
+                v-if="menu.path"
+                :to="menu.path as string"
+                class="menu-link-button"
+                :class="isActiveRoutes(menu.name) ? 'font-extrabold' : ''"
+              >
                 {{ menu.name }}
               </router-link>
               <!-- External Menu -->
@@ -111,11 +143,11 @@ useSidebar()
 
 <style scoped>
 .sidebar-panel {
-  @apply fixed top-0 left-[var(--sidebar-shortcut-width)] h-full w-[var(--sidebar-panel-width)] z-30 -translate-x-[calc(100%+(var(--sidebar-shortcut-width)))] transform-gpu transition-transform duration-200 opacity-100;
+  @apply fixed top-0 left-[var(--sidebar-shortcut-width)] h-full w-[var(--sidebar-panel-width)] z-30 transform-gpu transition-transform duration-200 opacity-100;
 }
 
 .is-sidebar-open .sidebar-panel {
-  @apply translate-x-0 ease-out;
+  @apply -translate-x-[15rem] ease-out;
 }
 
 .sidebar-panel-container {
@@ -127,7 +159,7 @@ useSidebar()
 }
 
 .sidebar-panel-body {
-  @apply h-[calc(100%-4.5rem)] overflow-x-hidden pb-6;
+  @apply h-[calc(100%-4.5rem)] overflow-x-hidden pb-6 mt-4;
 }
 
 .sidebar-panel-body .menu-separator {
@@ -143,15 +175,11 @@ useSidebar()
 }
 
 .sidebar-panel-body .menu-link-button {
-  @apply flex w-full items-center justify-between py-2 text-sm outline-none duration-300 ease-in-out text-slate-200 hover:text-slate-50 cursor-pointer;
+  @apply flex w-full items-center justify-between py-2 outline-none duration-300 ease-in-out text-slate-200 hover:text-slate-50 cursor-pointer hover:bg-slate-700 focus:bg-slate-700 active:bg-slate-700/25 px-2 rounded-md;
 }
 
 .sidebar-panel-body .submenu-link {
-  @apply flex items-center justify-between p-2 text-sm  outline-none duration-300 ease-in-out hover:pl-4 text-slate-200 hover:text-slate-50;
-}
-
-.menu-link-button.router-link-active {
-  @apply font-extrabold;
+  @apply flex items-center justify-between p-2 text-md  outline-none duration-300 ease-in-out hover:pl-4 text-slate-200 hover:text-slate-50;
 }
 
 .menu-link-button.router-link-active > i {

@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { watch, ref, onMounted } from 'vue'
 const loaded = ref(0)
-const loadingText = ref(`is loading ${loaded.value} %`)
+const loadingText = ref(`loading ${loaded.value} %`)
 const preloaderRef = ref()
 let loadingState: any
 
@@ -20,7 +20,7 @@ onMounted(() => {
   hideBodyOverflow()
   loadingState = setInterval(() => {
     loaded.value += 20
-    loadingText.value = `is loading ${loaded.value} %`
+    loadingText.value = `loading ${loaded.value} %`
   }, 50)
 })
 
@@ -44,13 +44,13 @@ const showBodyOverflow = () => {
 
 <style scoped lang="postcss">
 .preloader {
-  @apply w-full h-100vh flex flex-col justify-center items-center text-slate-50 bg-slate-900 relative z-50;
+  @apply w-full h-100vh flex flex-col justify-center items-center text-slate-50 bg-slate-50 dark:bg-slate-900 relative z-50;
 }
 .preloader-status {
   @apply w-full flex flex-col justify-center items-center;
 }
 .preloader-status-text {
-  @apply text-[28px] mb-[20px];
+  @apply text-[28px] mb-[20px] text-slate-900 dark:text-slate-50;
 }
 .preloader-status-loader {
   @apply w-full h-[3px];

@@ -1,35 +1,54 @@
-export const routes = {
-  path: '/',
-  component: () => import('@/layouts/app/app-index.vue'),
-  children: [
-    {
-      path: '',
-      component: () => import('./views/page-index.vue')
-    },
-    {
-      path: 'dashboard',
-      component: () => import('./views/page-dashboard.vue')
-    },
-    {
-      path: 'page-1',
-      component: () => import('./views/page-1.vue')
-    },
-    {
-      path: 'page-2',
-      component: () => import('./views/page-2.vue')
-    },
-    {
-      path: 'nested',
-      children: [
-        {
-          path: 'page-nested-1',
-          component: () => import('./views/nested/page-nested-1.vue')
+import { type RouteRecordRaw } from 'vue-router'
+// import { useUserStore } from '@/stores/auth'
+// const auth = useUserStore()
+
+export const routes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    component: () => import('@/layouts/app/app-index.vue'),
+    children: [
+      {
+        path: '/',
+        name: 'dashboard',
+        meta: {
+          displayName: 'Main Menu'
         },
-        {
-          path: 'page-nested-2',
-          component: () => import('./views/nested/page-nested-2.vue')
-        }
-      ]
-    }
-  ]
-}
+        component: () => import('./views/dashboard/index.vue')
+      },
+      {
+        path: 'attendances',
+        name: 'attendances',
+        meta: {
+          displayName: 'Main Menu'
+        },
+        component: () => import('./views/attendances/index.vue')
+      },
+      {
+        path: 'account',
+        name: 'account',
+        meta: {
+          displayName: 'Main Menu'
+        },
+        component: () => import('./views/account/index.vue')
+      },
+      {
+        path: 'report',
+        name: 'report',
+        meta: {
+          displayName: 'Main Menu'
+        },
+        component: () => import('./views/report/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('./views/auth/login.vue')
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () => import('./views/_error/404.vue')
+  }
+]

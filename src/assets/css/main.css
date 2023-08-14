@@ -1,2 +1,10 @@
 @import './base.css';
 @import './components.css';
+
+* {
+  user-select: none !important;
+}
+
+[v-cloak] {
+  display: none;
+}

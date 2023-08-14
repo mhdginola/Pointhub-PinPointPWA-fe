@@ -20,49 +20,51 @@ describe('get Location', () => {
     expect(getLocationStore.showError).toBeDefined()
   })
 
-  it('should access GPS and update coordinates', async() => {
+  it('should access GPS and update coordinates', async () => {
     const getLocationStore = useGetLocationStore()
 
     // Mock the geolocation API
     const mockGeolocation = {
-      getCurrentPosition: ((successCallback: (arg0: { coords: { latitude: number; longitude: number } }) => void) => {
+      getCurrentPosition: (
+        successCallback: (arg0: { coords: { latitude: number; longitude: number } }) => void
+      ) => {
         const position = {
           coords: {
             latitude: 40.712776,
             longitude: -74.005974,
             accessGPS: true
           }
-        };
-        successCallback(position);
-      })
-    };
-    global.navigator.geolocation = mockGeolocation;
+        }
+        successCallback(position)
+      }
+    }
+    // global.navigator.geolocation = mockGeolocation
 
     // Mount the component
-    getLocationStore.getLocation();
+    getLocationStore.getLocation()
 
     // Assert that the coordinates have been updated
-    expect(getLocationStore.$state.latitude).toBe(40.712776);
-    expect(getLocationStore.$state.longitude).toBe(-74.005974);
-    expect(getLocationStore.$state.accessGPS).toBe(true);
-  });
+    expect(getLocationStore.$state.latitude).toBe(40.712776)
+    expect(getLocationStore.$state.longitude).toBe(-74.005974)
+    expect(getLocationStore.$state.accessGPS).toBe(true)
+  })
 
-  it('should not able to access GPS and update coordinates', async() => {
+  it('should not able to access GPS and update coordinates', async () => {
     const getLocationStore = useGetLocationStore()
     // Mock the geolocation API
     const mockGeolocation = {
-      getCurrentPosition: ((_successCallback: any, errorCallback: () => void)=> {
-        errorCallback() 
-      })
-    };
-    global.navigator.geolocation = mockGeolocation;
+      getCurrentPosition: (_successCallback: any, errorCallback: () => void) => {
+        errorCallback()
+      }
+    }
+    // global.navigator.geolocation = mockGeolocation
 
     // Mount the component
-    getLocationStore.getLocation();
+    getLocationStore.getLocation()
 
     // Assert that the coordinates have been updated
-    expect(getLocationStore.$state.latitude).toBe(null);
-    expect(getLocationStore.$state.longitude).toBe(null);
-    expect(getLocationStore.$state.accessGPS).toBe(false);
-  });
+    expect(getLocationStore.$state.latitude).toBe(null)
+    expect(getLocationStore.$state.longitude).toBe(null)
+    expect(getLocationStore.$state.accessGPS).toBe(false)
+  })
 })

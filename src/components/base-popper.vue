@@ -7,6 +7,12 @@
   </component>
 </template>
 
+<style>
+.popper {
+  overflow-x: hidden !important;
+}
+</style>
+
 <script setup lang="ts">
 import Popper from 'vue3-popper'
 

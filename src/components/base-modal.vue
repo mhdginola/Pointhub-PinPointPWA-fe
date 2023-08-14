@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue'
 
 export type SizeType = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full' | 'maximize'
@@ -31,11 +31,13 @@ watch(isOpen, (newData) => {
 watch(props, () => {
   isOpen.value = props.isOpen
 })
+
+const clearButton = ref()
 </script>
 
 <template>
   <TransitionRoot appear :show="isOpen" as="template">
-    <Dialog as="div" @close="close()" class="relative z-60">
+    <Dialog as="div" class="relative z-60" :initial-focus="clearButton">
       <!-- The backdrop, rendered as a fixed sibling to the panel container -->
       <div class="fixed inset-0 bg-black/40" aria-hidden="true" />
 
@@ -74,7 +76,12 @@ watch(props, () => {
                 'w-100vh h-100vh rounded-none': props.size === 'maximize'
               }"
             >
-              <button type="button" @click="close()" class="btn absolute top-2 right-0">
+              <button
+                type="button"
+                @click="close()"
+                class="btn absolute top-2 right-0"
+                ref="clearButton"
+              >
                 <i class="i-fas-xmark block"></i>
               </button>
               <slot name="content"></slot>
